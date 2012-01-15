@@ -58,7 +58,7 @@ int fputof(void *_self, FILE *stream, const char *format) {
 	if (self->class->put)
 		return self->class->put(self, stream, format);
 	else
-		return fprintf(stream, "<%s object at %p>", self->class->name, self);
+		return fprintf(stream, "<%s object at %p>", self->class->name, _self);
 }
 
 int putof(void *_self, const char *format) {
