@@ -23,6 +23,10 @@ int main() {
 		printf("%d ", x);
 	}
 
+	list_forall(i, l2) {
+		printf("--> %s\n", (char *)item_get(i));
+	}
+
 	printf("x = %d / y = %d / z = %d\n", x, y, z);
 	delete(l1);
 	delete(l2);

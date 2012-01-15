@@ -11,7 +11,8 @@ typedef struct _list_t *list_t;
 struct _item_t;
 typedef struct _item_t *item_t;
 
-#define list(args...) new(List(), __VA_N_ARGS__(args), ##args);
+#define list(args...)    new(List(), __VA_N_ARGS__(args), ##args);
+#define list_forall(i,l) for (i = list_begin(l); i != list_end(l); i = item_next(i))
 
 const class_t *List();     /* new(List(), n, x1, x2, ..., xn) */
 
