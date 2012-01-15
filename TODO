@@ -1,0 +1,7 @@
+- add support for iterator in the lists
+- finish implementation of the list functions
+- add a dict class
+- add a tuple class
+- add a set class
+- add an array class ??
+

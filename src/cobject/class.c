@@ -73,12 +73,12 @@ int fputo(void *_self, FILE *stream) {
 	return fputof(_self, stream, NULL);
 }
 
-class_t *class_of(void *_self) {
+const class_t *class_of(void *_self) {
 	object_t *self = _self;
 	return self->class;
 }
 
-size_t  *size_of(void *_self) {
+size_t size_of(void *_self) {
 	object_t *self = _self;
-	self->class->size;
+	return self->class->size;
 }

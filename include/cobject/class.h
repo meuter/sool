@@ -22,8 +22,8 @@ int      puto    (void *self);
 int      fputo   (void *self, FILE *stream);
 int      cmp     (void *self, void *other);
 
-class_t *class_of(void *self);
-size_t  *size_of(void *self);
+const class_t *class_of(void *self);
+size_t         size_of(void *self);
 
 
 #endif

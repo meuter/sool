@@ -15,6 +15,7 @@ const class_t *List();     /* new(List(), n, x1, x2, ..., xn) */
 list_t *list_clone         (list_t *self);
 list_t *list_slice         (list_t *self, int from, int to);
 list_t *list_join          (list_t *self, ...);
+list_t *list_sort          (list_t *self);
 bool_t  list_is_empty      (list_t *self);
 int     list_get_length    (list_t *self);
 void   *list_get_first     (list_t *self);
