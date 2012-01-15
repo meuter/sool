@@ -3,18 +3,18 @@
 
 struct _item_t {
 	void *element;
-	item_t *next, *previous;
+	item_t next, previous;
 };
 
 struct _list_t {
 	const class_t *class;
-	item_t *dummy;
+	item_t dummy;
 	int length;
 };
 
 
 static void List_ctor(void *_self, va_list *args) {
-    list_t *self = _self;
+    list_t self = _self;
     int i, n;
 
     self->dummy = malloc(sizeof(item_t));
@@ -27,7 +27,7 @@ static void List_ctor(void *_self, va_list *args) {
 }
 
 static void List_dtor(void *_self) {
-	list_t *self = _self;
+	list_t self = _self;
 	while (!list_is_empty(self))
 		list_remove_first(self);
 	free(self->dummy);
@@ -35,8 +35,8 @@ static void List_dtor(void *_self) {
 
 static int List_put(void *_self, FILE *stream, const char *format) {
 	int result = 0;
-	list_t *self = _self;
-	item_t *i;
+	list_t self = _self;
+	item_t i;
 
 	if (format == NULL)
 		format = "%p";
@@ -51,8 +51,8 @@ static int List_put(void *_self, FILE *stream, const char *format) {
 }
 
 //static int List_cmp(void *_self, void *_other) {
-//	list_t *self = _self, *other = _other;
-//	item_t *i, *j;
+//	list_t self = _self, *other = _other;
+//	item_t i, *j;
 //#warning not implemented
 //	return 0;
 //}
@@ -63,62 +63,76 @@ const class_t *List() {
 }
 
 
-//list_t *list_clone(list_t *self) {
+//list_t list_clone(list_t self) {
 //	return list_slice(self, 0, list_length(self));
 //}
 
-//list_t *list_slice(list_t *self, int from, int to) {
+//list_t list_slice(list_t self, int from, int to) {
 //#warning not implemented
 //	return NULL;
 //}
 //
-//list_t *list_join(list_t *self, ...) {
+//list_t list_join(list_t self, ...) {
 //#warning not implemented
 //	return NULL;
 //}
 //
-//list_t *list_reverse(list_t *self) {
+//list_t list_reverse(list_t self) {
 //#warning not implemented
 //	return NULL;
 //}
 //
-//list_t *list_sort(list_t *self) {
+//list_t list_sort(list_t self) {
 //#warning not implemented
 //	return NULL;
 //}
 
-bool_t list_is_empty(list_t *self) {
+bool_t list_is_empty(list_t self) {
 	return (self->length == 0);
 }
 
-//int list_count(list_t *self, void *element) {
+//int list_count(list_t self, void *element) {
 //#warning not implemented
 //	return 0;
 //}
 
 
-int list_length(list_t *self) {
+int list_length(list_t self) {
 	return self->length;
 }
-//
-//item_t *list_get(list_t *self, int i) {
+
+item_t list_get(list_t self, int i) {
+	item_t j;
+
+	if ( i >= 0 ) {
+		j = list_begin(self);
+		while (i--) {
+			if ( j == list_end(self) ) break;
+			j = item_next(j);
+		}
+	}
+	else {
+		j = list_rbegin(self);
+		while (i++ < -1) {
+			if ( j == list_rend(self) ) break;
+			j = item_previous(j);
+		}
+	}
+	return j;
+}
+
+//item_t list_find(list_t self, void *element) {
 //#warning not implemented
 //	return NULL;
+//}
 //
+//item_t list_prepend(list_t self) {
+//#warning not implemented
+//	return NULL;
 //}
 
-//item_t *list_find(list_t *self, void *element) {
-//#warning not implemented
-//	return NULL;
-//}
-//
-//item_t *list_prepend(list_t *self) {
-//#warning not implemented
-//	return NULL;
-//}
-
-item_t *list_append(list_t *self, void *element) {
-	item_t *new_item = malloc(sizeof(item_t));
+item_t list_append(list_t self, void *element) {
+	item_t new_item = malloc(sizeof(item_t));
 
 	new_item->previous = self->dummy->previous;
 	new_item->previous->next = new_item;
@@ -131,7 +145,7 @@ item_t *list_append(list_t *self, void *element) {
 }
 
 
-void *list_remove(list_t *self, item_t *to_remove) {
+void *list_remove(list_t self, item_t to_remove) {
 	to_remove->previous->next = to_remove->next;
 	to_remove->next->previous = to_remove->previous;
 	void *result = to_remove->element;
@@ -140,39 +154,39 @@ void *list_remove(list_t *self, item_t *to_remove) {
 	return result;
 }
 
-item_t *list_begin(list_t *self) {
+item_t list_begin(list_t self) {
 	return self->dummy->next;
 }
 
-item_t *list_end(list_t *self) {
+item_t list_end(list_t self) {
 	return self->dummy;
 }
 
-item_t *list_rbegin(list_t *self) {
+item_t list_rbegin(list_t self) {
 	return self->dummy->previous;
 }
 
-item_t *list_rend(list_t *self) {
+item_t list_rend(list_t self) {
 	return self->dummy;
 }
 
-void *list_remove_first(list_t *self) {
+void *list_remove_first(list_t self) {
 	return list_remove(self, list_begin(self));
 }
 
-void *list_remove_last(list_t *self) {
+void *list_remove_last(list_t self) {
 	return list_remove(self, list_end(self));
 }
 
-void *item_get(item_t *self) {
+void *item_get(item_t self) {
 	return self->element;
 }
 
-item_t *item_next(item_t *self) {
+item_t item_next(item_t self) {
 	return self->next;
 }
 
-item_t *item_previous(item_t *self) {
+item_t item_previous(item_t self) {
 	return self->previous;
 }
 

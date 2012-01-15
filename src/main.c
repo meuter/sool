@@ -5,10 +5,10 @@
 #include <cobject/list.h>
 
 int main() {
-	list_t *l1 = list(1,2,3,4,5,6,7);
-	list_t *l2 = list("toto", "boo", "bar");
-	list_t *l3 = list();
-	item_t *i;
+	list_t l1 = list(1,2,3,4,5,6,7);
+	list_t l2 = list("toto", "boo", "bar");
+	list_t l3 = list();
+	item_t i;
 
 	int x = oprintf("%O{%d}\n", l1);
 	int y = oprintf("%O{%s}\n", l2);
