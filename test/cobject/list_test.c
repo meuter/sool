@@ -208,8 +208,23 @@ static void test_list_count() {
 	assert_int_equal(list_count(l2,(void *)4), 0);
 	assert_int_equal(list_count(l2,(void *)5), 0);
 
-	delete(l1);
+	delete(l1, l2);
+}
 
+static void test_list_sort() {
+	list_t l1 = list();
+	list_t l2 = list(1);
+	list_t l3 = list(1,2,3,4);
+	list_t l4 = list(3,2,5,1);
+	list_t l5 = list(1,5,6,9,3,2,9,5,2,3,6,8,7,4,8,5,9,6,3,2,1,5,2,5,6,3,5,8,7,4);
+
+	assert_list_equal(list_sort(l1), list());
+	assert_list_equal(list_sort(l2), list(1));
+	assert_list_equal(list_sort(l3), list(1,2,3,4));
+	assert_list_equal(list_sort(l4), list(1,2,3,5));
+	assert_list_equal(list_sort(l5), list(1,1,2,2,2,2,3,3,3,3,4,4,5,5,5,5,5,5,6,6,6,6,7,7,8,8,8,9,9,9));
+
+	delete(l1);
 }
 
 int main() {
@@ -227,6 +242,7 @@ int main() {
 		unit_test(test_list_reverse),
 		unit_test(test_list_join),
 		unit_test(test_list_count),
+		unit_test(test_list_sort),
 	};
 	return run_tests(all_tests);
 }

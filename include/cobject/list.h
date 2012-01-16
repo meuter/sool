@@ -31,6 +31,8 @@ item_t  list_get          (list_t self, int i);
 void    list_set          (list_t self, int i, void *value);
 item_t  list_find         (list_t self, void *value);
 item_t  list_rfind        (list_t self, void *value);
+item_t  list_insert_before(list_t self, item_t item, void *value);
+item_t  list_insert_after (list_t self, item_t item, void *value);
 item_t  list_prepend      (list_t self, void *value);
 item_t  list_append       (list_t self, void *value);
 item_t  list_begin        (list_t self);

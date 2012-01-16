@@ -110,12 +110,23 @@ list_t _list_join(int n, ...) {
 }
 
 
-//
-//list_t list_sort(list_t self) {
-//#warning not implemented
-//	return NULL;
-//}
-//
+
+list_t list_sort(list_t self) {
+	list_t result = list();
+	item_t i, j;
+
+	list_forall(i, self) {
+		void *x = item_get(i);
+
+		j = list_begin(result);
+		while (j != list_end(result) && x >= item_get(j))
+			j = item_next(j);
+		list_insert_after(result, j, x);
+	}
+
+	return result;
+}
+
 
 list_t list_reverse(list_t self) {
 	list_t result = list();
@@ -188,32 +199,40 @@ item_t list_rfind(list_t self, void *value) {
 	return i;
 }
 
-item_t list_prepend(list_t self, void *value) {
-	item_t new_item = malloc(sizeof(item_t));
+item_t list_insert_before(list_t self, item_t item, void *value) {
+	item_t new_item = malloc(sizeof(struct _item_t));
 
-	new_item->next = self->dummy->next;
+	new_item->next = item->next;
 	new_item->next->previous = new_item;
 	new_item->value = value;
-	new_item->previous = self->dummy;
+	new_item->previous = item;
 	new_item->previous->next = new_item;
 
 	self->length++;
 	return new_item;
+}
+
+
+item_t list_insert_after(list_t self, item_t item, void *value) {
+	item_t new_item = malloc(sizeof(struct _item_t));
+
+	new_item->previous = item->previous;
+	new_item->previous->next = new_item;
+	new_item->value = value;
+	new_item->next = item;
+	new_item->next->previous = new_item;
+
+	self->length++;
+	return new_item;
+}
+
+item_t list_prepend(list_t self, void *value) {
+	return list_insert_before(self, list_rend(self), value);
 }
 
 item_t list_append(list_t self, void *value) {
-	item_t new_item = malloc(sizeof(item_t));
-
-	new_item->previous = self->dummy->previous;
-	new_item->previous->next = new_item;
-	new_item->value = value;
-	new_item->next = self->dummy;
-	new_item->next->previous = new_item;
-
-	self->length++;
-	return new_item;
+	return list_insert_after(self, list_end(self), value);
 }
-
 
 item_t list_begin(list_t self) {
 	return self->dummy->next;
