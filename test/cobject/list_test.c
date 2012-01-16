@@ -155,6 +155,24 @@ static void test_list_reverse() {
 	delete(l1, l2);
 }
 
+static void test_list_join() {
+	list_t l1 = list(1,2,3,4);
+	list_t l2 = list();
+	list_t l3 = list(1,2,3);
+
+	assert_list_equal(list_join(), list());
+	assert_list_equal(list_join(l2), list());
+	assert_list_equal(list_join(l2,l2), list());
+	assert_list_equal(list_join(l2,l2,l2), list());
+	assert_list_equal(list_join(l1,l2), list_clone(l1));
+	assert_list_equal(list_join(l2,l1), list_clone(l1));
+	assert_list_equal(list_join(l1,l1), list(1,2,3,4,1,2,3,4));
+	assert_list_equal(list_join(l1,l1,l1), list(1,2,3,4,1,2,3,4,1,2,3,4));
+	assert_list_equal(list_join(l1,l3,l1), list(1,2,3,4,1,2,3,1,2,3,4));
+
+	delete(l1,l2,l3);
+}
+
 int main() {
 	unit_test_t all_tests[] = {
 		unit_test(test_empty_list),
@@ -167,6 +185,7 @@ int main() {
 		unit_test(test_list_clear),
 		unit_test(test_list_find),
 		unit_test(test_list_reverse),
+		unit_test(test_list_join),
 	};
 	return run_tests(all_tests);
 }

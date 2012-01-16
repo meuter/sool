@@ -11,15 +11,16 @@ typedef struct _list_t *list_t;
 struct _item_t;
 typedef struct _item_t *item_t;
 
-#define list(args...)    new(List(),__VA_N_ARGS__(args),   ##args)
-#define list_forall(i,l) for (i = list_begin(l); i != list_end(l); i = item_next(i))
+#define list(args...)       new(List(),__VA_N_ARGS__(args),  ##args)
+#define list_join(args...)  _list_join(__VA_N_ARGS__(args),  ##args)
+#define list_forall(i,l)    for (i = list_begin(l); i != list_end(l); i = item_next(i))
 
 const class_t *List();     /* new(List(), n, x1, x2, ..., xn) */
 
 list_t  list_clone        (list_t self);
 list_t  list_copy         (list_t self, item_t from, item_t to);
 list_t  list_slice        (list_t self, int from, int to);
-list_t  list_join         (list_t self, ...);
+list_t _list_join         (int n, ...);
 list_t  list_sort         (list_t self);
 list_t  list_reverse      (list_t self);
 bool_t  list_is_empty     (list_t self);

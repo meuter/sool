@@ -93,10 +93,23 @@ list_t list_slice(list_t self, int from, int to) {
 	return list_copy(self, list_get(self, from), list_get(self, to));
 }
 
-//list_t list_join(list_t self, ...) {
-//#warning not implemented
-//	return NULL;
-//}
+list_t _list_join(int n, ...) {
+	list_t result = list(), tmp;
+	item_t i;
+	va_list args;
+
+	va_start(args, n);
+	while (n--) {
+		tmp = va_arg(args, list_t);
+		list_forall(i, tmp)
+			list_append(result, item_get(i));
+	}
+	va_end(args);
+
+	return result;
+}
+
+
 //
 //list_t list_sort(list_t self) {
 //#warning not implemented
@@ -150,9 +163,9 @@ item_t list_get(list_t self, int i) {
 	return j;
 }
 
-//void list_set(list_t self, int i, void *value) {
-//
-//}
+void list_set(list_t self, int i, void *value) {
+	item_set(list_get(self, i), value);
+}
 
 item_t list_find(list_t self, void *value) {
 	item_t i;
@@ -230,6 +243,10 @@ void *list_remove_last(list_t self) {
 
 void *item_get(item_t self) {
 	return self->value;
+}
+
+void item_set(item_t self, void *value) {
+	self->value = value;
 }
 
 item_t item_next(item_t self) {
