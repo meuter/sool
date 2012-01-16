@@ -2,7 +2,7 @@
 #include <cobject/io.h>
 
 struct _item_t {
-	void *element;
+	void *value;
 	item_t next, previous;
 };
 
@@ -43,7 +43,7 @@ static int list_put(void *_self, FILE *stream, const char *format) {
 
 	result += fprintf(stream, "[");
 	for (i = list_begin(self); i != list_end(self); i = item_next(i)) {
-		result += ofprintf(stream, format, i->element);
+		result += ofprintf(stream, format, i->value);
 		result += fprintf(stream, i->next != self->dummy ? ", " : "");
 	}
 	result += fprintf(stream, "]");
@@ -112,7 +112,7 @@ bool_t list_is_empty(list_t self) {
 	return (self->length == 0);
 }
 
-//int list_count(list_t self, void *element) {
+//int list_count(list_t self, void *value) {
 //#warning not implemented
 //	return 0;
 //}
@@ -150,16 +150,16 @@ item_t list_get(list_t self, int i) {
 //
 //}
 
-item_t list_find(list_t self, void *element) {
+item_t list_find(list_t self, void *value) {
 	item_t i;
 	list_forall(i, self) {
-		if (item_get(i) == element)
+		if (item_get(i) == value)
 			break;
 	}
 	return i;
 }
 
-//item_t list_rfind(list_t self, void *element) {
+//item_t list_rfind(list_t self, void *value) {
 //
 //}
 
@@ -168,12 +168,12 @@ item_t list_find(list_t self, void *element) {
 //	return NULL;
 //}
 
-item_t list_append(list_t self, void *element) {
+item_t list_append(list_t self, void *value) {
 	item_t new_item = malloc(sizeof(item_t));
 
 	new_item->previous = self->dummy->previous;
 	new_item->previous->next = new_item;
-	new_item->element = element;
+	new_item->value = value;
 	new_item->next = self->dummy;
 	new_item->next->previous = new_item;
 
@@ -202,7 +202,7 @@ item_t list_rend(list_t self) {
 void *list_remove(list_t self, item_t to_remove) {
 	to_remove->previous->next = to_remove->next;
 	to_remove->next->previous = to_remove->previous;
-	void *result = to_remove->element;
+	void *result = to_remove->value;
 	free(to_remove);
 	self->length--;
 	return result;
@@ -217,7 +217,7 @@ void *list_remove_last(list_t self) {
 }
 
 void *item_get(item_t self) {
-	return self->element;
+	return self->value;
 }
 
 item_t item_next(item_t self) {
