@@ -98,12 +98,12 @@ list_t list_slice(list_t self, int from, int to) {
 //	return NULL;
 //}
 //
-//list_t list_reverse(list_t self) {
+//list_t list_sort(list_t self) {
 //#warning not implemented
 //	return NULL;
 //}
 //
-//list_t list_sort(list_t self) {
+//list_t list_reverse(list_t self) {
 //#warning not implemented
 //	return NULL;
 //}
@@ -117,15 +117,13 @@ bool_t list_is_empty(list_t self) {
 //	return 0;
 //}
 
+int list_length(list_t self) {
+	return self->length;
+}
 
 void list_clear(list_t self) {
 	while (!list_is_empty(self))
 		list_remove_first(self);
-}
-
-
-int list_length(list_t self) {
-	return self->length;
 }
 
 item_t list_get(list_t self, int i) {
@@ -148,11 +146,23 @@ item_t list_get(list_t self, int i) {
 	return j;
 }
 
-//item_t list_find(list_t self, void *element) {
-//#warning not implemented
-//	return NULL;
-//}
+//void list_set(list_t self, int i, void *value) {
 //
+//}
+
+item_t list_find(list_t self, void *element) {
+	item_t i;
+	list_forall(i, self) {
+		if (item_get(i) == element)
+			break;
+	}
+	return i;
+}
+
+//item_t list_rfind(list_t self, void *element) {
+//
+//}
+
 //item_t list_prepend(list_t self) {
 //#warning not implemented
 //	return NULL;
@@ -172,15 +182,6 @@ item_t list_append(list_t self, void *element) {
 }
 
 
-void *list_remove(list_t self, item_t to_remove) {
-	to_remove->previous->next = to_remove->next;
-	to_remove->next->previous = to_remove->previous;
-	void *result = to_remove->element;
-	free(to_remove);
-	self->length--;
-	return result;
-}
-
 item_t list_begin(list_t self) {
 	return self->dummy->next;
 }
@@ -195,6 +196,16 @@ item_t list_rbegin(list_t self) {
 
 item_t list_rend(list_t self) {
 	return self->dummy;
+}
+
+
+void *list_remove(list_t self, item_t to_remove) {
+	to_remove->previous->next = to_remove->next;
+	to_remove->next->previous = to_remove->previous;
+	void *result = to_remove->element;
+	free(to_remove);
+	self->length--;
+	return result;
 }
 
 void *list_remove_first(list_t self) {

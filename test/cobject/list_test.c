@@ -132,6 +132,19 @@ static void test_list_clear() {
 	delete(l);
 }
 
+static void test_list_find() {
+	list_t l = list(1,2,3,4);
+	int i;
+
+	assert_true(list_find(l, 0) == list_end(l));
+	for (i = 1; i <=4; ++i) {
+		assert_false(list_find(l,(void *)i) == list_end(l));
+		assert_int_equal((int)item_get(list_find(l, (void *)i)), i);
+	}
+
+	delete(l);
+}
+
 int main() {
 	unit_test_t all_tests[] = {
 		unit_test(test_empty_list),
@@ -142,6 +155,7 @@ int main() {
 		unit_test(test_list_slice),
 		unit_test(test_list_get),
 		unit_test(test_list_clear),
+		unit_test(test_list_find),
 	};
 	return run_tests(all_tests);
 }
