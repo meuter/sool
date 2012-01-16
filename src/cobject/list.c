@@ -78,9 +78,9 @@ const class_t *List() {
 //	return list_slice(self, 0, list_length(self));
 //}
 
-//list_t list_copy(list_t self, item_t from, item_t to) {
-//
-//}
+list_t list_copy(list_t self, item_t from, item_t to) {
+
+}
 
 //list_t list_slice(list_t self, int from, int to) {
 //#warning not implemented
