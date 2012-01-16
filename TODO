@@ -1,4 +1,3 @@
-- finish implementation of the list functions + unit test
 - write unit tests for the class module
 - check for memory leaks in the unit tests of list
 - change object_t and class_t to be pointer types;

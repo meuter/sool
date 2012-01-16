@@ -3,7 +3,7 @@
 #include <cobject/io.h>
 
 static void test_empty_list() {
-	list_t empty = list();
+	list_t *empty = list();
 
 	assert_false(empty == NULL);
 	assert_true(list_is_empty(empty));
@@ -15,8 +15,8 @@ static void test_empty_list() {
 }
 
 static void test_list_int() {
-	list_t l = list(0,1,2,3,4,5,6,7,8,9);
-	item_t i;
+	list_t *l = list(0,1,2,3,4,5,6,7,8,9);
+	item_t *i;
 	int j;
 
 	assert_false(l == NULL);
@@ -36,10 +36,10 @@ static void test_list_int() {
 
 
 static void test_list_equal() {
-	list_t l1 = list(1,2,3,4);
-	list_t l2 = list(1,2,3,4);
-	list_t l3 = list(1,2,3);
-	list_t l4 = list(3,2,1);
+	list_t *l1 = list(1,2,3,4);
+	list_t *l2 = list(1,2,3,4);
+	list_t *l3 = list(1,2,3);
+	list_t *l4 = list(3,2,1);
 
 	assert_false(equal(l1,l3));
 	assert_true(equal(l1,l1));
@@ -50,9 +50,9 @@ static void test_list_equal() {
 }
 
 static void test_list_clone() {
-	list_t orig = list(1,2,3,4,5,6,7,8,9);
-	list_t clone = list_clone(orig);
-	item_t i;
+	list_t *orig = list(1,2,3,4,5,6,7,8,9);
+	list_t *clone = list_clone(orig);
+	item_t *i;
 	int j = 1;
 
 	assert_false(orig == NULL);
@@ -69,8 +69,8 @@ static void test_list_clone() {
 }
 
 static void test_list_clone_empty() {
-	list_t orig = list();
-	list_t clone = list_clone(orig);
+	list_t *orig = list();
+	list_t *clone = list_clone(orig);
 
 	assert_false(orig == NULL);
 	assert_false(orig == clone);
@@ -85,13 +85,13 @@ static void test_list_clone_empty() {
 }
 
 
-void assert_list_equal(list_t l1, list_t l2) {
+void assert_list_equal(list_t *l1, list_t *l2) {
 	assert_true(equal(l1,l2));
 	delete(l1, l2);
 }
 
 static void test_list_slice() {
-	list_t orig = list(1,2,3,4,5,6,7,8,9);
+	list_t *orig = list(1,2,3,4,5,6,7,8,9);
 
 	assert_list_equal(list_slice(orig,0,2), list(1,2));
 	assert_list_equal(list_slice(orig,1,3), list(2,3));
@@ -102,7 +102,7 @@ static void test_list_slice() {
 }
 
 static void test_list_get() {
-	list_t l = list(0,1,2,3,4,5,6,7,8,9);
+	list_t *l = list(0,1,2,3,4,5,6,7,8,9);
 	int j;
 
 	// check random access
@@ -121,7 +121,7 @@ static void test_list_get() {
 }
 
 static void test_list_clear() {
-	list_t l = list(1,2,3);
+	list_t *l = list(1,2,3);
 
 	list_clear(l);
 	assert_true(list_is_empty(l));
@@ -133,7 +133,7 @@ static void test_list_clear() {
 }
 
 static void test_list_find() {
-	list_t l = list(1,2,3,4);
+	list_t *l = list(1,2,3,4);
 	int i;
 
 	assert_true(list_find(l, 0) == list_end(l));
@@ -146,7 +146,7 @@ static void test_list_find() {
 }
 
 static void test_list_rfind() {
-	list_t l = list(0,1,2,3,4,5,6,7,8,9,1,10);
+	list_t *l = list(0,1,2,3,4,5,6,7,8,9,1,10);
 
 	assert_true(list_rfind(l,(void *)11) == list_rend(l));
 	assert_false(list_rfind(l,(void *)1) == list_rend(l));
@@ -163,8 +163,8 @@ static void test_list_rfind() {
 }
 
 static void test_list_reverse() {
-	list_t l1 = list(1,2,3,4);
-	list_t l2 = list();
+	list_t *l1 = list(1,2,3,4);
+	list_t *l2 = list();
 
 	assert_list_equal(list_reverse(l1), list(4,3,2,1));
 	assert_list_equal(list_reverse(l2), list());
@@ -173,9 +173,9 @@ static void test_list_reverse() {
 }
 
 static void test_list_join() {
-	list_t l1 = list(1,2,3,4);
-	list_t l2 = list();
-	list_t l3 = list(1,2,3);
+	list_t *l1 = list(1,2,3,4);
+	list_t *l2 = list();
+	list_t *l3 = list(1,2,3);
 
 	assert_list_equal(list_join(), list());
 	assert_list_equal(list_join(l2), list());
@@ -191,8 +191,8 @@ static void test_list_join() {
 }
 
 static void test_list_count() {
-	list_t l1 = list(1,2,3,2,1,2,4,1,1,4);
-	list_t l2 = list();
+	list_t *l1 = list(1,2,3,2,1,2,4,1,1,4);
+	list_t *l2 = list();
 
 	assert_int_equal(list_count(l1,(void *)0), 0);
 	assert_int_equal(list_count(l1,(void *)1), 4);
@@ -212,11 +212,11 @@ static void test_list_count() {
 }
 
 static void test_list_sort() {
-	list_t l1 = list();
-	list_t l2 = list(1);
-	list_t l3 = list(1,2,3,4);
-	list_t l4 = list(3,2,5,1);
-	list_t l5 = list(1,5,6,9,3,2,9,5,2,3,6,8,7,4,8,5,9,6,3,2,1,5,2,5,6,3,5,8,7,4);
+	list_t *l1 = list();
+	list_t *l2 = list(1);
+	list_t *l3 = list(1,2,3,4);
+	list_t *l4 = list(3,2,5,1);
+	list_t *l5 = list(1,5,6,9,3,2,9,5,2,3,6,8,7,4,8,5,9,6,3,2,1,5,2,5,6,3,5,8,7,4);
 
 	assert_list_equal(list_sort(l1), list());
 	assert_list_equal(list_sort(l2), list(1));
