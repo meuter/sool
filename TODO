@@ -1,3 +1,5 @@
+- write unit tests for the class module
+- change object_t and class_t to be pointer types;
 - finish implementation of the list functions + unit test
 - add osprintf osnprintf ovsprintf ovsnprintf
 - add a dict class

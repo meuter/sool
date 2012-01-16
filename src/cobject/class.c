@@ -7,21 +7,21 @@ struct _class_t {
 	ctor_t ctor;
 	dtor_t dtor;
 	put_t put;
-	cmp_t cmp;
+	equal_t equal;
 };
 
 typedef struct {
 	const class_t *class;
 } object_t;
 
-class_t *class(const size_t size, const char *name, ctor_t ctor, dtor_t dtor, put_t put, cmp_t cmp) {
+class_t *class(const size_t size, const char *name, ctor_t ctor, dtor_t dtor, put_t put, equal_t equal) {
 	class_t *class = malloc(sizeof(class_t));
-	class->size = size;
-	class->name = name;
-	class->ctor = ctor;
-	class->dtor = dtor;
-	class->put  = put;
-	class->cmp  = cmp;
+	class->size  = size;
+	class->name  = name;
+	class->ctor  = ctor;
+	class->dtor  = dtor;
+	class->put   = put;
+	class->equal = equal;
 	return class;
 }
 
@@ -72,6 +72,19 @@ int puto(void *_self) {
 int fputo(void *_self, FILE *stream) {
 	return fputof(_self, stream, NULL);
 }
+
+bool_t equal(void *_self, void *_other) {
+	object_t *self = _self, *other = _other;
+
+	if (self->class != other->class)
+		return FALSE;
+
+	if (self->class->equal)
+		return self->class->equal(_self, _other);
+	else
+		return (_self == _other);
+}
+
 
 const class_t *class_of(void *_self) {
 	object_t *self = _self;

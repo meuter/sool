@@ -1,5 +1,5 @@
 base = Environment()
-base.MergeFlags("-Wall -Wextra ")
+base.MergeFlags("-Wall -Wextra -ggdb -O0")
 base["CC"]           = "gcc -m32"
 base["CCCOMSTR"]     = "   CC ${TARGET}"
 base["ARCOMSTR"]     = "   AR ${TARGET}"

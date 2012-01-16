@@ -13,7 +13,7 @@ struct _list_t {
 };
 
 
-static void List_ctor(void *_self, va_list *args) {
+static void list_ctor(void *_self, va_list *args) {
     list_t self = _self;
     int i, n;
 
@@ -26,14 +26,14 @@ static void List_ctor(void *_self, va_list *args) {
     	list_append(self, va_arg(*args, void *));
 }
 
-static void List_dtor(void *_self) {
+static void list_dtor(void *_self) {
 	list_t self = _self;
 	while (!list_is_empty(self))
 		list_remove_first(self);
 	free(self->dummy);
 }
 
-static int List_put(void *_self, FILE *stream, const char *format) {
+static int list_put(void *_self, FILE *stream, const char *format) {
 	int result = 0;
 	list_t self = _self;
 	item_t i;
@@ -50,21 +50,36 @@ static int List_put(void *_self, FILE *stream, const char *format) {
 	return result;
 }
 
-//static int List_cmp(void *_self, void *_other) {
-//	list_t self = _self, *other = _other;
-//	item_t i, *j;
-//#warning not implemented
-//	return 0;
-//}
+static bool_t list_equal(void *_self, void *_other) {
+	list_t self = _self, other = _other;
+	item_t i, j;
+
+	if (self == other)
+		return TRUE;
+	if (list_length(self) != list_length(other))
+		return FALSE;
+
+	for (i = list_begin(self), j = list_begin(other); i != list_end(self); i = item_next(i), j = item_next(j)) {
+		if (item_get(i) != item_get(j))
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
 
 const class_t *List() {
 	static const class_t *result = NULL;
-	return result ? result : class(sizeof(list_t), __FUNCTION__, List_ctor, List_dtor, List_put, NULL);
+	return result ? result : (result = class(sizeof(list_t), __FUNCTION__, list_ctor, list_dtor, list_put, list_equal));
 }
 
 
 //list_t list_clone(list_t self) {
 //	return list_slice(self, 0, list_length(self));
+//}
+
+//list_t list_copy(list_t self, item_t from, item_t to) {
+//
 //}
 
 //list_t list_slice(list_t self, int from, int to) {

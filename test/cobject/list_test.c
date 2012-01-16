@@ -34,6 +34,25 @@ static void test_list_int() {
 }
 
 
+static void test_list_equal() {
+	list_t l1 = list(1,2,3,4);
+	list_t l2 = list(1,2,3,4);
+	list_t l3 = list(1,2,3);
+	list_t l4 = list(3,2,1);
+
+
+	assert_int_equal(equal(l1, l3), FALSE);
+	assert_int_equal(equal(l1, l1), TRUE);
+	assert_int_equal(equal(l1, l2), TRUE);
+	assert_int_equal(equal(l3, l4), FALSE);
+	delete(l1);
+	delete(l2);
+	delete(l3);
+	delete(l4);
+
+}
+
+
 static void test_list_get() {
 	list_t l = list(0,1,2,3,4,5,6,7,8,9);
 	int j;
@@ -55,6 +74,7 @@ int main() {
 	unit_test_t all_tests[] = {
 		unit_test(test_empty_list),
 		unit_test(test_list_int),
+		unit_test(test_list_equal),
 		unit_test(test_list_get),
 	};
 	return run_tests(all_tests);
