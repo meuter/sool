@@ -46,11 +46,7 @@ static void test_list_equal() {
 	assert_true(equal(l1, l2));
 	assert_false(equal(l3, l4));
 
-	delete(l1);
-	delete(l2);
-	delete(l3);
-	delete(l4);
-
+	delete(l1,l2,l3,l4);
 }
 
 static void test_list_clone() {
@@ -89,11 +85,10 @@ static void test_list_clone_empty() {
 }
 
 
-#define assert_list_equal(l1, l2) do {\
-		assert_true(equal(l1,l2));\
-		delete(l1);\
-		delete(l2);\
-	} while(0);
+void assert_list_equal(list_t l1, list_t l2) {
+	assert_true(equal(l1,l2));
+	delete(l1, l2);
+}
 
 static void test_list_slice() {
 	list_t orig = list(1,2,3,4,5,6,7,8,9);

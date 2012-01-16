@@ -1,5 +1,6 @@
 #include <cobject/class.h>
 #include <malloc.h>
+#include <stdarg.h>
 
 struct _class_t {
 	size_t size;
@@ -43,13 +44,17 @@ void *new(const class_t *class, ...) {
 	return object;
 }
 
-void delete(void *self) {
-	object_t *object = self;
+void _delete  (int n, ...) {
+	va_list args;
 
-	if (object->class->dtor)
-		object->class->dtor(self);
-
-	free(self);
+	va_start(args, n);
+	while (n--) {
+		object_t *object = va_arg(args, object_t *);
+		if (object->class->dtor)
+			object->class->dtor(object);
+		free(object);
+	}
+	va_end(args);
 }
 
 int fputof(void *_self, FILE *stream, const char *format) {

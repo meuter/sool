@@ -1,6 +1,8 @@
 #ifndef __ARGS_H__
 #define __ARGS_H__
 
+#include <stdarg.h>
+
 #define __VA_N_ARGS__(args...) \
          __VA_COUNT_ARGS__(64,##args,63,62,61,60,                   \
          59,58,57,56,55,54,53,52,51,50, \

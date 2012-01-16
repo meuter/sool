@@ -28,9 +28,7 @@ int main() {
 	}
 
 	printf("x = %d / y = %d / z = %d\n", x, y, z);
-	delete(l1);
-	delete(l2);
-	delete(l3);
+	delete(l1, l2, l3);
 	return EXIT_SUCCESS;
 }
 
