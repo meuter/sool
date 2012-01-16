@@ -90,7 +90,7 @@ list_t list_copy(list_t self, item_t from, item_t to) {
 }
 
 list_t list_slice(list_t self, int from, int to) {
-	return list_copy(self, list_get(from), list_get(to));
+	return list_copy(self, list_get(self, from), list_get(self, to));
 }
 
 //list_t list_join(list_t self, ...) {

@@ -1,5 +1,6 @@
 #include <test.h>
 #include <cobject/list.h>
+#include <cobject/io.h>
 
 static void test_empty_list() {
 	list_t empty = list();
@@ -74,7 +75,6 @@ static void test_list_clone() {
 static void test_list_clone_empty() {
 	list_t orig = list();
 	list_t clone = list_clone(orig);
-	item_t i;
 
 	assert_false(orig == NULL);
 	assert_false(orig == clone);
@@ -86,6 +86,24 @@ static void test_list_clone_empty() {
 	assert_true(list_is_empty(clone));
 
 	delete(clone);
+}
+
+
+#define assert_list_equal(l1, l2) do {\
+		assert_true(equal(l1,l2));\
+		delete(l1);\
+		delete(l2);\
+	} while(0);
+
+static void test_list_slice() {
+	list_t orig = list(1,2,3,4,5,6,7,8,9);
+
+	assert_list_equal(list_slice(orig,0,2), list(1,2));
+	assert_list_equal(list_slice(orig,1,3), list(2,3));
+	assert_list_equal(list_slice(orig,1,-1), list(2,3,4,5,6,7,8));
+	assert_list_equal(list_slice(orig,0,10), list(1,2,3,4,5,6,7,8,9));
+
+	delete(orig);
 }
 
 static void test_list_get() {
@@ -102,6 +120,8 @@ static void test_list_get() {
 		assert_int_equal((int)item_get(list_get(l,j)), j+10);
 	assert_true(list_get(l,-11) == list_end(l));
 
+	assert_int_equal((int)item_get(list_get(l,-1)), 9);
+
 	delete(l);
 }
 
@@ -112,6 +132,7 @@ int main() {
 		unit_test(test_list_equal),
 		unit_test(test_list_clone),
 		unit_test(test_list_clone_empty),
+		unit_test(test_list_slice),
 		unit_test(test_list_get),
 	};
 	return run_tests(all_tests);
