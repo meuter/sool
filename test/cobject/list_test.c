@@ -41,10 +41,10 @@ static void test_list_equal() {
 	list_t l3 = list(1,2,3);
 	list_t l4 = list(3,2,1);
 
-	assert_false(equal(l1, l3));
-	assert_true(equal(l1, l1));
-	assert_true(equal(l1, l2));
-	assert_false(equal(l3, l4));
+	assert_false(equal(l1,l3));
+	assert_true(equal(l1,l1));
+	assert_true(equal(l1,l2));
+	assert_false(equal(l3,l4));
 
 	delete(l1,l2,l3,l4);
 }
@@ -173,6 +173,28 @@ static void test_list_join() {
 	delete(l1,l2,l3);
 }
 
+static void test_list_count() {
+	list_t l1 = list(1,2,3,2,1,2,4,1,1,4);
+	list_t l2 = list();
+
+	assert_int_equal(list_count(l1,(void *)0), 0);
+	assert_int_equal(list_count(l1,(void *)1), 4);
+	assert_int_equal(list_count(l1,(void *)2), 3);
+	assert_int_equal(list_count(l1,(void *)3), 1);
+	assert_int_equal(list_count(l1,(void *)4), 2);
+	assert_int_equal(list_count(l1,(void *)5), 0);
+
+	assert_int_equal(list_count(l2,(void *)0), 0);
+	assert_int_equal(list_count(l2,(void *)1), 0);
+	assert_int_equal(list_count(l2,(void *)2), 0);
+	assert_int_equal(list_count(l2,(void *)3), 0);
+	assert_int_equal(list_count(l2,(void *)4), 0);
+	assert_int_equal(list_count(l2,(void *)5), 0);
+
+	delete(l1);
+
+}
+
 int main() {
 	unit_test_t all_tests[] = {
 		unit_test(test_empty_list),
@@ -186,6 +208,7 @@ int main() {
 		unit_test(test_list_find),
 		unit_test(test_list_reverse),
 		unit_test(test_list_join),
+		unit_test(test_list_count),
 	};
 	return run_tests(all_tests);
 }

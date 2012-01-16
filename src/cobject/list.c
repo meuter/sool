@@ -129,10 +129,13 @@ bool_t list_is_empty(list_t self) {
 	return (self->length == 0);
 }
 
-//int list_count(list_t self, void *value) {
-//#warning not implemented
-//	return 0;
-//}
+int list_count(list_t self, void *value) {
+	item_t i;
+	int result = 0;
+	list_forall(i, self)
+		result += (item_get(i) == value) ? 1 : 0;
+	return result;
+}
 
 int list_length(list_t self) {
 	return self->length;
