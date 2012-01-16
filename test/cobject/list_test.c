@@ -145,6 +145,16 @@ static void test_list_find() {
 	delete(l);
 }
 
+static void test_list_reverse() {
+	list_t l1 = list(1,2,3,4);
+	list_t l2 = list();
+
+	assert_list_equal(list_reverse(l1), list(4,3,2,1));
+	assert_list_equal(list_reverse(l2), list());
+
+	delete(l1, l2);
+}
+
 int main() {
 	unit_test_t all_tests[] = {
 		unit_test(test_empty_list),
@@ -156,6 +166,7 @@ int main() {
 		unit_test(test_list_get),
 		unit_test(test_list_clear),
 		unit_test(test_list_find),
+		unit_test(test_list_reverse),
 	};
 	return run_tests(all_tests);
 }

@@ -103,10 +103,14 @@ list_t list_slice(list_t self, int from, int to) {
 //	return NULL;
 //}
 //
-//list_t list_reverse(list_t self) {
-//#warning not implemented
-//	return NULL;
-//}
+
+list_t list_reverse(list_t self) {
+	list_t result = list();
+	item_t i;
+	list_forall(i, self)
+		list_prepend(result, item_get(i));
+	return result;
+}
 
 bool_t list_is_empty(list_t self) {
 	return (self->length == 0);
@@ -163,10 +167,18 @@ item_t list_find(list_t self, void *value) {
 //
 //}
 
-//item_t list_prepend(list_t self) {
-//#warning not implemented
-//	return NULL;
-//}
+item_t list_prepend(list_t self, void *value) {
+	item_t new_item = malloc(sizeof(item_t));
+
+	new_item->next = self->dummy->next;
+	new_item->next->previous = new_item;
+	new_item->value = value;
+	new_item->previous = self->dummy;
+	new_item->previous->next = new_item;
+
+	self->length++;
+	return new_item;
+}
 
 item_t list_append(list_t self, void *value) {
 	item_t new_item = malloc(sizeof(item_t));
