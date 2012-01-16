@@ -21,6 +21,8 @@ cmockery_env.Library("cmockery", Split("test/cmockery.c"))
 test_env = base.Clone()
 test_env.MergeFlags("-Iinclude -Itest -lcobject -lcmockery -L.")
 test_env.Program("test/list_test", Split("test/cobject/list_test.c"))
+test_env.Program("test/string_test", Split("test/cobject/string_test.c"))
+
 
 
  

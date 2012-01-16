@@ -177,8 +177,10 @@ item_t *list_get(list_t *self, int i) {
 	return j;
 }
 
-void list_set(list_t *self, int i, void *value) {
-	item_set(list_get(self, i), value);
+item_t *list_set(list_t *self, int i, void *value) {
+	item_t *result = list_get(self, i);
+	item_set(result, value);
+	return result;
 }
 
 item_t *list_find(list_t *self, void *value) {
@@ -272,8 +274,8 @@ void *item_get(item_t *self) {
 	return self->value;
 }
 
-void item_set(item_t *self, void *value) {
-	self->value = value;
+void *item_set(item_t *self, void *value) {
+	return (self->value = value);
 }
 
 item_t *item_next(item_t *self) {

@@ -28,7 +28,7 @@ int      list_count        (list_t *self, void *value);
 int      list_length       (list_t *self);
 void     list_clear        (list_t *self);
 item_t  *list_get          (list_t *self, int i);
-void     list_set          (list_t *self, int i, void *value);
+item_t  *list_set          (list_t *self, int i, void *value);
 item_t  *list_find         (list_t *self, void *value);
 item_t  *list_rfind        (list_t *self, void *value);
 item_t  *list_insert_before(list_t *self, item_t *item, void *value);
@@ -43,7 +43,7 @@ void    *list_remove       (list_t *self, item_t *to_remove);
 void    *list_remove_first (list_t *self);
 void    *list_remove_last  (list_t *self);
 void    *item_get          (item_t *self);
-void     item_set          (item_t *self, void *value);
+void    *item_set          (item_t *self, void *value);
 item_t  *item_next         (item_t *self);
 item_t  *item_previous     (item_t *self);
 
