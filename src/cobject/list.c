@@ -179,9 +179,14 @@ item_t list_find(list_t self, void *value) {
 	return i;
 }
 
-//item_t list_rfind(list_t self, void *value) {
-//
-//}
+item_t list_rfind(list_t self, void *value) {
+	item_t i;
+	for (i = list_rbegin(self); i != list_rend(self); i = item_previous(i)) {
+		if (item_get(i) == value)
+			break;
+	}
+	return i;
+}
 
 item_t list_prepend(list_t self, void *value) {
 	item_t new_item = malloc(sizeof(item_t));

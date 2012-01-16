@@ -145,6 +145,23 @@ static void test_list_find() {
 	delete(l);
 }
 
+static void test_list_rfind() {
+	list_t l = list(0,1,2,3,4,5,6,7,8,9,1,10);
+
+	assert_true(list_rfind(l,(void *)11) == list_rend(l));
+	assert_false(list_rfind(l,(void *)1) == list_rend(l));
+	assert_false(list_find(l,(void *)1) == list_rfind(l,(void*)1));
+	assert_true(list_find(l,(void *)5) == list_rfind(l,(void*)5));
+
+	assert_true(item_next(list_find(l,(void *)1)) == list_find(l,(void*)2));
+	assert_true(item_previous(list_find(l,(void *)1)) == list_find(l,(void*)0));
+
+	assert_true(item_next(list_rfind(l,(void *)1)) == list_rfind(l,(void*)10));
+	assert_true(item_previous(list_rfind(l,(void *)1)) == list_rfind(l,(void*)9));
+
+	delete(l);
+}
+
 static void test_list_reverse() {
 	list_t l1 = list(1,2,3,4);
 	list_t l2 = list();
@@ -206,6 +223,7 @@ int main() {
 		unit_test(test_list_get),
 		unit_test(test_list_clear),
 		unit_test(test_list_find),
+		unit_test(test_list_rfind),
 		unit_test(test_list_reverse),
 		unit_test(test_list_join),
 		unit_test(test_list_count),
