@@ -73,13 +73,20 @@ const class_t *List() {
 	return result ? result : (result = class(sizeof(list_t), __FUNCTION__, list_ctor, list_dtor, list_put, list_equal));
 }
 
-
-//list_t list_clone(list_t self) {
-//	return list_slice(self, 0, list_length(self));
-//}
+list_t list_clone(list_t self) {
+	return list_copy(self, list_begin(self), list_end(self));
+}
 
 list_t list_copy(list_t self, item_t from, item_t to) {
+	(void)self;
+	list_t result = list();
+	item_t i = from;
+	while (i != to) {
+		list_append(result, item_get(i));
+		i = item_next(i);
+	}
 
+	return result;
 }
 
 //list_t list_slice(list_t self, int from, int to) {

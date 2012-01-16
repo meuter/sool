@@ -40,11 +40,11 @@ static void test_list_equal() {
 	list_t l3 = list(1,2,3);
 	list_t l4 = list(3,2,1);
 
+	assert_false(equal(l1, l3));
+	assert_true(equal(l1, l1));
+	assert_true(equal(l1, l2));
+	assert_false(equal(l3, l4));
 
-	assert_int_equal(equal(l1, l3), FALSE);
-	assert_int_equal(equal(l1, l1), TRUE);
-	assert_int_equal(equal(l1, l2), TRUE);
-	assert_int_equal(equal(l3, l4), FALSE);
 	delete(l1);
 	delete(l2);
 	delete(l3);
@@ -52,6 +52,41 @@ static void test_list_equal() {
 
 }
 
+static void test_list_clone() {
+	list_t orig = list(1,2,3,4,5,6,7,8,9);
+	list_t clone = list_clone(orig);
+	item_t i;
+	int j = 1;
+
+	assert_false(orig == NULL);
+	assert_false(orig == clone);
+	assert_true(equal(orig, clone));
+
+	delete(orig);
+
+	assert_int_equal(list_length(clone), 9);
+	list_forall(i, orig)
+		assert_int_equal((int)item_get(i), j++);
+
+	delete(clone);
+}
+
+static void test_list_clone_empty() {
+	list_t orig = list();
+	list_t clone = list_clone(orig);
+	item_t i;
+
+	assert_false(orig == NULL);
+	assert_false(orig == clone);
+	assert_true(equal(orig, clone));
+
+	delete(orig);
+
+	assert_int_equal(list_length(clone), 0);
+	assert_true(list_is_empty(clone));
+
+	delete(clone);
+}
 
 static void test_list_get() {
 	list_t l = list(0,1,2,3,4,5,6,7,8,9);
@@ -75,6 +110,8 @@ int main() {
 		unit_test(test_empty_list),
 		unit_test(test_list_int),
 		unit_test(test_list_equal),
+		unit_test(test_list_clone),
+		unit_test(test_list_clone_empty),
 		unit_test(test_list_get),
 	};
 	return run_tests(all_tests);

@@ -17,6 +17,7 @@ typedef struct _item_t *item_t;
 const class_t *List();     /* new(List(), n, x1, x2, ..., xn) */
 
 list_t  list_clone        (list_t self);
+list_t  list_clear        (list_t self);
 list_t  list_copy         (list_t self, item_t from, item_t to);
 list_t  list_slice        (list_t self, int from, int to);
 list_t  list_join         (list_t self, ...);
