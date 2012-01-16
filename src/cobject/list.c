@@ -118,6 +118,12 @@ bool_t list_is_empty(list_t self) {
 //}
 
 
+void list_clear(list_t self) {
+	while (!list_is_empty(self))
+		list_remove_first(self);
+}
+
+
 int list_length(list_t self) {
 	return self->length;
 }

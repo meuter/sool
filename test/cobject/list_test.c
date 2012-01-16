@@ -120,6 +120,18 @@ static void test_list_get() {
 	delete(l);
 }
 
+static void test_list_clear() {
+	list_t l = list(1,2,3);
+
+	list_clear(l);
+	assert_true(list_is_empty(l));
+	assert_int_equal(list_length(l), 0);
+	assert_true(list_begin(l) == list_end(l));
+	assert_true(list_rbegin(l) == list_rend(l));
+
+	delete(l);
+}
+
 int main() {
 	unit_test_t all_tests[] = {
 		unit_test(test_empty_list),
@@ -129,6 +141,7 @@ int main() {
 		unit_test(test_list_clone_empty),
 		unit_test(test_list_slice),
 		unit_test(test_list_get),
+		unit_test(test_list_clear),
 	};
 	return run_tests(all_tests);
 }
