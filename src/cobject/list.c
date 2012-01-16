@@ -89,11 +89,10 @@ list_t list_copy(list_t self, item_t from, item_t to) {
 	return result;
 }
 
-//list_t list_slice(list_t self, int from, int to) {
-//#warning not implemented
-//	return NULL;
-//}
-//
+list_t list_slice(list_t self, int from, int to) {
+	return list_copy(self, list_get(from), list_get(to));
+}
+
 //list_t list_join(list_t self, ...) {
 //#warning not implemented
 //	return NULL;
