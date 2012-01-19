@@ -9,7 +9,7 @@ struct _string_t {
 static void string_ctor(void *_self, va_list *args) {
 	string_t *self = _self;
 	self->length = va_arg(*args, int);
-	self->value  = strdup(va_arg(*args, char *));
+	self->value  = strndup(va_arg(*args, char *), self->length);
 }
 
 static void string_dtor(void *_self) {
@@ -20,7 +20,7 @@ static void string_dtor(void *_self) {
 static int string_put(void *_self, FILE *stream, const char *format) {
 	(void)format;
 	string_t *self = _self;
-	return fprintf(stream, "%s", self->value);
+	return fprintf(stream, "\"%s\"", self->value);
 }
 
 static bool_t string_equal(void *_self, void *_other) {
@@ -43,4 +43,18 @@ int string_length(string_t *self) {
 
 string_t *string_clone(string_t *self) {
 	return new(String(), self->length, self->value);
+}
+
+list_t *string_split(string_t *self, const char *delimiter) {
+	list_t *result = list();
+	char *current = string_cstr(self), *next;
+	int delimiter_length = strlen(delimiter);
+
+	while ( (next = strstr(current, delimiter)) != NULL ) {
+		list_append(result, new(String(), next-current, current));
+		current = next + delimiter_length;
+	}
+	list_append(result, string(current));
+
+	return result;
 }

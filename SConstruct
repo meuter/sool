@@ -24,24 +24,24 @@ base["RANLIBCOMSTR"] = "   RL    ${TARGET}"
 
 root = base.Clone()
 root.MergeFlags("-Wall -Wextra -O3")
+root.MergeFlags("-ggdb -O0")
 
-cobject_env = root.Clone();
-cobject_env.MergeFlags("-Iinclude")
-cobject_env.Library("cobject", Glob("src/cobject/*.c"))
+sool_env = root.Clone();
+sool_env.MergeFlags("-Iinclude")
+sool_env.Library("sool", Glob("src/sool/*.c"))
 
 main_env = root.Clone()
-main_env.MergeFlags("-Iinclude/ -lcobject -L.")
+main_env.MergeFlags("-Iinclude/ -lsool -L.")
 main_env.Program("main", Split("src/main.c"))
  
-Default(Split("main libcobject.a"))
+Default(Split("main libsool.a"))
  
 cmockery_env = base.Clone()
 cmockery_env.MergeFlags("-Itest -D_GNU_SOURCE")
 cmockery_env.Library("test/cmockery", Split("test/cmockery.c"))
 
 test_env = root.Clone()
-test_env.MergeFlags("-Iinclude -Itest -lcobject -lcmockery -Ltest -L.")
-test_env.UnitTest("test/string_test", Split("test/cobject/string_test.c"))
-test_env.UnitTest("test/list_test", Split("test/cobject/list_test.c"))
+test_env.MergeFlags("-Iinclude -Itest -lsool -lcmockery -Ltest -L.")
+test_env.UnitTest("test/string_test", Split("test/sool/string_test.c"))
+test_env.UnitTest("test/list_test", Split("test/sool/list_test.c"))
 
- 

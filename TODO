@@ -7,5 +7,6 @@
 - add a set class
 - allow to pass a custom comparator when sorting, finding element in a container (list)
 - make the concept of iterator generic to all container type and define a forall macro
-- change equal back to cmp in the class 
+- change equal back to cmp in the class
+- try to statically enforce type checking on constructor parameter 
 

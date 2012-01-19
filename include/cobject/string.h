@@ -20,7 +20,7 @@ string_t *_string_join     (int n, ...);
 string_t  *string_join_list(list_t *list);
 int        string_length   (string_t *self);
 char      *string_cstr     (string_t *self);
-list_t    *string_split    (string_t *self, char separator);
+list_t    *string_split    (string_t *self, const char *delimiter);
 int       *string_find     (string_t *self, string_t *substr);
 char       string_get      (string_t *self, int i);
 char       string_set      (string_t *self, int i, char c);
