@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <cobject/args.h>
-#include <cobject/bool.h>
+#include <sool/args.h>
+#include <sool/bool.h>
 
 typedef void   (*ctor_t)  (void *self, va_list *args);
 typedef void   (*dtor_t)  (void *self);

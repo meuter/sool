@@ -1,2 +1,17 @@
+libsool.a
+main
+src/main.o
+src/sool/class.o
+src/sool/io.o
+src/sool/list.o
+src/sool/string.o
+test/cmockery.o
+test/libcmockery.a
+test/list_test
+test/list_test.res
+test/sool/list_test.o
+test/sool/string_test.o
+test/string_test
+test/string_test.res
 .pydevproject
 .sconsign.dblite

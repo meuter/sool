@@ -1,6 +1,6 @@
-#include <cobject/class.h>
-#include <cobject/io.h>
-#include <cobject/bool.h>
+#include <sool/class.h>
+#include <sool/io.h>
+#include <sool/bool.h>
 #include <string.h>
 #include <assert.h>
 

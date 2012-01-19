@@ -1,7 +1,7 @@
 #include <test.h>
 
-#include <cobject/io.h>
-#include <cobject/string.h>
+#include <sool/io.h>
+#include <sool/string.h>
 
 static void test_constructor() {
 	string_t *s = string("hello world");

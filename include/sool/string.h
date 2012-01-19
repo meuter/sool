@@ -1,9 +1,9 @@
 #ifndef __STRING_H__
 #define __STRING_H__
 
-#include <cobject/class.h>
-#include <cobject/args.h>
-#include <cobject/list.h>
+#include <sool/class.h>
+#include <sool/args.h>
+#include <sool/list.h>
 #include <string.h>
 
 struct _string_t;

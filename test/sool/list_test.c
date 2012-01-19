@@ -1,6 +1,6 @@
 #include <test.h>
-#include <cobject/list.h>
-#include <cobject/io.h>
+#include <sool/list.h>
+#include <sool/io.h>
 
 static void test_empty_list() {
 	list_t *empty = list();

@@ -1,9 +1,9 @@
 #ifndef __LIST_H__
 #define __LIST_H__
 
-#include <cobject/class.h>
-#include <cobject/args.h>
-#include <cobject/bool.h>
+#include <sool/class.h>
+#include <sool/args.h>
+#include <sool/bool.h>
 
 struct _list_t;
 typedef struct _list_t list_t;

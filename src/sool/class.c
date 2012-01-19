@@ -1,4 +1,4 @@
-#include <cobject/class.h>
+#include <sool/class.h>
 #include <malloc.h>
 #include <stdarg.h>
 

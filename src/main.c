@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <cobject/io.h>
-#include <cobject/string.h>
+#include <sool/io.h>
+#include <sool/string.h>
 
 int main() {
 
-	string_t *s = string("hello, this is a test, from the cobject lib");
+	string_t *s = string("hello, this is a test, from the sool lib");
 	list_t *l = string_split(s, ", ");
 
 	oprintf("l = %O{%O}\n", l);

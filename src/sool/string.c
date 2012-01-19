@@ -1,4 +1,4 @@
-#include <cobject/string.h>
+#include <sool/string.h>
 
 struct _string_t {
 	const class_t *class;

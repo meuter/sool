@@ -1,5 +1,5 @@
-#include <cobject/list.h>
-#include <cobject/io.h>
+#include <sool/list.h>
+#include <sool/io.h>
 
 struct _item_t {
 	void *value;
