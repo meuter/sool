@@ -1,28 +1,47 @@
-base = Environment()
-base.MergeFlags("-Wall -Wextra -ggdb -O0")
-base["CC"]           = "gcc -m32"
-base["CCCOMSTR"]     = "   CC ${TARGET}"
-base["ARCOMSTR"]     = "   AR ${TARGET}"
-base["LINKCOMSTR"]   = "   LD ${TARGET}"
-base["RANLIBCOMSTR"] = "   RL ${TARGET}"
+Alias("all", ".")
+CacheDir("/tmp/")
+Decider('MD5-timestamp')
+SetOption('max_drift', 1)
+SetOption('implicit_cache', 1)
+SourceCode(".", None)
+SetOption('num_jobs', 3)
 
-cobject_env = base.Clone();
+def UnitTest(self, target, source):
+    self.Program(target, source)
+    self.Command(target + ".res", target, self.Action(target + " > " + target.strip() + ".res", "   TEST  " + target))
+    
+base = Environment()
+AddMethod(Environment, UnitTest)
+base["CC"]           = "gcc -m32"
+base["CCCOMSTR"]     = "   CC    ${TARGET}"
+base["SHCCCOMSTR"]   = "   CC    ${TARGET}"
+base["SHLINKCOMSTR"] = "   LD    ${TARGET}"
+base["ARCOMSTR"]     = "   AR    ${TARGET}"
+base["LINKCOMSTR"]   = "   LD    ${TARGET}"
+base["RANLIBCOMSTR"] = "   RL    ${TARGET}"
+
+########################################################################################################
+
+root = base.Clone()
+root.MergeFlags("-Wall -Wextra -O3")
+
+cobject_env = root.Clone();
 cobject_env.MergeFlags("-Iinclude")
 cobject_env.Library("cobject", Glob("src/cobject/*.c"))
 
-main_env = base.Clone()
+main_env = root.Clone()
 main_env.MergeFlags("-Iinclude/ -lcobject -L.")
 main_env.Program("main", Split("src/main.c"))
  
+Default(Split("main libcobject.a"))
+ 
 cmockery_env = base.Clone()
 cmockery_env.MergeFlags("-Itest -D_GNU_SOURCE")
-cmockery_env.Library("cmockery", Split("test/cmockery.c"))
+cmockery_env.Library("test/cmockery", Split("test/cmockery.c"))
 
-test_env = base.Clone()
-test_env.MergeFlags("-Iinclude -Itest -lcobject -lcmockery -L.")
-test_env.Program("test/list_test", Split("test/cobject/list_test.c"))
-test_env.Program("test/string_test", Split("test/cobject/string_test.c"))
-
-
+test_env = root.Clone()
+test_env.MergeFlags("-Iinclude -Itest -lcobject -lcmockery -Ltest -L.")
+test_env.UnitTest("test/string_test", Split("test/cobject/string_test.c"))
+test_env.UnitTest("test/list_test", Split("test/cobject/list_test.c"))
 
  
