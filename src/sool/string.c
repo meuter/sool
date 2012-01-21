@@ -23,14 +23,22 @@ static int string_put(void *_self, FILE *stream, const char *format) {
 	return fprintf(stream, "\"%s\"", self->value);
 }
 
-static int string_equal(void *_self, void *_other) {
+static int string_cmp(void *_self, void *_other) {
 	string_t *self = _self, *other = _other;
 	return strcmp(self->value, other->value);
 }
 
 const class_t *String() {
 	static const class_t *result = NULL;
-	return result ? result : (result = class(sizeof(string_t), __FUNCTION__, string_ctor, string_dtor, string_put, string_equal));
+	if (result == NULL) {
+		result = new(Class(), "String", Class(), sizeof(string_t),
+			ctor, string_ctor,
+			dtor, string_dtor,
+			put, string_put,
+			cmp, string_cmp
+		);
+	}
+	return result;
 }
 
 string_t *string_clone(string_t *self) {

@@ -17,15 +17,29 @@ typedef struct _class_t class_t;
 
 #define delete(args...) _delete(__VA_N_ARGS__(args), ##args)
 
-class_t *class   (const size_t size, const char *name, ctor_t ctor, dtor_t dtor, put_t put, cmp_t cmp);
-void    *new     (const class_t *class, ...);
-void    _delete  (int n, ...);
-int      putof   (void *self, const char *format);
-int      fputof  (void *self, FILE *stream, const char *format);
-int      puto    (void *self);
-int      fputo   (void *self, FILE *stream);
-int      cmp     (void *self, void *other);
-bool_t   equal   (void *self, void *other);
+class_t *Class(); /* new(Class(), "DerivedClass", SuperClass(), sizeof(derived_t),
+				 		 ctor, derived_ctor,
+			 			 dtor, derived_dtor,
+		 				 put,  derived_put,
+						 cmp,  derived_cmp
+					 );
+                   */
+
+void  *new     (const class_t *class, ...);
+void  _delete  (int n, ...);
+
+void   ctor(void *self, va_list *args);
+void   dtor(void *self);
+int    put (void *self, FILE *stream, const char *format);
+int    cmp (void *self, void *other);
+
+int    putof   (void *self, const char *format);
+int    fputof  (void *self, FILE *stream, const char *format);
+int    puto    (void *self);
+int    fputo   (void *self, FILE *stream);
+
+bool_t equal   (void *self, void *other);
+
 
 
 const class_t *class_of(void *self);

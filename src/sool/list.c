@@ -75,7 +75,15 @@ static int list_cmp(void *_self, void *_other) {
 
 const class_t *List() {
 	static const class_t *result = NULL;
-	return result ? result : (result = class(sizeof(list_t), __FUNCTION__, list_ctor, list_dtor, list_put, list_cmp));
+	if (result == NULL) {
+		result = new(Class(), __FUNCTION__, Class(), sizeof(list_t),
+			ctor, list_ctor,
+			dtor, list_dtor,
+			put, list_put,
+			cmp, list_cmp
+		);
+	}
+	return result;
 }
 
 list_t *list_clone(list_t *self) {
