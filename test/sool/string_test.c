@@ -33,10 +33,24 @@ static void test_clone() {
 	delete(t);
 }
 
+
+static void test_find() {
+	string_t *s = string("hello world"), *t = string("lo");
+	string_t *u = string("foo"), *v = string("he"), *w = string("rld");
+
+	assert_int_equal(string_find(s, u), -1);
+	assert_int_equal(string_find(s, t), 3);
+	assert_int_equal(string_find(s, v), 0);
+	assert_int_equal(string_find(s, w), 8);
+
+	delete(s, t, u, v, w);
+}
+
 int main() {
 	unit_test_t all_tests[] = {
 		unit_test(test_constructor),
 		unit_test(test_clone),
+		unit_test(test_find),
 	};
 
 	return run_tests(all_tests);

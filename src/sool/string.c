@@ -67,7 +67,14 @@ list_t *string_split(string_t *self, const char *delimiter) {
 	return result;
 }
 
-// TODO add string_find
+int string_find(string_t *self, string_t *substr) {
+	char *tmp = strstr(self->value, substr->value);
+	return (tmp == NULL ? -1 : tmp - self->value);
+}
+
+
+char       string_get      (string_t *self, int i);
+char       string_set      (string_t *self, int i, char c);
 
 // TODO add string get
 
