@@ -33,16 +33,24 @@ const class_t *String() {
 	return result ? result : (result = class(sizeof(string_t), __FUNCTION__, string_ctor, string_dtor, string_put, string_equal));
 }
 
-char *string_cstr(string_t *self) {
-	return self->value;
+string_t *string_clone(string_t *self) {
+	return new(String(), self->length, self->value);
 }
+
+// TODO add string_slice
+
+// TODO add string_join
+
+// TODO add string_join_list
+
+//
 
 int string_length(string_t *self) {
 	return self->length;
 }
 
-string_t *string_clone(string_t *self) {
-	return new(String(), self->length, self->value);
+char *string_cstr(string_t *self) {
+	return self->value;
 }
 
 list_t *string_split(string_t *self, const char *delimiter) {
@@ -58,3 +66,9 @@ list_t *string_split(string_t *self, const char *delimiter) {
 
 	return result;
 }
+
+// TODO add string_find
+
+// TODO add string get
+
+// TODO add string set

@@ -2,6 +2,8 @@
 #include <sool/list.h>
 #include <sool/io.h>
 
+// TODO check for memory leaks in the unit tests of list (use memwatch??)
+
 static void test_empty_list() {
 	list_t *empty = list();
 

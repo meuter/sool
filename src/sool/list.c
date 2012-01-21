@@ -1,6 +1,8 @@
 #include <sool/list.h>
 #include <sool/io.h>
 
+// TODO make an iterable class for item_t
+
 struct _item_t {
 	void *value;
 	item_t *next, *previous;
@@ -50,6 +52,8 @@ static int list_put(void *_self, FILE *stream, const char *format) {
 	return result;
 }
 
+
+// TODO need to find a way to compare elements other than identity
 static bool_t list_equal(void *_self, void *_other) {
 	list_t *self = _self, *other = _other;
 	item_t *i, *j;

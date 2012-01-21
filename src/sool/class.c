@@ -2,13 +2,17 @@
 #include <malloc.h>
 #include <stdarg.h>
 
+// TODO write unit tests for the class module
+
 struct _class_t {
+	// TODO add support for super class
 	size_t size;
 	const char *name;
-	ctor_t ctor;
-	dtor_t dtor;
-	put_t put;
-	equal_t equal;
+	ctor_t ctor; // TODO change ctor to __init__
+	dtor_t dtor; // TODO change dtor to __del__
+	put_t put; // TODO change put to __repr__ and __str__
+	equal_t equal; // TODO change equal to __cmp__
+	// TODO add clone method
 };
 
 typedef struct {
@@ -26,6 +30,8 @@ class_t *class(const size_t size, const char *name, ctor_t ctor, dtor_t dtor, pu
 	return class;
 }
 
+
+// TODO try to find a way to enfore type checking on variable arg constructors
 void *new(const class_t *class, ...) {
 	object_t *object;
 

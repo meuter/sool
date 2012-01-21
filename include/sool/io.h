@@ -9,4 +9,6 @@ int ofprintf(FILE *stream, const char *format, ...);
 int ovprintf(const char *format, va_list ap);
 int ovfprintf(FILE *stream, const char *format, va_list ap);
 
+// TODO add osprintf osnprintf ovsprintf ovsnprintf
+
 #endif
