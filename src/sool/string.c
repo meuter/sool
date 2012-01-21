@@ -72,10 +72,14 @@ int string_find(string_t *self, string_t *substr) {
 	return (tmp == NULL ? -1 : tmp - self->value);
 }
 
+static int string_index(string_t *self, int i) {
+	return i < 0 ? self->length + i : i;
+}
 
-char       string_get      (string_t *self, int i);
-char       string_set      (string_t *self, int i, char c);
+char string_get(string_t *self, int i) {
+	return self->value[string_index(self, i)];
+}
 
-// TODO add string get
-
-// TODO add string set
+char string_set(string_t *self, int i, char c) {
+	return (self->value[string_index(self, i)] = c);
+}

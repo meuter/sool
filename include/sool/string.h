@@ -12,7 +12,7 @@ typedef struct _string_t string_t;
 #define string(char_ptr)      new(String(), strlen(char_ptr), char_ptr)
 #define string_join(args...)  _string_join(__VA_N_ARGS__(args, ##args))
 
-const class_t *String();	   /* new(String(), 11, "hello world") */
+const class_t *String();   /* new(String(), 11, "hello world") */
 
 string_t  *string_clone    (string_t *self);
 string_t  *string_slice    (string_t *self, int from, int to);

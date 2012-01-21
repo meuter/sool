@@ -46,11 +46,32 @@ static void test_find() {
 	delete(s, t, u, v, w);
 }
 
+static void test_set_get() {
+	string_t *s = string("abcdefghijklmnopqrstuvwxyz");
+
+	assert_true(string_get(s, 0) == 'a');
+	assert_true(string_get(s, 25) == 'z');
+
+	assert_true(string_get(s, -1) == 'z');
+	assert_true(string_get(s, -26) == 'a');
+
+	assert_true(string_set(s, 2, 'X') == 'X');
+	assert_true(string_get(s, 2) == 'X');
+
+	assert_true(string_set(s, -2, 'Y') == 'Y');
+	assert_true(string_get(s, -2) == 'Y');
+
+	assert_string_equal(string_cstr(s), "abXdefghijklmnopqrstuvwxYz");
+
+	delete(s);
+}
+
 int main() {
 	unit_test_t all_tests[] = {
 		unit_test(test_constructor),
 		unit_test(test_clone),
 		unit_test(test_find),
+		unit_test(test_set_get),
 	};
 
 	return run_tests(all_tests);
