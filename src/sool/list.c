@@ -54,27 +54,28 @@ static int list_put(void *_self, FILE *stream, const char *format) {
 
 
 // TODO need to find a way to compare elements other than identity
-static bool_t list_equal(void *_self, void *_other) {
+// TODO extend the cmp function to deal with the case < and >
+static int list_cmp(void *_self, void *_other) {
 	list_t *self = _self, *other = _other;
 	item_t *i, *j;
 
 	if (self == other)
-		return TRUE;
+		return 0;
 	if (list_length(self) != list_length(other))
-		return FALSE;
+		return -1;
 
 	for (i = list_begin(self), j = list_begin(other); i != list_end(self); i = item_next(i), j = item_next(j)) {
 		if (item_get(i) != item_get(j))
-			return FALSE;
+			return -1;
 	}
 
-	return TRUE;
+	return 0;
 }
 
 
 const class_t *List() {
 	static const class_t *result = NULL;
-	return result ? result : (result = class(sizeof(list_t), __FUNCTION__, list_ctor, list_dtor, list_put, list_equal));
+	return result ? result : (result = class(sizeof(list_t), __FUNCTION__, list_ctor, list_dtor, list_put, list_cmp));
 }
 
 list_t *list_clone(list_t *self) {

@@ -23,9 +23,9 @@ static int string_put(void *_self, FILE *stream, const char *format) {
 	return fprintf(stream, "\"%s\"", self->value);
 }
 
-static bool_t string_equal(void *_self, void *_other) {
+static int string_equal(void *_self, void *_other) {
 	string_t *self = _self, *other = _other;
-	return (strcmp(self->value, other->value) == 0);
+	return strcmp(self->value, other->value);
 }
 
 const class_t *String() {

@@ -8,28 +8,28 @@ struct _class_t {
 	// TODO add support for super class
 	size_t size;
 	const char *name;
-	ctor_t ctor; // TODO change ctor to __init__
-	dtor_t dtor; // TODO change dtor to __del__
-	put_t put; // TODO change put to __repr__ and __str__
-	equal_t equal; // TODO change equal to __cmp__
+	ctor_t ctor;
+	dtor_t dtor;
+	put_t  put;  // TODO split put into str and repr ?
+	cmp_t  cmp;
 	// TODO add clone method
+	// TODO add a hash method for dict
 };
 
 typedef struct {
 	const class_t *class;
 } object_t;
 
-class_t *class(const size_t size, const char *name, ctor_t ctor, dtor_t dtor, put_t put, equal_t equal) {
+class_t *class(const size_t size, const char *name, ctor_t ctor, dtor_t dtor, put_t put, cmp_t cmp) {
 	class_t *class = malloc(sizeof(class_t));
 	class->size  = size;
 	class->name  = name;
 	class->ctor  = ctor;
 	class->dtor  = dtor;
 	class->put   = put;
-	class->equal = equal;
+	class->cmp = cmp;
 	return class;
 }
-
 
 // TODO try to find a way to enfore type checking on variable arg constructors
 void *new(const class_t *class, ...) {
@@ -84,16 +84,20 @@ int fputo(void *_self, FILE *stream) {
 	return fputof(_self, stream, NULL);
 }
 
-bool_t equal(void *_self, void *_other) {
+int cmp(void *_self, void *_other) {
 	object_t *self = _self, *other = _other;
 
 	if (self->class != other->class)
 		return FALSE;
 
-	if (self->class->equal)
-		return self->class->equal(_self, _other);
+	if (self->class->cmp)
+		return self->class->cmp(_self, _other);
 	else
-		return (_self == _other);
+		return ((int)_self - (int)_other);
+}
+
+bool_t equal(void *_self, void *_other) {
+	return (cmp(_self, _other) == 0);
 }
 
 
