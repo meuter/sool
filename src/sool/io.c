@@ -60,11 +60,11 @@ int ovfprintf(FILE *stream, const char *format, va_list args) {
 				if (j > 0) {
 					memcpy(subformat, &format[i+3], j-1);
 					subformat[j-1] = '\0';
-					result += fputof(va_arg(args, void *), stream, subformat);
+					result += put(va_arg(args, void *), stream, subformat);
 					i += 2+j+1;
 				}
 				else {
-					result += fputo(va_arg(args, void *), stream);
+					result += put(va_arg(args, void *), stream, "");
 					i += 2;
 				}
 

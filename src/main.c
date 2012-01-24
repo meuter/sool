@@ -1,18 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <sool/io.h>
-#include <sool/string.h>
+#include <sool/object.h>
 
 int main() {
-
-	string_t *s = string("hello, this is a test, from the sool lib");
-	list_t *l = string_split(s, ", ");
-
-	oprintf("l = %O{%O}\n", l);
-
-	delete(s, l);
-
+	object_t *o = new(Object());
+	delete(o);
 	return EXIT_SUCCESS;
 }
 
