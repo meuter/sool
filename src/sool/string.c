@@ -4,7 +4,7 @@
 #include "object_def.h"
 
 struct _string_t {
-	const char _[sizeof(object_t)];
+	const object_t _;
 	char *value;
 	int length;
 };

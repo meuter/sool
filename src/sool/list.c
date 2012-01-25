@@ -12,7 +12,7 @@ struct _item_t {
 };
 
 struct _list_t {
-	const char _[sizeof(object_t)];
+	const object_t _;
 	item_t *dummy;
 	int length;
 };
