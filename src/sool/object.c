@@ -32,7 +32,7 @@ int object_cmp(void *self, void *other) {
 }
 
 class_t _Object = {
-	.object = {
+	._ = {
 		.magic = MAGIC,
 		.class = &_Class,
 	},
@@ -92,7 +92,7 @@ void *class_dtor(void *self) {
 
 
 class_t _Class = {
-	.object = {
+	._ = {
 		.magic = MAGIC,
 		.class = &_Class,
 	},

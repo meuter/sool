@@ -12,7 +12,7 @@ struct _object_t {
 };
 
 struct _class_t {
-	const object_t object;
+	const object_t _;
 	size_t size;
 	const char *name;
 	class_t *super;
