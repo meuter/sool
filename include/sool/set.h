@@ -1,6 +1,6 @@
 #ifndef __SET_H__
 #define __SET_H__
 
-// TODO set class
+// TODO add a set class
 
 #endif

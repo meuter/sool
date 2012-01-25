@@ -30,6 +30,6 @@ void    *cast     (class_t *class, void *self);
 class_t *class_of (void *self);
 class_t *super    (void *self);
 size_t   size_of  (void *self);
-
+bool_t   is_object(void *_self);
 
 #endif

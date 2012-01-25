@@ -8,10 +8,12 @@
 extern class_t _Object;
 extern class_t _Class;
 
+// TODO write unit test for object module
+
 /*****************************************************************************/
 
 void *object_ctor(void *self, va_list *args) {
-	(void)*args;
+	(void)args;
 	return self;
 }
 
@@ -110,8 +112,7 @@ class_t *Class() {
 /*****************************************************************************/
 
 void *new(class_t *class, ...) {
-	object_t *object;
-	object = xmalloc(class->size);
+	object_t *object = xmalloc(class->size);
 	object->magic = MAGIC;
 	object->class = class;
 	va_list ap;
@@ -162,6 +163,8 @@ bool_t equal   (void *self, void *other) {
 void *cast(class_t *class, void *_self) {
 	object_t *self = _self;
 	assert(self);
+	assert(self->class);
+	assert(is_object(self));
 	(void)class; // TODO check that self has some parent class == class
 	return self;
 
@@ -181,9 +184,7 @@ void *cast(class_t *class, void *_self) {
 }
 
 class_t *class_of(void *_self) {
-	object_t *self = _self;
-	assert(self);
-	assert(self->class);
+	object_t *self = cast(Object(), _self);
 	return self->class;
 }
 
@@ -193,6 +194,10 @@ size_t size_of(void *_self) {
 	return class->size;
 }
 
+bool_t is_object(void *_self) {
+	object_t *self = _self;
+	return (self->magic == MAGIC);
+}
 
 class_t *super(void *_self) {
 	class_t *self = cast(Class(), _self);

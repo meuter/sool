@@ -1,6 +1,6 @@
 #ifndef __DICT_H__
 #define __DICT_H__
 
-// TODO add dict class
+// TODO a add dict class
 
 #endif

@@ -54,8 +54,6 @@ string_t *string_clone(string_t *self) {
 
 // TODO add string_join_list
 
-//
-
 int string_length(string_t *self) {
 	return self->length;
 }
