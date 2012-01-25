@@ -1,6 +1,7 @@
+#include <sool/object.h>
+#include <sool/mem.h>
 #include <assert.h>
 #include <string.h>
-#include <gc/gc.h>
 
 #include "object_def.h"
 
@@ -102,10 +103,7 @@ class_t *Class() {
 
 void *new(class_t *class, ...) {
 	object_t *object;
-
-	if ( (object = GC_MALLOC(class->size)) == NULL )
-		return NULL;
-
+	object = xmalloc(class->size);
 	object->class = class;
 	va_list ap;
 	va_start(ap, class);
@@ -120,7 +118,7 @@ void _delete  (int n, ...) {
 
 	va_start(args, n);
 	while (n--)
-		GC_FREE(dtor(va_arg(args, object_t *)));
+		xfree(dtor(va_arg(args, object_t *)));
 	va_end(args);
 }
 
