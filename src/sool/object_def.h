@@ -2,14 +2,17 @@
 #define __OBJECT_DEF_H__
 
 #include <sool/object.h>
+#include <stdint.h>
 
-// TODO add a magic number
+#define MAGIC  0x0EFFACED
+
 struct _object_t {
+	uint32_t magic;
 	class_t *class;
 };
 
 struct _class_t {
-	const char _[sizeof(object_t)];
+	const object_t object;
 	size_t size;
 	const char *name;
 	class_t *super;

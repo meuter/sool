@@ -30,6 +30,10 @@ int object_cmp(void *self, void *other) {
 }
 
 class_t _Object = {
+	.object = {
+		.magic = MAGIC,
+		.class = &_Class,
+	},
 	.size  = sizeof(object_t),
 	.name  = "Object",
 	.super = &_Object,
@@ -86,6 +90,10 @@ void *class_dtor(void *self) {
 
 
 class_t _Class = {
+	.object = {
+		.magic = MAGIC,
+		.class = &_Class,
+	},
 	.size  = sizeof(class_t),
 	.name  = "Class",
 	.super = &_Object,
@@ -104,6 +112,7 @@ class_t *Class() {
 void *new(class_t *class, ...) {
 	object_t *object;
 	object = xmalloc(class->size);
+	object->magic = MAGIC;
 	object->class = class;
 	va_list ap;
 	va_start(ap, class);
