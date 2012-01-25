@@ -5,16 +5,16 @@ framework for the C language, as well as a comprehensive
 collection of modern data structure found in higher level 
 languages like lists, sets, dictionary,etc. The techniques
 used in the library are greatly inspired by the excellent 
-book by Axel-Tobias Schreiner called book is called 
-"Object Oriented Programming in ANSI-C" and is available
-on his website:
+book by Axel-Tobias Schreiner called "Object Oriented 
+Programming in ANSI-C". This book is available on his
+website:
 
 www.cs.rit.edu/~ats/books/ooc.pdf
 
 (thanks to Nicolas M. for showing this to me!)
 
 This project is still in its infancy and will grow as time
- permits.
+permits.
 
 
 
