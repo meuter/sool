@@ -1,8 +1,10 @@
 #include <sool/string.h>
 #include <sool/mem.h>
 
+#include "object_def.h"
+
 struct _string_t {
-	const class_t *class;
+	const char _[sizeof(object_t)];
 	char *value;
 	int length;
 };

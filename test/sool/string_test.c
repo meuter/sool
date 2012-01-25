@@ -5,10 +5,12 @@
 
 static void test_constructor() {
 	string_t *s = string("hello world");
+
 	string_t *t = string("");
 	string_t *u = new(String(), 5, "0123456789");
 
 	assert_int_equal(string_length(s), 11);
+
 	assert_string_equal(string_cstr(s), "hello world");
 
 	assert_int_equal(string_length(t), 0);
@@ -67,7 +69,6 @@ static void test_set_get() {
 }
 
 int main() {
-	// TODO fix broken tests
 	unit_test_t all_tests[] = {
 		unit_test(test_constructor),
 		unit_test(test_clone),

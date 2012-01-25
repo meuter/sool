@@ -4,13 +4,15 @@
 
 // TODO make an iterable class for item_t
 
+#include "object_def.h"
+
 struct _item_t {
 	void *value;
 	item_t *next, *previous;
 };
 
 struct _list_t {
-	const class_t *class;
+	const char _[sizeof(object_t)];
 	item_t *dummy;
 	int length;
 };
