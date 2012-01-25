@@ -1,5 +1,5 @@
 #include <sool/string.h>
-#include <malloc.h> // TODO replace with GC_MALLOC
+#include <sool/mem.h>
 
 struct _string_t {
 	const class_t *class;
@@ -10,12 +10,12 @@ struct _string_t {
 static void string_ctor(void *_self, va_list *args) {
 	string_t *self = _self;
 	self->length = va_arg(*args, int);
-	self->value  = strndup(va_arg(*args, char *), self->length);
+	self->value  = xstrndup(va_arg(*args, char *), self->length);
 }
 
 static void string_dtor(void *_self) {
 	string_t *self = _self;
-	free(self->value);
+	xfree(self->value);
 }
 
 static int string_put(void *_self, FILE *stream, const char *format) {

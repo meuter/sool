@@ -1,6 +1,6 @@
 #include <sool/list.h>
+#include <sool/mem.h>
 #include <sool/io.h>
-#include <malloc.h> // TODO replace with GC_MALLOC
 
 // TODO make an iterable class for item_t
 
@@ -20,7 +20,7 @@ static void list_ctor(void *_self, va_list *args) {
     list_t *self = _self;
     int i, n;
 
-    self->dummy = malloc(sizeof(item_t));
+    self->dummy = xmalloc(sizeof(item_t));
     self->dummy->next = self->dummy->previous = self->dummy;
     self->length = 0;
 
@@ -33,7 +33,7 @@ static void list_dtor(void *_self) {
 	list_t *self = _self;
 	while (!list_is_empty(self))
 		list_remove_first(self);
-	free(self->dummy);
+	xfree(self->dummy);
 }
 
 static int list_put(void *_self, FILE *stream, const char *format) {
@@ -216,7 +216,7 @@ item_t *list_rfind(list_t *self, void *value) {
 }
 
 item_t *list_insert_before(list_t *self, item_t *item, void *value) {
-	item_t *new_item = malloc(sizeof(struct _item_t));
+	item_t *new_item = xmalloc(sizeof(struct _item_t));
 
 	new_item->next = item->next;
 	new_item->next->previous = new_item;
@@ -230,7 +230,7 @@ item_t *list_insert_before(list_t *self, item_t *item, void *value) {
 
 
 item_t *list_insert_after(list_t *self, item_t *item, void *value) {
-	item_t *new_item = malloc(sizeof(struct _item_t));
+	item_t *new_item = xmalloc(sizeof(struct _item_t));
 
 	new_item->previous = item->previous;
 	new_item->previous->next = new_item;
@@ -271,7 +271,7 @@ void *list_remove(list_t *self, item_t *to_remove) {
 	to_remove->previous->next = to_remove->next;
 	to_remove->next->previous = to_remove->previous;
 	void *result = to_remove->value;
-	free(to_remove);
+	xfree(to_remove);
 	self->length--;
 	return result;
 }
