@@ -162,25 +162,15 @@ bool_t equal   (void *self, void *other) {
 
 void *cast(class_t *class, void *_self) {
 	object_t *self = _self;
-	assert(self);
-	assert(self->class);
 	assert(is_object(self));
-	(void)class; // TODO check that self has some parent class == class
-	return self;
+	class_t *current = self->class, *parent;
 
-//	class_t *current = class_of(_self), *parent;
-//	object_t *object = _self;
-//
-//	while (current != class) {
-//		 parent = super(current);
-//		 if (parent == current) {
-//			 object = NULL;
-//			 break;
-//		 }
-//		 current = parent;
-//	}
-//	assert(object);
-//	return object;
+	while (current && current != class) {
+		 parent = super(current);
+		 assert(parent != current);
+		 current = parent;
+	}
+	return self;
 }
 
 class_t *class_of(void *_self) {
@@ -196,7 +186,7 @@ size_t size_of(void *_self) {
 
 bool_t is_object(void *_self) {
 	object_t *self = _self;
-	return (self->magic == MAGIC);
+	return (self && self->magic == MAGIC);
 }
 
 class_t *super(void *_self) {
