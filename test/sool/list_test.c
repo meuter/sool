@@ -64,7 +64,7 @@ static void test_list_clone() {
 	delete(orig);
 
 	assert_int_equal(list_length(clone), 9);
-	list_forall(i, orig)
+	list_forall(i, clone)
 		assert_int_equal((int)item_get(i), j++);
 
 	delete(clone);
