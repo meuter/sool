@@ -1,7 +1,7 @@
 #ifndef __STRING_H__
 #define __STRING_H__
 
-#include <sool/class.h>
+#include <sool/object.h>
 #include <sool/args.h>
 #include <sool/list.h>
 #include <string.h>
@@ -12,7 +12,7 @@ typedef struct _string_t string_t;
 #define string(char_ptr)      new(String(), strlen(char_ptr), char_ptr)
 #define string_join(args...)  _string_join(__VA_N_ARGS__(args, ##args))
 
-const class_t *String();   /* new(String(), 11, "hello world") */
+class_t *String();   /* new(String(), 11, "hello world") */
 
 string_t  *string_clone    (string_t *self);
 string_t  *string_slice    (string_t *self, int from, int to);

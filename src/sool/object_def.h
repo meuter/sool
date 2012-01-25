@@ -3,6 +3,7 @@
 
 #include <sool/object.h>
 
+// TODO add a magic number
 struct _object_t {
 	class_t *class;
 };

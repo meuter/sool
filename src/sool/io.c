@@ -1,4 +1,4 @@
-#include <sool/class.h>
+#include <sool/object.h>
 #include <sool/io.h>
 #include <sool/bool.h>
 #include <string.h>

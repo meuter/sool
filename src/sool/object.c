@@ -157,6 +157,20 @@ void *cast(class_t *class, void *_self) {
 	assert(self);
 	(void)class; // TODO check that self has some parent class == class
 	return self;
+
+//	class_t *current = class_of(_self), *parent;
+//	object_t *object = _self;
+//
+//	while (current != class) {
+//		 parent = super(current);
+//		 if (parent == current) {
+//			 object = NULL;
+//			 break;
+//		 }
+//		 current = parent;
+//	}
+//	assert(object);
+//	return object;
 }
 
 class_t *class_of(void *_self) {

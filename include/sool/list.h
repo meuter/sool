@@ -1,7 +1,7 @@
 #ifndef __LIST_H__
 #define __LIST_H__
 
-#include <sool/class.h>
+#include <sool/object.h>
 #include <sool/args.h>
 #include <sool/bool.h>
 
@@ -15,7 +15,7 @@ typedef struct _item_t item_t;
 #define list_join(args...)  _list_join(__VA_N_ARGS__(args),  ##args)
 #define list_forall(i,l)    for (i = list_begin(l); i != list_end(l); i = item_next(i))
 
-const class_t *List();     /* new(List(), n, x1, x2, ..., xn) */
+class_t *List();     /* new(List(), n, x1, x2, ..., xn) */
 
 list_t  *list_clone        (list_t *self);
 list_t  *list_copy         (list_t *self, item_t *from, item_t *to);

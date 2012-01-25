@@ -1,5 +1,6 @@
 #include <sool/list.h>
 #include <sool/io.h>
+#include <malloc.h> // TODO replace with GC_MALLOC
 
 // TODO make an iterable class for item_t
 
@@ -73,8 +74,8 @@ static int list_cmp(void *_self, void *_other) {
 }
 
 
-const class_t *List() {
-	static const class_t *result = NULL;
+class_t *List() {
+	static class_t *result = NULL;
 	if (result == NULL) {
 		result = new(Class(), __FUNCTION__, Class(), sizeof(list_t),
 			ctor, list_ctor,

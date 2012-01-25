@@ -67,11 +67,12 @@ static void test_set_get() {
 }
 
 int main() {
+	// TODO fix broken tests
 	unit_test_t all_tests[] = {
 		unit_test(test_constructor),
-//		unit_test(test_clone),
-//		unit_test(test_find),
-//		unit_test(test_set_get),
+		unit_test(test_clone),
+		unit_test(test_find),
+		unit_test(test_set_get),
 	};
 
 	return run_tests(all_tests);

@@ -1,4 +1,5 @@
 #include <sool/string.h>
+#include <malloc.h> // TODO replace with GC_MALLOC
 
 struct _string_t {
 	const class_t *class;
@@ -28,8 +29,8 @@ static int string_cmp(void *_self, void *_other) {
 	return strcmp(self->value, other->value);
 }
 
-const class_t *String() {
-	static const class_t *result = NULL;
+class_t *String() {
+	static class_t *result = NULL;
 	if (result == NULL) {
 		result = new(Class(), "String", Class(), sizeof(string_t),
 			ctor, string_ctor,
