@@ -24,5 +24,7 @@ list_t    *string_split    (string_t *self, const char *delimiter);
 int        string_find     (string_t *self, string_t *substr);
 char       string_get      (string_t *self, int i);
 char       string_set      (string_t *self, int i, char c);
+string_t  *string_strip    (string_t *self);
+bool_t     string_contains (string_t *self, const char *substr);
 
 #endif
