@@ -38,7 +38,8 @@ class_t *String() {
 			ctor, string_ctor,
 			dtor, string_dtor,
 			put, string_put,
-			cmp, string_cmp
+			cmp, string_cmp,
+			NULL
 		);
 	}
 	return result;
@@ -91,4 +92,8 @@ char string_get(string_t *self, int i) {
 
 char string_set(string_t *self, int i, char c) {
 	return (self->value[string_index(self, i)] = c);
+}
+
+bool_t string_contains (string_t *self, const char *substr) {
+	return (strstr(self->value, substr) != NULL);
 }
