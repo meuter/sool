@@ -10,7 +10,6 @@ struct _sequence_class_t;
 typedef struct _sequence_class_t sequence_class_t;
 
 typedef object_t iterator_t;
-typedef object_t sequence_t;
 
 class_t *SequenceClass();
 class_t *IteratorClass();

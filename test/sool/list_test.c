@@ -230,7 +230,6 @@ static void test_list_sort() {
 }
 
 int main() {
-	// TODO fix broken tests
 	unit_test_t all_tests[] = {
 		unit_test(test_empty_list),
 		unit_test(test_list_int),

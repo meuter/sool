@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <string.h>
 
+
 #include "object_def.h"
 
 extern class_t _Object;
@@ -32,7 +33,7 @@ int object_cmp(void *self, void *other) {
 }
 
 class_t _Object = {
-	._ = {
+	.parent = {
 		.magic = MAGIC,
 		.class = &_Class,
 	},
@@ -92,7 +93,7 @@ void *class_dtor(void *self) {
 
 
 class_t _Class = {
-	._ = {
+	.parent = {
 		.magic = MAGIC,
 		.class = &_Class,
 	},
@@ -194,3 +195,16 @@ class_t *super(void *_self) {
 	assert(self->super);
 	return self->super;
 }
+
+void *super_ctor(void *class, void *self, va_list *args) {
+	class_t *super_class = cast(Class(), super(class));
+	assert(super_class->ctor);
+	return super_class->ctor(self, args);
+}
+
+void *super_dtor(void *class, void *self) {
+	class_t *super_class = cast(Class(), super(class));
+	assert(super_class->dtor);
+	return super_class->dtor(self);
+}
+

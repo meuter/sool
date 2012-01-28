@@ -12,7 +12,7 @@ struct _item_t {
 };
 
 struct _list_t {
-	const object_t _;
+	const object_t parent;
 	item_t *dummy;
 	int length;
 };
