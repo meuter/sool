@@ -1,4 +1,5 @@
 #include <sool/object.h>
+#include <sool/error.h>
 #include <sool/mem.h>
 #include <assert.h>
 #include <string.h>
@@ -168,7 +169,7 @@ void *cast(class_t *class, void *_self) {
 
 	while (current && current != class) {
 		 parent = super(current);
-		 assert(parent != current);
+		 assertf(parent != current, "could not cast '%O' to class '%s'", self, class->name);
 		 current = parent;
 	}
 	return self;

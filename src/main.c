@@ -2,17 +2,15 @@
 #include <stdlib.h>
 
 #include <sool/object.h>
-#include <sool/sequence.h>
+#include <sool/list.h>
 
 
 int main() {
-	iterator_class_t *SomeIterator = new(IteratorClass(), "SomeIterator", Object(), 15,
-		next, 0x1515,
-		get, 0x1616,
-		NULL
-	);
+	list_t *l = list(1,2,3,4,5);
+	iterator_t *i;
 
-	oprintf("%O\n", SomeIterator);
+	forall(i, l)
+		printf("%d ", (int)get(i));
 
 	return EXIT_SUCCESS;
 }

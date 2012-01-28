@@ -4,6 +4,7 @@
 #include <sool/object.h>
 #include <sool/args.h>
 #include <sool/bool.h>
+#include <sool/sequence.h>
 
 struct _list_t;
 typedef struct _list_t list_t;
