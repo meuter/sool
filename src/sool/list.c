@@ -1,12 +1,14 @@
 #include <sool/list.h>
 #include <sool/mem.h>
 #include <sool/io.h>
+#include <sool/sequence.h>
 
 // TODO make an iterable class for item_t
 
 #include "object_def.h"
 
 struct _item_t {
+	const object_t object;
 	void *value;
 	item_t *next, *previous;
 };
@@ -79,11 +81,14 @@ static int list_cmp(void *_self, void *_other) {
 class_t *List() {
 	static class_t *result = NULL;
 	if (result == NULL) {
-		result = new(Class(), __FUNCTION__, Class(), sizeof(list_t),
-			ctor, list_ctor,
-			dtor, list_dtor,
-			put, list_put,
-			cmp, list_cmp
+		result = new(Class(), __FUNCTION__, SequenceClass(), sizeof(list_t),
+			ctor,  list_ctor,
+			dtor,  list_dtor,
+			put,   list_put,
+			cmp,   list_cmp,
+			begin, list_begin,
+			end,   list_end,
+			NULL
 		);
 	}
 	return result;
