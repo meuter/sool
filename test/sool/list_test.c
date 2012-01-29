@@ -9,7 +9,7 @@ static void test_empty_list() {
 
 	assert_false(empty == NULL);
 	assert_true(list_is_empty(empty));
-	assert_true(list_begin(empty) == list_end(empty));
+	assert_true(begin(empty) == end(empty));
 	assert_true(list_rbegin(empty) == list_rend(empty));
 	assert_int_equal(list_length(empty), 0);
 
@@ -23,15 +23,15 @@ static void test_list_int() {
 
 	assert_false(l == NULL);
 	assert_false(list_is_empty(l));
-	assert_true(list_end(l) == list_rend(l));
+	assert_true(end(l) == list_rend(l));
 
 	// check traversal
-	for (i = list_begin(l), j = 0; i != list_end(l); i = item_next(i), j++)
-		assert_int_equal((int)item_get(i), j);
+	for (i = begin(l), j = 0; i != end(l); i = item_next(i), j++)
+		assert_int_equal((int)get(i), j);
 
 	// check traversal in reverse order
 	for (i = list_rbegin(l), j = 9; i != list_rend(l); i = item_previous(i), j--)
-		assert_int_equal((int)item_get(i), j);
+		assert_int_equal((int)get(i), j);
 
 	delete(l);
 }
@@ -65,7 +65,7 @@ static void test_list_clone() {
 
 	assert_int_equal(list_length(clone), 9);
 	forall(i, clone)
-		assert_int_equal((int)item_get(i), j++);
+		assert_int_equal((int)get(i), j++);
 
 	delete(clone);
 }
@@ -109,15 +109,15 @@ static void test_list_get() {
 
 	// check random access
 	for (j = 0; j < 10; j++)
-		assert_int_equal((int)item_get(list_get(l,j)), j);
-	assert_true(list_get(l,10) == list_end(l));
+		assert_int_equal((int)get(list_get(l,j)), j);
+	assert_true(list_get(l,10) == end(l));
 
 	// check random access from the end
 	for (j = -1; j >= -10; j--)
-		assert_int_equal((int)item_get(list_get(l,j)), j+10);
-	assert_true(list_get(l,-11) == list_end(l));
+		assert_int_equal((int)get(list_get(l,j)), j+10);
+	assert_true(list_get(l,-11) == end(l));
 
-	assert_int_equal((int)item_get(list_get(l,-1)), 9);
+	assert_int_equal((int)get(list_get(l,-1)), 9);
 
 	delete(l);
 }
@@ -128,7 +128,7 @@ static void test_list_clear() {
 	list_clear(l);
 	assert_true(list_is_empty(l));
 	assert_int_equal(list_length(l), 0);
-	assert_true(list_begin(l) == list_end(l));
+	assert_true(begin(l) == end(l));
 	assert_true(list_rbegin(l) == list_rend(l));
 
 	delete(l);
@@ -138,10 +138,10 @@ static void test_list_find() {
 	list_t *l = list(1,2,3,4);
 	int i;
 
-	assert_true(list_find(l, 0) == list_end(l));
+	assert_true(list_find(l, 0) == end(l));
 	for (i = 1; i <=4; ++i) {
-		assert_false(list_find(l,(void *)i) == list_end(l));
-		assert_int_equal((int)item_get(list_find(l, (void *)i)), i);
+		assert_false(list_find(l,(void *)i) == end(l));
+		assert_int_equal((int)get(list_find(l, (void *)i)), i);
 	}
 
 	delete(l);

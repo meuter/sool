@@ -35,8 +35,6 @@ list_iterator_t  *list_insert_before(list_t *self, list_iterator_t *item, void *
 list_iterator_t  *list_insert_after (list_t *self, list_iterator_t *item, void *value);
 list_iterator_t  *list_prepend      (list_t *self, void *value);
 list_iterator_t  *list_append       (list_t *self, void *value);
-list_iterator_t  *list_begin        (list_t *self);
-list_iterator_t  *list_end          (list_t *self);
 list_iterator_t  *list_rbegin       (list_t *self);
 list_iterator_t  *list_rend         (list_t *self);
 void    *list_remove       (list_t *self, list_iterator_t *to_remove);
