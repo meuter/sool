@@ -37,7 +37,7 @@ main_env.Program("main", Split("src/main.c"))
 Default(Split("main libsool.a"))
  
 cmockery_env = base.Clone()
-cmockery_env.MergeFlags("-Itest -D_GNU_SOURCE")
+cmockery_env.MergeFlags("-Itest -D_GNU_SOURCE -ggdb")
 cmockery_env.Library("test/cmockery", Split("test/cmockery.c"))
 
 test_env = root.Clone()
