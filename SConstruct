@@ -44,4 +44,3 @@ test_env = root.Clone()
 test_env.MergeFlags("-Iinclude -Itest -lsool -lcmockery -Ltest -L. -lgc -lpthread")
 test_env.UnitTest("test/string_test", Split("test/sool/string_test.c"))
 test_env.UnitTest("test/list_test", Split("test/sool/list_test.c"))
-

@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <sool/object.h>
 #include <sool/list.h>
 #include <sool/io.h>
 

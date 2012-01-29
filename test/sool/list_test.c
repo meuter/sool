@@ -18,7 +18,7 @@ static void test_empty_list() {
 
 static void test_list_int() {
 	list_t *l = list(0,1,2,3,4,5,6,7,8,9);
-	item_t *i;
+	list_iterator_t *i;
 	int j;
 
 	assert_false(l == NULL);
@@ -54,7 +54,7 @@ static void test_list_equal() {
 static void test_list_clone() {
 	list_t *orig = list(1,2,3,4,5,6,7,8,9);
 	list_t *clone = list_clone(orig);
-	item_t *i;
+	list_iterator_t *i;
 	int j = 1;
 
 	assert_false(orig == NULL);
@@ -64,7 +64,7 @@ static void test_list_clone() {
 	delete(orig);
 
 	assert_int_equal(list_length(clone), 9);
-	list_forall(i, clone)
+	forall(i, clone)
 		assert_int_equal((int)item_get(i), j++);
 
 	delete(clone);
