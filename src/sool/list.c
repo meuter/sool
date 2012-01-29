@@ -3,7 +3,7 @@
 #include <sool/io.h>
 #include <sool/sequence.h>
 
-#include "object_def.h"
+#include "sequence_def.h"
 
 /*****************************************************************************/
 

@@ -1,5 +1,5 @@
 #include "sequence_def.h"
-#include <assert.h>
+#include <sool/error.h>
 
 /*****************************************************************************/
 
@@ -65,27 +65,31 @@ class_t *SequenceClass() {
 
 /*****************************************************************************/
 
-void *begin(void *self) {
+
+
+iterator_t *begin(sequence_t *self) {
 	sequence_class_t *class = cast(SequenceClass(), class_of(self));
-	assert(class->begin);
+	assertf(class->begin, "class '%O' has no 'begin' method", class);
 	return class->begin(self);
 }
 
-void *end  (void *self) {
-	sequence_class_t *sequence = cast(SequenceClass(), class_of(self));
-	assert(sequence->end);
-	return sequence->end(self);
+iterator_t *end(sequence_t *self) {
+	sequence_class_t *class = cast(SequenceClass(), class_of(self));
+	assertf(class->end, "class '%O' has no 'end' method", class);
+	return class->end(self);
 }
 
-void *next(void *self) {
+
+
+iterator_t *next(iterator_t *self) {
 	iterator_class_t *class = cast(IteratorClass(), class_of(self));
-	assert(class->next);
+	assertf(class->next, "class '%O' has no 'next' method", class);
 	return class->next(self);
 }
 
-void *get(void *self) {
+void *get(iterator_t *self) {
 	iterator_class_t *class = cast(IteratorClass(), class_of(self));
-	assert(class->get);
+	assertf(class->get, "class '%O' has no 'get' method", class);
 	return class->get(self);
 }
 

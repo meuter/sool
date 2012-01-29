@@ -5,16 +5,19 @@
 
 #include "object_def.h"
 
-struct _sequence_class_t {
+typedef struct {
 	EXTENDS(class_t);
-	void * (*begin) (void *self);
-	void * (*end)   (void *self);
-};
+	void * (*begin) (sequence_t *self);
+	void * (*end)   (sequence_t *self);
+} sequence_class_t;
 
-struct _iterator_class_t {
+typedef struct {
 	EXTENDS(class_t);
-	void * (*next) (void *self);
-	void * (*get)  (void *self);
-};
+	void * (*next) (iterator_t *self);
+	void * (*get)  (iterator_t *self);
+} iterator_class_t;
+
+class_t *IteratorClass();
+class_t *SequenceClass();
 
 #endif
