@@ -1,7 +1,6 @@
 #include <sool/object.h>
 #include <sool/error.h>
 #include <sool/mem.h>
-#include <assert.h>
 #include <string.h>
 
 
@@ -61,7 +60,7 @@ void *class_ctor(void *_self, va_list *args) {
 	self->super = va_arg(*args, class_t *);
 	self->size  = va_arg(*args, size_t);
 
-	assert(self->super);
+	assertf(self->super, "class '%O' has a NULL super class", self);
 
 	memcpy((char*)self + offset, (char *)self->super + offset, size_of(self->super) - offset);
 
@@ -90,6 +89,13 @@ void *class_ctor(void *_self, va_list *args) {
 void *class_dtor(void *self) {
 	(void)self;
 	return NULL;
+}
+
+
+int class_put(void *_self, FILE *stream, const char *format) {
+	(void)format;
+	class_t *class = cast(Class(), _self);
+	return fprintf(stream, "%s", class->name);
 }
 
 
@@ -136,25 +142,25 @@ void _delete  (int n, ...) {
 
 void *ctor(void *self, va_list *args) {
 	class_t *class = class_of(self);
-	assert(class->ctor);
+	assertf(class->ctor, "class '%O' has a NULL constructor", class);
 	return class->ctor(self, args);
 }
 
 void *dtor(void *self) {
 	class_t *class = class_of(self);
-	assert(class->dtor);
+	assertf(class->dtor, "class '%O' hass a NULL destructor", class);
 	return class->dtor(self);
 }
 
 int put(void *self, FILE *stream, const char *format) {
 	class_t *class = class_of(self);
-	assert(class->put);
+	assertf(class->put, "class '%O' has a NULL 'put' method", class);
 	return class->put(self, stream, format);
 }
 
 int cmp(void *self, void *other) {
 	class_t *class = class_of(self);
-	assert(class->cmp);
+	assertf(class->cmp, "class '%O' has a NULL 'cmp' method", class);
 	return class->cmp(self, other);
 }
 
@@ -164,7 +170,7 @@ bool_t equal   (void *self, void *other) {
 
 void *cast(class_t *class, void *_self) {
 	object_t *self = _self;
-	assert(is_object(self));
+	assertf(is_object(self), "pointer '%p' does not point to a valid Object", _self);
 	class_t *current = self->class, *parent;
 
 	while (current && current != class) {
@@ -177,12 +183,12 @@ void *cast(class_t *class, void *_self) {
 
 class_t *class_of(void *_self) {
 	object_t *self = cast(Object(), _self);
+	assertf(self->class, "object '%O' has a NULL class", _self);
 	return self->class;
 }
 
 size_t size_of(void *_self) {
 	class_t *class = class_of(_self);
-	assert(class);
 	return class->size;
 }
 
@@ -193,19 +199,18 @@ bool_t is_object(void *_self) {
 
 class_t *super(void *_self) {
 	class_t *self = cast(Class(), _self);
-	assert(self->super);
 	return self->super;
 }
 
 void *super_ctor(void *class, void *self, va_list *args) {
 	class_t *super_class = cast(Class(), super(class));
-	assert(super_class->ctor);
+	assertf(super_class->ctor, "class '%O' has no constructor", super_class);
 	return super_class->ctor(self, args);
 }
 
 void *super_dtor(void *class, void *self) {
 	class_t *super_class = cast(Class(), super(class));
-	assert(super_class->dtor);
+	assertf(super_class->ctor, "class '%O' has no destructor", super_class);
 	return super_class->dtor(self);
 }
 

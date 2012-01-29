@@ -6,13 +6,13 @@
 #include "object_def.h"
 
 struct _sequence_class_t {
-	const class_t parent;
+	EXTENDS(class_t);
 	void * (*begin) (void *self);
 	void * (*end)   (void *self);
 };
 
 struct _iterator_class_t {
-	const class_t parent;
+	EXTENDS(class_t);
 	void * (*next) (void *self);
 	void * (*get)  (void *self);
 };

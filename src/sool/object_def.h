@@ -4,15 +4,16 @@
 #include <sool/object.h>
 #include <stdint.h>
 
-#define MAGIC  0x0EFFACED
+#define MAGIC  			(void *)0x0EFFACED
+#define EXTENDS(type)   const type parent
 
 struct _object_t {
-	uint32_t magic;
+	void *magic;
 	class_t *class;
 };
 
 struct _class_t {
-	const object_t parent;
+	EXTENDS(object_t);
 	size_t size;
 	const char *name;
 	class_t *super;
