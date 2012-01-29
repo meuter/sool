@@ -9,12 +9,15 @@ typedef struct {
 	EXTENDS(class_t);
 	void * (*begin) (sequence_t *self);
 	void * (*end)   (sequence_t *self);
+	void * (*rbegin)(sequence_t *self);
+	void * (*rend)  (sequence_t *self);
 } sequence_class_t;
 
 typedef struct {
 	EXTENDS(class_t);
-	void * (*next) (iterator_t *self);
-	void * (*get)  (iterator_t *self);
+	void * (*next)     (iterator_t *self);
+	void * (*previous) (iterator_t *self);
+	void * (*get)      (iterator_t *self);
 } iterator_class_t;
 
 class_t *IteratorClass();

@@ -10,7 +10,7 @@ static void test_empty_list() {
 	assert_false(empty == NULL);
 	assert_true(list_is_empty(empty));
 	assert_true(begin(empty) == end(empty));
-	assert_true(list_rbegin(empty) == list_rend(empty));
+	assert_true(rbegin(empty) == rend(empty));
 	assert_int_equal(list_length(empty), 0);
 
 	delete(empty);
@@ -23,14 +23,14 @@ static void test_list_int() {
 
 	assert_false(l == NULL);
 	assert_false(list_is_empty(l));
-	assert_true(end(l) == list_rend(l));
+	assert_true(end(l) == rend(l));
 
 	// check traversal
-	for (i = begin(l), j = 0; i != end(l); i = item_next(i), j++)
+	for (i = begin(l), j = 0; i != end(l); i = next(i), j++)
 		assert_int_equal((int)get(i), j);
 
 	// check traversal in reverse order
-	for (i = list_rbegin(l), j = 9; i != list_rend(l); i = item_previous(i), j--)
+	for (i = rbegin(l), j = 9; i != rend(l); i = previous(i), j--)
 		assert_int_equal((int)get(i), j);
 
 	delete(l);
@@ -129,7 +129,7 @@ static void test_list_clear() {
 	assert_true(list_is_empty(l));
 	assert_int_equal(list_length(l), 0);
 	assert_true(begin(l) == end(l));
-	assert_true(list_rbegin(l) == list_rend(l));
+	assert_true(rbegin(l) == rend(l));
 
 	delete(l);
 }
@@ -150,16 +150,16 @@ static void test_list_find() {
 static void test_list_rfind() {
 	list_t *l = list(0,1,2,3,4,5,6,7,8,9,1,10);
 
-	assert_true(list_rfind(l,(void *)11) == list_rend(l));
-	assert_false(list_rfind(l,(void *)1) == list_rend(l));
+	assert_true(list_rfind(l,(void *)11) == rend(l));
+	assert_false(list_rfind(l,(void *)1) == rend(l));
 	assert_false(list_find(l,(void *)1) == list_rfind(l,(void*)1));
 	assert_true(list_find(l,(void *)5) == list_rfind(l,(void*)5));
 
-	assert_true(item_next(list_find(l,(void *)1)) == list_find(l,(void*)2));
-	assert_true(item_previous(list_find(l,(void *)1)) == list_find(l,(void*)0));
+	assert_true(next(list_find(l,(void *)1)) == list_find(l,(void*)2));
+	assert_true(previous(list_find(l,(void *)1)) == list_find(l,(void*)0));
 
-	assert_true(item_next(list_rfind(l,(void *)1)) == list_rfind(l,(void*)10));
-	assert_true(item_previous(list_rfind(l,(void *)1)) == list_rfind(l,(void*)9));
+	assert_true(next(list_rfind(l,(void *)1)) == list_rfind(l,(void*)10));
+	assert_true(previous(list_rfind(l,(void *)1)) == list_rfind(l,(void*)9));
 
 	delete(l);
 }

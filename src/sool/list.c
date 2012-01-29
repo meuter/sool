@@ -20,18 +20,37 @@ static void *list_iterator_next(void *_self) {
 	return self->next;
 }
 
+static void *list_iterator_previous(void *_self) {
+	list_iterator_t *self = cast(ListIterator(), _self);
+	return self->previous;
+}
+
 static void *list_iterator_get(void *_self) {
 	list_iterator_t *self = cast(ListIterator(), _self);
 	return self->value;
+}
 
+static void *list_iterator_ctor(void *_self, va_list *args) {
+	list_iterator_t *self = cast(ListIterator(), _self);
+
+	void *previous = va_arg(*args, void *);
+	void *value    = va_arg(*args, void *);
+	void *next     = va_arg(*args, void *);
+
+	self->previous = previous ? cast(ListIterator(), previous) : previous;
+	self->value    = value;
+	self->next     = next ? cast(ListIterator(), next) : next;
+	return self;
 }
 
 class_t *ListIterator() {
 	static class_t *result = NULL;
 	if (result == NULL) {
 		result = new(IteratorClass(), __FUNCTION__, Object(), sizeof(list_iterator_t),
-			get,  list_iterator_get,
-			next, list_iterator_next,
+			ctor,     list_iterator_ctor,
+			get,      list_iterator_get,
+			next,     list_iterator_next,
+			previous, list_iterator_previous,
 			NULL
 		);
 	}
@@ -51,7 +70,7 @@ static void *list_ctor(void *_self, va_list *args) {
     list_t *self = cast(List(), _self);
     int i, n;
 
-    self->dummy = new(ListIterator());
+    self->dummy = new(ListIterator(), NULL, 0, NULL);
     self->dummy->next = self->dummy->previous = self->dummy;
     self->length = 0;
 
@@ -117,6 +136,15 @@ static iterator_t *list_end(void *_self) {
 	return (iterator_t *)self->dummy;
 }
 
+static iterator_t *list_rbegin(void *_self) {
+	list_t *self = cast(List(), _self);
+	return (iterator_t *)self->dummy->previous;
+}
+
+static iterator_t *list_rend(void *_self) {
+	list_t *self = cast(List(), _self);
+	return (iterator_t *)self->dummy;
+}
 
 class_t *List() {
 	static class_t *result = NULL;
@@ -128,25 +156,27 @@ class_t *List() {
 			cmp,   list_cmp,
 			begin, list_begin,
 			end,   list_end,
+			rbegin, list_rbegin,
+			rend,   list_rend,
 			NULL
 		);
 	}
 	return result;
 }
 
+/*****************************************************************************/
 
 list_t *list_clone(list_t *self) {
 	return list_copy(self, begin(self), end(self));
 }
 
-list_t *list_copy(list_t *self, list_iterator_t *from, list_iterator_t *to) {
+list_t  *list_copy(list_t *self, iterator_t *from, iterator_t *to) {
 	(void)self;
 	list_t *result = list();
-	list_iterator_t *i = from;
-	while (i != to) {
-		list_append(result, item_get(i));
-		i = item_next(i);
-	}
+	iterator_t *i;
+
+	for (i = from; i != to; i = next(i))
+		list_append(result, get(i));
 
 	return result;
 }
@@ -157,28 +187,26 @@ list_t *list_slice(list_t *self, int from, int to) {
 
 list_t *_list_join(int n, ...) {
 	list_t *result = list(), *tmp;
-	list_iterator_t *i;
+	iterator_t *i;
 	va_list args;
 
 	va_start(args, n);
 	while (n--) {
-		tmp = va_arg(args, list_t *);
+		tmp = cast(List(), va_arg(args, list_t *));
 		forall(i, tmp)
-			list_append(result, item_get(i));
+			list_append(result, get(i));
 	}
 	va_end(args);
 
 	return result;
 }
 
-
-
 list_t *list_sort(list_t *self) {
 	list_t *result = list();
-	list_iterator_t *i, *j;
+	iterator_t *i, *j;
 
 	forall(i, self) {
-		void *x = item_get(i);
+		void *x = get(i);
 
 		j = begin(result);
 		while (j != end(result) && x >= get(j))
@@ -189,12 +217,13 @@ list_t *list_sort(list_t *self) {
 	return result;
 }
 
-
 list_t *list_reverse(list_t *self) {
 	list_t *result = list();
-	list_iterator_t *i;
+	iterator_t *i;
+
 	forall(i, self)
-		list_prepend(result, item_get(i));
+		list_prepend(result, get(i));
+
 	return result;
 }
 
@@ -202,11 +231,12 @@ bool_t list_is_empty(list_t *self) {
 	return (self->length == 0);
 }
 
+
 int list_count(list_t *self, void *value) {
-	list_iterator_t *i;
+	iterator_t *i;
 	int result = 0;
 	forall(i, self)
-		result += (item_get(i) == value) ? 1 : 0;
+		result += (get(i) == value) ? 1 : 0;
 	return result;
 }
 
@@ -219,57 +249,41 @@ void list_clear(list_t *self) {
 		list_remove_first(self);
 }
 
-list_iterator_t *list_get(list_t *self, int i) {
-	list_iterator_t *j;
+
+iterator_t *list_get(list_t *self, int i) {
+	iterator_t *j;
 
 	if ( i >= 0 ) {
 		j = begin(self);
 		while (i--) {
 			if ( j == end(self) ) break;
-			j = item_next(j);
+			j = next(j);
 		}
 	}
 	else {
-		j = list_rbegin(self);
+		j = rbegin(self);
 		while (i++ < -1) {
-			if ( j == list_rend(self) ) break;
-			j = item_previous(j);
+			if ( j == rend(self) ) break;
+			j = previous(j);
 		}
 	}
 	return j;
 }
 
-list_iterator_t *list_set(list_t *self, int i, void *value) {
-	list_iterator_t *result = list_get(self, i);
-	item_set(result, value);
-	return result;
+iterator_t *list_find(list_t *self, void *value) {
+	return find(self, value);
 }
 
-list_iterator_t *list_find(list_t *self, void *value) {
-	list_iterator_t *i;
-	forall(i, self) {
-		if (item_get(i) == value)
-			break;
-	}
-	return i;
+iterator_t *list_rfind(list_t *self, void *value) {
+	return rfind(self, value);
 }
 
-list_iterator_t *list_rfind(list_t *self, void *value) {
-	list_iterator_t *i;
-	for (i = list_rbegin(self); i != list_rend(self); i = item_previous(i)) {
-		if (item_get(i) == value)
-			break;
-	}
-	return i;
-}
 
-list_iterator_t *list_insert_before(list_t *self, list_iterator_t *item, void *value) {
-	list_iterator_t *new_item = new(ListIterator());
+iterator_t *list_insert_before(list_t *self, iterator_t *_i, void *value) {
+	list_iterator_t *i = cast(ListIterator(), _i);
+	list_iterator_t *new_item = new(ListIterator(), i, value, i->next);
 
-	new_item->next = item->next;
 	new_item->next->previous = new_item;
-	new_item->value = value;
-	new_item->previous = item;
 	new_item->previous->next = new_item;
 
 	self->length++;
@@ -277,37 +291,27 @@ list_iterator_t *list_insert_before(list_t *self, list_iterator_t *item, void *v
 }
 
 
-list_iterator_t *list_insert_after(list_t *self, list_iterator_t *item, void *value) {
-	list_iterator_t *new_item = new(ListIterator());
+iterator_t *list_insert_after(list_t *self, iterator_t *_i, void *value) {
+	list_iterator_t *i = cast(ListIterator(), _i);
+	list_iterator_t *new_item = new(ListIterator(), i->previous, value, i);
 
-	new_item->previous = item->previous;
 	new_item->previous->next = new_item;
-	new_item->value = value;
-	new_item->next = item;
 	new_item->next->previous = new_item;
 
 	self->length++;
 	return new_item;
 }
 
-list_iterator_t *list_prepend(list_t *self, void *value) {
+iterator_t *list_prepend(list_t *self, void *value) {
 	return list_insert_before(self, list_rend(self), value);
 }
 
-list_iterator_t *list_append(list_t *self, void *value) {
+iterator_t *list_append(list_t *self, void *value) {
 	return list_insert_after(self, end(self), value);
 }
 
-list_iterator_t *list_rbegin(list_t *self) {
-	return self->dummy->previous;
-}
-
-list_iterator_t *list_rend(list_t *self) {
-	return self->dummy;
-}
-
-
-void *list_remove(list_t *self, list_iterator_t *to_remove) {
+void *list_remove(list_t *self, iterator_t *_to_remove) {
+	list_iterator_t *to_remove = cast(ListIterator(), _to_remove);
 	to_remove->previous->next = to_remove->next;
 	to_remove->next->previous = to_remove->previous;
 	void *result = to_remove->value;
@@ -323,24 +327,6 @@ void *list_remove_first(list_t *self) {
 void *list_remove_last(list_t *self) {
 	return list_remove(self, end(self));
 }
-
-void *item_get(list_iterator_t *self) {
-	return self->value;
-}
-
-void *item_set(list_iterator_t *self, void *value) {
-	return (self->value = value);
-}
-
-list_iterator_t *item_next(list_iterator_t *self) {
-	return self->next;
-}
-
-list_iterator_t *item_previous(list_iterator_t *self) {
-	return self->previous;
-}
-
-
 
 
 

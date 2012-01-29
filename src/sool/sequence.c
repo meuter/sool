@@ -8,12 +8,14 @@ void *iterator_class_ctor(void *_self, va_list *args) {
 	typedef void (*method_t)();
 	method_t selector;
 
-	self->next = self->get = NULL;
+	self->next = self->get = self->previous = NULL;
 
 	va_list args_copy = *args;
 	while ( (selector = va_arg(args_copy, method_t)) ) {
 		if (selector == (method_t)next)
 			*(method_t *) &self->next = va_arg(args_copy, method_t);
+		if (selector == (method_t)previous)
+			*(method_t *) &self->previous = va_arg(args_copy, method_t);
 		if (selector == (method_t)get)
 			*(method_t *) &self->get = va_arg(args_copy, method_t);
 	}
@@ -39,7 +41,7 @@ void *sequence_class_ctor(void *_self, va_list *args) {
 	typedef void (*method_t)();
 	method_t selector;
 
-	self->begin = self->end = NULL;
+	self->begin = self->end = self->rbegin = self->rend = NULL;
 
 	va_list args_copy = *args;
 	while ( (selector = va_arg(args_copy, method_t)) ) {
@@ -47,6 +49,10 @@ void *sequence_class_ctor(void *_self, va_list *args) {
 			*(method_t *) &self->begin = va_arg(args_copy, method_t);
 		if (selector == (method_t)end)
 			*(method_t *) &self->end = va_arg(args_copy, method_t);
+		if (selector == (method_t)rbegin)
+			*(method_t *) &self->rbegin = va_arg(args_copy, method_t);
+		if (selector == (method_t)rend)
+			*(method_t *) &self->rend = va_arg(args_copy, method_t);
 	}
 
 	return self;
@@ -65,8 +71,6 @@ class_t *SequenceClass() {
 
 /*****************************************************************************/
 
-
-
 iterator_t *begin(sequence_t *self) {
 	sequence_class_t *class = cast(SequenceClass(), class_of(self));
 	assertf(class->begin, "class '%O' has no 'begin' method", class);
@@ -80,6 +84,18 @@ iterator_t *end(sequence_t *self) {
 }
 
 
+iterator_t *rbegin(sequence_t *self) {
+	sequence_class_t *class = cast(SequenceClass(), class_of(self));
+	assertf(class->begin, "class '%O' has no 'rbegin' method", class);
+	return class->rbegin(self);
+}
+
+iterator_t *rend(sequence_t *self) {
+	sequence_class_t *class = cast(SequenceClass(), class_of(self));
+	assertf(class->rend, "class '%O' has no 'rend' method", class);
+	return class->end(self);
+}
+
 
 iterator_t *next(iterator_t *self) {
 	iterator_class_t *class = cast(IteratorClass(), class_of(self));
@@ -87,9 +103,33 @@ iterator_t *next(iterator_t *self) {
 	return class->next(self);
 }
 
+iterator_t *previous(iterator_t *self) {
+	iterator_class_t *class = cast(IteratorClass(), class_of(self));
+	assertf(class->next, "class '%O' has no 'previous' method", class);
+	return class->previous(self);
+}
+
 void *get(iterator_t *self) {
 	iterator_class_t *class = cast(IteratorClass(), class_of(self));
 	assertf(class->get, "class '%O' has no 'get' method", class);
 	return class->get(self);
 }
+
+iterator_t *find(sequence_t *self, void *value) {
+	iterator_t *i;
+	forall(i, self)
+		if (get(i) == value)
+			break;
+	return i;
+}
+
+iterator_t *rfind(sequence_t *self, void *value) {
+	iterator_t *i;
+	rforall(i, self)
+		if (get(i) == value)
+			break;
+	return i;
+}
+
+
 
