@@ -35,7 +35,7 @@ class_t *IteratorClass() {
 /*****************************************************************************/
 
 void *sequence_class_ctor(void *_self, va_list *args) {
-	sequence_class_t *self = super_ctor(Class(), _self, args);
+	sequence_class_t *self = super_ctor(SequenceClass(), _self, args);
 	typedef void (*method_t)();
 	method_t selector;
 
