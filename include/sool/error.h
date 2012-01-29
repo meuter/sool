@@ -3,6 +3,8 @@
 
 #include <stdarg.h>
 
-void assertf(int expression, char *error_message, ...);
+#define assertf(expr, msg, args...) _assertf((int)(expr), msg, ## args)
+
+void _assertf(int expression, char *error_message, ...);
 
 #endif

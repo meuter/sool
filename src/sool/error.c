@@ -29,7 +29,7 @@ void print_backtrace(FILE *stream) {
 
 }
 
-void assertf(int expression, char *error_message, ...) {
+void _assertf(int expression, char *error_message, ...) {
 	if (!expression) {
 		va_list args;
 		va_start(args, error_message);
