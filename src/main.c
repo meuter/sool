@@ -3,14 +3,15 @@
 
 #include <sool/object.h>
 #include <sool/list.h>
+#include <sool/io.h>
 
 
 int main() {
-	list_t *l = list(1,2,3,4,5);
+	list_t *l = list(1,2,3,4,5,6);
 	iterator_t *i;
 
-	forall(i, l)
-		printf("%d ", (int)get(i));
+	forall(i,l) 
+		oprintf("%O -> %d\n", i, (int)get(i));
 
 	return EXIT_SUCCESS;
 }

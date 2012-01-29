@@ -3,41 +3,44 @@
 #include <sool/io.h>
 #include <sool/sequence.h>
 
-// TODO make an iterable class for item_t
-
 #include "object_def.h"
 
 struct _item_t {
-	const object_t object;
+	EXTENDS(object_t);
 	void *value;
 	item_t *next, *previous;
 };
 
 struct _list_t {
-	const object_t parent;
+	EXTENDS(object_t);
 	item_t *dummy;
 	int length;
 };
 
+class_t *ListIterator();
 
-static void list_ctor(void *_self, va_list *args) {
+
+static void *list_ctor(void *_self, va_list *args) {
     list_t *self = _self;
     int i, n;
 
-    self->dummy = xmalloc(sizeof(item_t));
+    self->dummy = new(ListIterator());
     self->dummy->next = self->dummy->previous = self->dummy;
     self->length = 0;
 
     n = va_arg(*args, int);
     for (i = 0; i < n; ++i)
     	list_append(self, va_arg(*args, void *));
+
+    return self;
 }
 
-static void list_dtor(void *_self) {
+static void *list_dtor(void *_self) {
 	list_t *self = _self;
 	while (!list_is_empty(self))
 		list_remove_first(self);
 	xfree(self->dummy);
+	return self;
 }
 
 static int list_put(void *_self, FILE *stream, const char *format) {
@@ -49,9 +52,9 @@ static int list_put(void *_self, FILE *stream, const char *format) {
 		format = "%p";
 
 	result += fprintf(stream, "[");
-	for (i = list_begin(self); i != list_end(self); i = item_next(i)) {
-		result += ofprintf(stream, format, i->value);
-		result += fprintf(stream, i->next != self->dummy ? ", " : "");
+	forall(i, self) {
+		result += ofprintf(stream, format, get(i));
+		result += fprintf(stream, next(i) != end(self) ? ", " : "");
 	}
 	result += fprintf(stream, "]");
 	return result;
@@ -81,7 +84,7 @@ static int list_cmp(void *_self, void *_other) {
 class_t *List() {
 	static class_t *result = NULL;
 	if (result == NULL) {
-		result = new(Class(), __FUNCTION__, SequenceClass(), sizeof(list_t),
+		result = new(SequenceClass(), __FUNCTION__, Object(), sizeof(list_t),
 			ctor,  list_ctor,
 			dtor,  list_dtor,
 			put,   list_put,
@@ -93,6 +96,31 @@ class_t *List() {
 	}
 	return result;
 }
+
+static void *list_iterator_next(void *_self) {
+	item_t *self = cast(ListIterator(), _self);
+	return self->next;
+}
+
+static void *list_iterator_get(void *_self) {
+	item_t *self = cast(ListIterator(), _self);
+	return self->value;
+
+}
+
+
+class_t *ListIterator() {
+	static class_t *result = NULL;
+	if (result == NULL) {
+		result = new(IteratorClass(), __FUNCTION__, Object(), sizeof(item_t),
+			get,  list_iterator_get,
+			next, list_iterator_next,
+			NULL
+		);
+	}
+	return result;
+}
+
 
 list_t *list_clone(list_t *self) {
 	return list_copy(self, list_begin(self), list_end(self));
@@ -223,7 +251,7 @@ item_t *list_rfind(list_t *self, void *value) {
 }
 
 item_t *list_insert_before(list_t *self, item_t *item, void *value) {
-	item_t *new_item = xmalloc(sizeof(struct _item_t));
+	item_t *new_item = new(ListIterator());
 
 	new_item->next = item->next;
 	new_item->next->previous = new_item;
@@ -237,7 +265,7 @@ item_t *list_insert_before(list_t *self, item_t *item, void *value) {
 
 
 item_t *list_insert_after(list_t *self, item_t *item, void *value) {
-	item_t *new_item = xmalloc(sizeof(struct _item_t));
+	item_t *new_item = new(ListIterator());
 
 	new_item->previous = item->previous;
 	new_item->previous->next = new_item;
