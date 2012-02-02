@@ -6,6 +6,11 @@
 #include <sool/bool.h>
 #include <sool/sequence.h>
 
+// TODO lists are supposed to be mutable (as in python)
+// --> need set,
+// sort should be in place
+// and join should be renamed extend and be in place
+
 struct _list_t;
 typedef struct _list_t list_t;
 

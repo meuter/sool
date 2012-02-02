@@ -201,6 +201,7 @@ list_t *_list_join(int n, ...) {
 	return result;
 }
 
+// FIXME list_sort does not work!
 list_t *list_sort(list_t *self) {
 	list_t *result = list();
 	iterator_t *i, *j;
