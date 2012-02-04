@@ -4,10 +4,14 @@
 #include <sool/stack.h>
 #include <sool/io.h>
 
-int toto(bool_t error) {
+int toto(int error) {
 	printf("entering toto\n");
-	if (error)
-		throw((void*)15156);
+	if (error == 1)
+		throw(new(Exception(), "youpla"));
+	else if (error == 2)
+		throw(new(Object()));
+	else
+		throw(new(Stack()));
 	printf("leaving toto\n");
 	return 0;
 }
@@ -15,27 +19,24 @@ int toto(bool_t error) {
 
 int main() {
 
-	int x;
+	void *e;
 
 	try {
 		printf("before toto \n");
-		int y = toto(FALSE);
+		int y = toto(0);
 		printf("after toto 1 : y = %d\n", y);
-		int x = toto(TRUE);
+		int x = toto(1);
 		printf("after toto 2 : x = %d\n", x);
 	}
-	else if ( __top() == (void*)1515 && ( x = (int)__catch())) {
-		printf("caught 1515\n");
+	catch(Exception(), e) {
+		oprintf("caught exception %O\n", e);
 	}
-	else if ( __top() == (void*)15156 && ( x = (int)__catch())) {
-		printf("caught 15156\n");
+	catch(Object(), e) {
+		oprintf("caught toto exception %O\n", e);
 	}
-	else {
-		printf("caught something else\n");
+	other(e) {
+		oprintf("caught something else\n");
 	}
-
-
-
 
 	return 0;
 }

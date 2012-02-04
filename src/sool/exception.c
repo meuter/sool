@@ -6,6 +6,38 @@
 
 /*****************************************************************************/
 
+struct _exception_t {
+	EXTENDS(object_t);
+	jmp_buf buff;
+	const char *msg;
+};
+
+void *exception_ctor(void *_self, va_list *args) {
+	exception_t *self = super_ctor(Exception(), _self, args);
+	self->msg = va_arg(*args, const char *);
+	return self;
+}
+
+int exception_put(void *_self, FILE *stream, char *subformat) {
+	(void)subformat;
+	exception_t *self = cast(Exception(), _self);
+	return fprintf(stream, "%s", self->msg);
+}
+
+class_t *Exception() {
+	static class_t *result = NULL;
+	if (result == NULL) {
+		result = new(Class(), "Exception", Object(), sizeof(exception_t),
+			ctor, exception_ctor,
+			put,  exception_put,
+			NULL
+		);
+	}
+	return result;
+}
+
+/*****************************************************************************/
+
 class_t *StackFrame();
 
 typedef struct  {
