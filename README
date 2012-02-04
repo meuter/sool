@@ -3,11 +3,11 @@ SOOL : Simple Object Orientation Library in C
 This project aims at providing a simple object orientation
 framework for the C language, as well as a comprehensive 
 collection of modern data structure found in higher level 
-languages like lists, sets, dictionary,etc. The techniques
-used in the library are greatly inspired by the excellent 
-book by Axel-Tobias Schreiner called "Object Oriented 
-Programming in ANSI-C". This book is available on his
-website:
+languages like lists, sets, dictionary, exception,etc.
+The techniques used in the library are greatly inspired 
+by the excellent book by Axel-Tobias Schreiner called 
+"Object Oriented Programming in ANSI-C". This book is 
+available on his website:
 
 www.cs.rit.edu/~ats/books/ooc.pdf
 
