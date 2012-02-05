@@ -4,39 +4,45 @@
 #include <sool/stack.h>
 #include <sool/io.h>
 
-int toto(int error) {
-	printf("entering toto\n");
+int some_function(int error) {
+	printf("entering...\n");
 	if (error == 1)
-		throw(new(Exception(), "youpla"));
+		throw(new(Exception(), "something was thrown"));
 	else if (error == 2)
 		throw(new(Object()));
-	else
+	else if (error == 3)
 		throw(new(Stack()));
-	printf("leaving toto\n");
+	printf("leaving...\n");
 	return 0;
 }
 
 
 int main() {
 
-	void *e;
+	void *o;
 
 	try {
-		printf("before toto \n");
-		int y = toto(0);
-		printf("after toto 1 : y = %d\n", y);
-		int x = toto(1);
-		printf("after toto 2 : x = %d\n", x);
+		printf("step 1\n");
+		some_function(0);
+		printf("step 2\n");
+		some_function(3);
+		printf("step 3\n");
 	}
-	catch(Exception(), e) {
-		oprintf("caught exception %O\n", e);
+	catch(Exception(), o) {
+		oprintf("caught exception [%O]\n", o);
 	}
-	catch(Object(), e) {
-		oprintf("caught toto exception %O\n", e);
+	catch(Object(), o) {
+		oprintf("caught an object [%O]\n", o);
 	}
-	other(e) {
+	except {
 		oprintf("caught something else\n");
 	}
+
+	printf("out of the danger zone...\n");
+
+	throw(new(Exception(), "fatal mistake!"));
+
+	printf("this will never be printed!\n");
 
 	return 0;
 }

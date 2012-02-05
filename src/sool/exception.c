@@ -1,6 +1,7 @@
 #include <sool/exception.h>
 #include <sool/stack.h>
 #include <sool/error.h>
+#include <sool/io.h>
 
 #include "object_def.h"
 
@@ -21,7 +22,7 @@ void *exception_ctor(void *_self, va_list *args) {
 int exception_put(void *_self, FILE *stream, char *subformat) {
 	(void)subformat;
 	exception_t *self = cast(Exception(), _self);
-	return fprintf(stream, "%s", self->msg);
+	return ofprintf(stream, "%O(%s)", class_of(self), self->msg);
 }
 
 class_t *Exception() {
@@ -43,14 +44,16 @@ class_t *StackFrame();
 typedef struct  {
 	EXTENDS(object_t);
 	jmp_buf buf;
+	bool_t handled;
 	void *thrown;
 } stack_frame_t;
 
 
 void *stack_frame_ctor(void *_self, va_list *args) {
 	(void)args;
-	stack_frame_t *self = cast(StackFrame(), _self);
-	self->thrown = NULL;
+	stack_frame_t *self = super_ctor(StackFrame(), _self, args);
+	self->handled = TRUE;
+	self->thrown  = NULL;
 	return self;
 }
 
@@ -67,9 +70,9 @@ class_t *StackFrame() {
 
 /*****************************************************************************/
 
-static stack_t *stack_trace = NULL;
+stack_t *stack_trace = NULL;
 
-jmp_buf *__try() {
+jmp_buf *__exception_push() {
 	if (stack_trace == NULL)
 		stack_trace = new(Stack());
 	stack_frame_t *e = new(StackFrame());
@@ -77,21 +80,39 @@ jmp_buf *__try() {
 	return &e->buf;
 }
 
-void __throw(void *something) {
+void __exception_throw(void *something) {
 	if (stack_trace == NULL || stack_is_empty(stack_trace)) {
-		assertf(FALSE, "Uncaught exception!");
+		fatalf("uncaught exception: %O", something);
 	}
-	stack_frame_t *e = stack_top(stack_trace);
-	e->thrown = something;
-	longjmp(e->buf, 0);
+	else {
+		stack_frame_t *e = stack_top(stack_trace);
+		e->handled = FALSE;
+		e->thrown  = something;
+		longjmp(e->buf, 0);
+	}
 }
 
-void *__catch() {
+void *__exception_pop() {
 	stack_frame_t *frame = cast(StackFrame(), stack_pop(stack_trace));
+	bool_t handled = frame->handled;
+	void *thrown   = frame->thrown;
+	delete(frame);
+	if (!handled) {
+		__exception_throw(thrown);
+		return NULL;
+	}
+	else {
+		return thrown;
+	}
+}
+
+void *__exception_top() {
+	stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
 	return frame->thrown;
 }
 
-void *__top() {
+void *__exception_catch() {
 	stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
+	frame->handled = TRUE;
 	return frame->thrown;
 }

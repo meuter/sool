@@ -45,3 +45,4 @@ test_env.MergeFlags("-Iinclude -Itest -lsool -lcmockery -Ltest -L. -lgc -lpthrea
 test_env.UnitTest("test/string_test", Split("test/sool/string_test.c"))
 test_env.UnitTest("test/list_test", Split("test/sool/list_test.c"))
 test_env.UnitTest("test/stack_test", Split("test/sool/stack_test.c"))
+test_env.UnitTest("test/exception_test", Split("test/sool/exception_test.c"))

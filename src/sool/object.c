@@ -181,6 +181,21 @@ void *cast(class_t *class, void *_self) {
 	return self;
 }
 
+bool_t is_a(class_t *class, void *_self) {
+	object_t *self = _self;
+	assertf(is_object(self), "pointer '%p' does not point to a valid Object", _self);
+	class_t *current = self->class, *parent;
+
+	while (current && current != class) {
+		 parent = super(current);
+		 if (parent == current)
+			 return FALSE;
+		 current = parent;
+	}
+	return TRUE;
+}
+
+
 class_t *class_of(void *_self) {
 	object_t *self = cast(Object(), _self);
 	assertf(self->class, "object '%O' has a NULL class", _self);
@@ -213,4 +228,3 @@ void *super_dtor(void *class, void *self) {
 	assertf(super_class->ctor, "class '%O' has no destructor", super_class);
 	return super_class->dtor(self);
 }
-
