@@ -242,6 +242,7 @@ int list_count(list_t *self, void *value) {
 }
 
 int list_length(list_t *self) {
+	self = cast(List(), self);
 	return self->length;
 }
 

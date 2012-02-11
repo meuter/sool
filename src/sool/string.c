@@ -29,6 +29,21 @@ static bool_t is_alphanum(const char c) {
 	return (is_alpha(c) || is_num(c));
 }
 
+static bool_t string_forall(const char *self, bool_t (*check)(const char)) {
+	int length = string_length(self), i;
+	for (i = 0; i < length; ++i)
+		if (!check(self[i]))
+			return FALSE;
+	return TRUE;
+}
+
+static bool_t string_exist(const char *self, bool_t (*check)(const char)) {
+	int length = string_length(self), i;
+	for (i = 0; i < length; ++i)
+		if (check(self[i]))
+			return TRUE;
+	return FALSE;
+}
 
 /*****************************************************************************/
 
@@ -45,7 +60,6 @@ static int string_index(const char *self, int i) {
 	return i < 0 ? n + i : i;
 }
 
-
 static char *string_paste(char *s, const char *t) {
 	t = string(t);
 	while ( (*s++ = *t++) )
@@ -60,6 +74,18 @@ static char *string_dup(const char *s, int n) {
 	result[n] = 0;
 	return result;
 }
+
+static char *string_typeset(const char *self, int length, int left, int right, char filler) {
+	int i, n = length+left+right;
+	if (n < length) return string_clone(self);
+	char *result = mem_alloc(n+1);
+	for (i = 0; i < left; ++i) result[i] = filler;
+	memcpy(result+left, self, length);
+	for (i += length; i < n; ++i) result[i] = filler;
+	result[n] = '\0';
+	return result;
+}
+
 /*****************************************************************************/
 
 char * string_clone(const char *self) {
@@ -91,7 +117,6 @@ int string_rfind(const char* self, const char* substr) {
 	return -1;
 }
 
-
 bool_t string_contains(const char *self, const char *substr) {
 	return (string_find(self, substr) != -1);
 }
@@ -102,7 +127,6 @@ char *string_strip(const char *self) {
 	while (is_space(self[to-1])) to--;
 	return string_slice(self, from, to);
 }
-
 
 list_t *string_split(const char *self, const char *delimiter) {
 	list_t *result = list();
@@ -117,34 +141,32 @@ list_t *string_split(const char *self, const char *delimiter) {
 	return result;
 }
 
-char *_string_join(const char *self, int n, ...) {
-	int length, i;
+char *string_join(const char *self, list_t *words) {
+	int length, n = list_length(words);
 	char *result, *ptr;
-	va_list args;
+	iterator_t *i;
 
 	self = string(self);
 
-	if (n == 0)	return string_clone("");
+	if (n == 0) return string_clone("");
 
 	// compute the length of the resulting string
 	length = string_length(self) * (n - 1);
-	va_start(args, n);
-	for (i = 0; i < n; ++i)
-		length += string_length(va_arg(args, const char *));
-	va_end(args);
+	forall(i, words)
+		length += string_length(get(i));
 
 	// build the concatenated string
 	ptr = result = mem_alloc(length + 1);
 
 	// this does not throw any exception, since the list of args
 	// is checked by the first loop
-	va_start(args, n);
-	for (i = 0; i < n-1; ++i) {
-		ptr = string_paste(ptr, va_arg(args, const char *));
+
+	for (i = begin(words); i != previous(end(words)); i = next(i)) {
+		ptr = string_paste(ptr, get(i));
 		ptr = string_paste(ptr, self);
 	}
-	ptr = string_paste(ptr, va_arg(args, const char *));
-	va_end(args);
+
+	ptr = string_paste(ptr, get(rbegin(words)));
 
 	return result;
 }
@@ -156,7 +178,14 @@ char *string_slice(const char *self, int from, int to) {
 	return string_dup(self + from, to - from);
 }
 
-// TODO replace
+char *string_replace(const char *self, const char *substr, const char *other) {
+	other = string(other);
+	list_t *splitted = string_split(self, substr);
+	iterator_t *i;
+	char *result = string_join(other, splitted);
+	forall(i, splitted) delete(get(i));
+	return result;
+}
 
 int string_cmp(const char *self, const char *other) {
 	return strcmp(string(self), string(other));
@@ -164,17 +193,6 @@ int string_cmp(const char *self, const char *other) {
 
 bool_t string_equal(const char *self, const char *other) {
 	return string_cmp(self, other) == 0;
-}
-
-static char *string_typeset(const char *self, int length, int left, int right, char filler) {
-	int i, n = length+left+right;
-	if (n < length) return string_clone(self);
-	char *result = mem_alloc(n+1);
-	for (i = 0; i < left; ++i) result[i] = filler;
-	memcpy(result+left, self, length);
-	for (i += length; i < n; ++i) result[i] = filler;
-	result[n] = '\0';
-	return result;
 }
 
 char *string_ljust(const char *self, int width, char filler) {
@@ -203,7 +221,6 @@ char *string_lower(const char *self) {
 	return result;
 }
 
-
 char *string_upper(const char *self) {
 	int length = string_length(self), i;
 	char *result = string_dup(self, length);
@@ -214,8 +231,6 @@ char *string_upper(const char *self) {
 	}
 	return result;
 }
-
-//TODO char   *string_title       (const char *self);
 
 bool_t  string_starts_with (const char *self, const char *substr) {
 	int n = string_length(self), m = string_length(substr);
@@ -250,22 +265,6 @@ char *string_format(const char *self, ...) {
 	va_end(args);
 
 	return result;
-}
-
-static bool_t string_forall(const char *self, bool_t (*check)(const char)) {
-	int length = string_length(self), i;
-	for (i = 0; i < length; ++i)
-		if (!check(self[i]))
-			return FALSE;
-	return TRUE;
-}
-
-static bool_t string_exist(const char *self, bool_t (*check)(const char)) {
-	int length = string_length(self), i;
-	for (i = 0; i < length; ++i)
-		if (check(self[i]))
-			return TRUE;
-	return FALSE;
 }
 
 bool_t string_is_space(const char *self) {

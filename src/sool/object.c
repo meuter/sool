@@ -1,6 +1,7 @@
 #include <sool/object.h>
 #include <sool/error.h>
 #include <sool/mem.h>
+#include <sool/exception.h>
 #include <string.h>
 
 #include "object_def.h"
@@ -175,6 +176,8 @@ bool_t equal   (void *self, void *other) {
 
 void *cast(class_t *class, void *_self) {
 	object_t *self = _self;
+	if (self == NULL)
+		throw(new(NullPointerError()));
 	assertf(is_object(self), "pointer '%p' does not point to a valid Object", _self);
 	class_t *current = self->class, *parent;
 

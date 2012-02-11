@@ -130,19 +130,22 @@ static void test_string_split() {
 
 static void test_string_join() {
 	char *s;
+	list_t *l;
 
-	assert_raises(NullPointerError(), string_join(NULL));
 	assert_raises(NullPointerError(), string_join(", ", NULL));
-	assert_raises(NullPointerError(), string_join(", ", "first", NULL));
+	l = list(); assert_raises(NullPointerError(), string_join(NULL, l)); delete(l);
+	l = list(NULL); assert_raises(NullPointerError(), string_join(", ", l)); delete(l);
+	l = list("first", NULL); assert_raises(NullPointerError(), string_join(", ", l)); delete(l);
 
-	s = string_join(""); assert_string_equal(s, ""); delete(s);
-	s = string_join(", "); assert_string_equal(s, ""); delete(s);
-	s = string_join(", "); assert_string_equal(s, ""); delete(s);
-	s = string_join(", ", "first"); assert_string_equal(s, "first"); delete(s);
-	s = string_join(", ", "first", "second"); assert_string_equal(s, "first, second"); delete(s);
-	s = string_join("", "first", "second"); assert_string_equal(s, "firstsecond"); delete(s);
-	s = string_join("/", "first", "second", "third"); assert_string_equal(s, "first/second/third"); delete(s);
-	s = string_join("/", "", "second", ""); assert_string_equal(s, "/second/"); delete(s);
+	l = list(); s = string_join("", l); assert_string_equal(s, ""); delete(s, l);
+	l = list(); s = string_join(", ", l); assert_string_equal(s, ""); delete(s, l);
+	l = list(); s = string_join(", ", l); assert_string_equal(s, ""); delete(s, l);
+	l = list("first"); s = string_join(", ", l); assert_string_equal(s, "first"); delete(s, l);
+	l = list("first", "second"); s = string_join(", ", l); assert_string_equal(s, "first, second"); delete(s, l);
+	l = list("first", "second"); s = string_join("", l); assert_string_equal(s, "firstsecond"); delete(s, l);
+	l = list("first", "second", "third"); s = string_join("/", l); assert_string_equal(s, "first/second/third"); delete(s, l);
+	l = list("", "second", ""); s = string_join("/", l); assert_string_equal(s, "/second/"); delete(s, l);
+
 }
 
 static void test_string_slice() {
@@ -154,16 +157,23 @@ static void test_string_slice() {
 	assert_raises(IndexError(), string_slice("0123456789", 0, -11));
 	assert_raises(IndexError(), string_slice("0123456789", -11, 2));
 
-	s = string_slice("0123456789", 0, 0);  assert_string_equal(s, "");
-	s = string_slice("0123456789", 0, 2);  assert_string_equal(s, "01");
-	s = string_slice("0123456789", 0, -1); assert_string_equal(s, "012345678");
-	s = string_slice("0123456789", -5, -2); assert_string_equal(s, "567");
-	s = string_slice("0123456789", 0, 10); assert_string_equal(s, "0123456789");
-	s = string_slice("0123456789", 5, 2);  assert_string_equal(s, "");
-	s = string_slice("0123456789", -2, -5);  assert_string_equal(s, "");
+	s = string_slice("0123456789", 0, 0);  assert_string_equal(s, ""); delete(s);
+	s = string_slice("0123456789", 0, 2);  assert_string_equal(s, "01"); delete(s);
+	s = string_slice("0123456789", 0, -1); assert_string_equal(s, "012345678"); delete(s);
+	s = string_slice("0123456789", -5, -2); assert_string_equal(s, "567"); delete(s);
+	s = string_slice("0123456789", 0, 10); assert_string_equal(s, "0123456789"); delete(s);
+	s = string_slice("0123456789", 5, 2);  assert_string_equal(s, ""); delete(s);
+	s = string_slice("0123456789", -2, -5);  assert_string_equal(s, ""); delete(s);
 }
 
-// TODO replace
+static void test_string_replace() {
+	const char *s;
+	assert_raises(NullPointerError(), string_replace(NULL, "",""));
+	assert_raises(NullPointerError(), string_replace("", NULL,""));
+	assert_raises(NullPointerError(), string_replace("", "", NULL));
+	s = string_replace("12345612315678975641378", "12", "XX"); assert_string_equal(s, "XX3456XX315678975641378"); delete(s);
+	s = string_replace("12345612315678975641378", "1", "XX"); assert_string_equal(s, "XX23456XX23XX567897564XX378"); delete(s);
+}
 
 // TODO cmp
 
@@ -360,6 +370,7 @@ int main() {
 		unit_test(test_string_split),
 		unit_test(test_string_join),
 		unit_test(test_string_slice),
+		unit_test(test_string_replace),
 		unit_test(test_string_ljust),
 		unit_test(test_string_rjust),
 		unit_test(test_string_center),
