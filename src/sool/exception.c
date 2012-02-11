@@ -1,17 +1,11 @@
-#include <sool/exception.h>
 #include <sool/stack.h>
 #include <sool/error.h>
 #include <sool/io.h>
 
-#include "object_def.h"
+#include "exception_def.h"
 
 /*****************************************************************************/
 
-struct _exception_t {
-	EXTENDS(object_t);
-	jmp_buf buff;
-	const char *msg;
-};
 
 void *exception_ctor(void *_self, va_list *args) {
 	exception_t *self = super_ctor(Exception(), _self, args);

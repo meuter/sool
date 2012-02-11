@@ -5,5 +5,4 @@ main
 *.o
 *.res
 test/libcmockery.a
-test/list_test
-test/string_test
+test/*_test
