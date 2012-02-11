@@ -21,7 +21,7 @@ static int string_index(const char *self, int i) {
 }
 
 static char *string_dup(const char *s, int n) {
-	char *result = mem_alloc(n);
+	char *result = mem_alloc(n+1);
 	return strncpy(result, s, n);
 }
 
@@ -96,7 +96,36 @@ bool_t string_equal(const char *self, const char *other) {
 
 //TODO char   *string_ljust       (const char *self, int width, char filler);
 //TODO char   *string_rjust       (const char *self, int width, char filler);
-//TODO char   *string_center      (const char *self, int width, char filler);
+
+static char *string_typeset(const char *self, int length, int left, int right, char filler) {
+	int i, n = length+left+right;
+	if (n < length) return string_clone(self);
+	char *result = mem_alloc(n+1);
+	for (i = 0; i < left; ++i) result[i] = filler;
+	memcpy(result+left, self, length);
+	for (i += length; i < n; ++i) result[i] = filler;
+	result[n] = '\0';
+	return result;
+}
+
+char *string_ljust(const char *self, int width, char filler) {
+	int length = string_length(self);
+	return string_typeset(self, length, 0, width - length, filler);
+}
+
+char *string_rjust(const char *self, int width, char filler) {
+	int length = string_length(self);
+	return string_typeset(self, length, width - length, 0, filler);
+}
+
+char *string_center(const char *self, int width, char filler) {
+	int length = string_length(self);
+	return string_typeset(self, length, (width - length)/2, width - length - (width - length)/2, filler);
+}
+
+
+
+
 //TODO char   *string_lower       (const char *self);
 //TODO char   *string_upper       (const char *self);
 //TODO char   *string_title       (const char *self);
@@ -115,7 +144,7 @@ char *string_format(const char *self, ...) {
 	if ( (n = vsnprintf(NULL, 0, self, copy)) < 0 )
 		throw(new(MemoryError()));
 
-	result = mem_alloc(n);
+	result = mem_alloc(n+1);
 	if ( vsnprintf(result, n+1, self, args) != n ) {
 		mem_free(result);
 		throw(new(MemoryError()));

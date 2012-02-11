@@ -13,10 +13,10 @@ class_t *IndexError();
 
 int __exc_c;
 
-#define try                 for (__exc_c = 0; __exc_c == 0; (void)exception_pop(), __exc_c = 1) if (setjmp(*exception_push()) == 0)
-#define throw(e)            exception_throw(e)
-#define catch(class, e)     else if ( class_of(exception_top()) == class && (e = exception_catch()))
-#define except              else if ( (exception_catch()) )
+#define try              for (__exc_c = 0; __exc_c == 0; (void)exception_pop(), __exc_c = 1) if (setjmp(*exception_push()) == 0)
+#define throw(e)         exception_throw(e)
+#define catch(class, e)  else if ( class_of(exception_top()) == class && (e = exception_catch()))
+#define except           else if ( (exception_catch()) )
 
 
 jmp_buf *exception_push();

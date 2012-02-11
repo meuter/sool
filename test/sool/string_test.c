@@ -110,14 +110,54 @@ static void test_string_slice() {
 
 // TODO equal
 
-//TODO char   *string_ljust       (const char *self, int width, char filler);
-//TODO char   *string_rjust       (const char *self, int width, char filler);
-//TODO char   *string_center      (const char *self, int width, char filler);
+static void test_string_ljust() {
+	char *s;
+
+	s = string_ljust("", 0, '-'); assert_string_equal(s,""); delete(s);
+	s = string_ljust("", 5, '-'); assert_string_equal(s,"-----"); delete(s);
+	s = string_ljust("abcd", 4, '-'); assert_string_equal(s,"abcd"); delete(s);
+	s = string_ljust("abc", 4, '-'); assert_string_equal(s,"abc-"); delete(s);
+	s = string_ljust("abc", 5, '-'); assert_string_equal(s,"abc--"); delete(s);
+	s = string_ljust("abc", 6, '-'); assert_string_equal(s,"abc---"); delete(s);
+	s = string_ljust("abc", 2, '-'); assert_string_equal(s,"abc"); delete(s);
+
+	assert_raises(NullPointerError(), string_ljust(NULL, 3, '-'));
+}
+
+static void test_string_rjust() {
+	char *s;
+
+	s = string_rjust("", 0, '-'); assert_string_equal(s,""); delete(s);
+	s = string_rjust("", 5, '-'); assert_string_equal(s,"-----"); delete(s);
+	s = string_rjust("abcd", 4, '-'); assert_string_equal(s,"abcd"); delete(s);
+	s = string_rjust("abc", 4, '-'); assert_string_equal(s,"-abc"); delete(s);
+	s = string_rjust("abc", 5, '-'); assert_string_equal(s,"--abc"); delete(s);
+	s = string_rjust("abc", 6, '-'); assert_string_equal(s,"---abc"); delete(s);
+	s = string_rjust("abc", 2, '-'); assert_string_equal(s,"abc"); delete(s);
+
+	assert_raises(NullPointerError(), string_rjust(NULL, 3, '-'));
+}
+
+static void test_string_center() {
+	char *s;
+
+	s = string_center("", 0, '-'); assert_string_equal(s,""); delete(s);
+	s = string_center("", 5, '-'); assert_string_equal(s,"-----"); delete(s);
+	s = string_center("abcd", 4, '-'); assert_string_equal(s,"abcd"); delete(s);
+	s = string_center("abc", 4, '-'); assert_string_equal(s,"abc-"); delete(s);
+	s = string_center("abc", 5, '-'); assert_string_equal(s,"-abc-"); delete(s);
+	s = string_center("abc", 6, '-'); assert_string_equal(s,"-abc--"); delete(s);
+	s = string_center("abc", 2, '-'); assert_string_equal(s,"abc"); delete(s);
+
+	assert_raises(NullPointerError(), string_center(NULL, 3, '-'));
+}
+
 //TODO char   *string_lower       (const char *self);
 //TODO char   *string_upper       (const char *self);
 //TODO char   *string_title       (const char *self);
 //TODO bool_t  string_starts_with (const char *self, const char *substr);
 //TODO bool_t  string_ends_with   (const char *self, const char *substr);
+
 
 static void test_string_format() {
 	char *s = string_format("%08X", 10);
@@ -137,6 +177,9 @@ int main() {
 		unit_test(test_string_find),
 		unit_test(test_string_strip),
 		unit_test(test_string_slice),
+		unit_test(test_string_ljust),
+		unit_test(test_string_rjust),
+		unit_test(test_string_center),
 		unit_test(test_string_format),
 
 	};
