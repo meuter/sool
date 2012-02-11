@@ -175,9 +175,31 @@ static void test_string_replace() {
 	s = string_replace("12345612315678975641378", "1", "XX"); assert_string_equal(s, "XX23456XX23XX567897564XX378"); delete(s);
 }
 
-// TODO cmp
+static void test_string_cmp() {
+	assert_raises(NullPointerError(), string_cmp(NULL, ""));
+	assert_raises(NullPointerError(), string_cmp("", NULL));
+	assert_raises(NullPointerError(), string_cmp(NULL, NULL));
+	assert_true(string_cmp("","") == 0);
+	assert_true(string_cmp("a","b") < 0);
+	assert_true(string_cmp("b","a") > 0);
+	assert_true(string_cmp(""," a") < 0);
+	assert_true(string_cmp("a","a") == 0);
+	assert_true(string_cmp("abc","abc") == 0);
+	assert_true(string_cmp("abc","acb") < 0);
+}
 
-// TODO equal
+static void test_string_equal() {
+	assert_raises(NullPointerError(), string_equal(NULL, ""));
+	assert_raises(NullPointerError(), string_equal("", NULL));
+	assert_raises(NullPointerError(), string_equal(NULL, NULL));
+	assert_true(string_equal("",""));
+	assert_false(string_equal(" a",""));
+	assert_false(string_equal(""," a"));
+	assert_true(string_equal("a","a"));
+	assert_true(string_equal("abc","abc"));
+	assert_false(string_equal("abc","acb"));
+
+}
 
 static void test_string_ljust() {
 	char *s;
@@ -238,8 +260,6 @@ static void test_string_lower() {
 	s = string_lower("ABCDZ"); assert_string_equal(s, "abcdz"); delete(s);
 	s = string_lower("abCddZ"); assert_string_equal(s, "abcddz"); delete(s);
 }
-
-//TODO char   *string_title       (const char *self);
 
 static void test_string_starts_with() {
 	assert_raises(NullPointerError(), string_ends_with(NULL, NULL));
@@ -371,6 +391,8 @@ int main() {
 		unit_test(test_string_join),
 		unit_test(test_string_slice),
 		unit_test(test_string_replace),
+		unit_test(test_string_equal),
+		unit_test(test_string_cmp),
 		unit_test(test_string_ljust),
 		unit_test(test_string_rjust),
 		unit_test(test_string_center),
