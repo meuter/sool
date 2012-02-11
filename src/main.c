@@ -8,7 +8,7 @@
 int some_function(int error) {
 	printf("entering...\n");
 	if (error == 1)
-		throw(new(Exception(), "something was thrown"));
+		throw(new(Exception()));
 	else if (error == 2)
 		throw(new(Object()));
 	else if (error == 3)
@@ -43,7 +43,7 @@ int main() {
 
 	printf("out of the danger zone...\n");
 
-	throw(new(Exception(), "fatal mistake!"));
+	throw(new(Exception()));
 
 	printf("this will never be printed!\n");
 

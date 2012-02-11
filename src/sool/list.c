@@ -85,7 +85,7 @@ static void *list_dtor(void *_self) {
 	list_t *self = cast(List(), _self);
 	while (!list_is_empty(self))
 		list_remove_first(self);
-	xfree(self->dummy);
+	mem_free(self->dummy);
 	return self;
 }
 
@@ -316,7 +316,7 @@ void *list_remove(list_t *self, iterator_t *_to_remove) {
 	to_remove->previous->next = to_remove->next;
 	to_remove->next->previous = to_remove->previous;
 	void *result = to_remove->value;
-	xfree(to_remove);
+	mem_free(to_remove);
 	self->length--;
 	return result;
 }

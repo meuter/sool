@@ -66,7 +66,10 @@ void *class_ctor(void *_self, va_list *args) {
 
 		method_t selector;
 
+		// FIXME: use va_copy
 		va_list args_copy = *args;
+
+
 
 		while ( (selector = va_arg(args_copy, method_t)) ) {
 			if (selector == (method_t)ctor)
@@ -117,7 +120,7 @@ class_t *Class() {
 /*****************************************************************************/
 
 void *new(class_t *class, ...) {
-	object_t *object = xmalloc(class->size);
+	object_t *object = mem_alloc(class->size);
 	object->magic = MAGIC;
 	object->class = class;
 	va_list ap;
@@ -135,9 +138,9 @@ void _delete  (int n, ...) {
 	while (n--) {
 		void *ptr = va_arg(args, void *);
 		if (is_object(ptr))
-			xfree(dtor(ptr));
+			mem_free(dtor(ptr));
 		else
-			xfree(ptr);
+			mem_free(ptr);
 	}
 	va_end(args);
 }

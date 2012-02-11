@@ -119,6 +119,15 @@ static void test_string_slice() {
 //TODO bool_t  string_starts_with (const char *self, const char *substr);
 //TODO bool_t  string_ends_with   (const char *self, const char *substr);
 
+static void test_string_format() {
+	char *s = string_format("%08X", 10);
+
+	assert_string_equal(s, "0000000A");
+	assert_raises(NullPointerError(), string_format(NULL));
+
+	delete(s);
+}
+
 
 int main() {
 	unit_test_t all_tests[] = {
@@ -128,6 +137,7 @@ int main() {
 		unit_test(test_string_find),
 		unit_test(test_string_strip),
 		unit_test(test_string_slice),
+		unit_test(test_string_format),
 
 	};
 

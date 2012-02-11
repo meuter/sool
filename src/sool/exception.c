@@ -7,8 +7,8 @@
 /*****************************************************************************/
 
 void *exception_ctor(void *_self, va_list *args) {
+	(void)args;
 	exception_t *self = super_ctor(Exception(), _self, args);
-	self->msg = va_arg(*args, const char *);
 	return self;
 }
 
@@ -43,7 +43,6 @@ class_t *IndexError() {
 		result = new(Class(), __FUNCTION__, Exception(), sizeof(exception_t), NULL);
 	return result;
 }
-
 
 /*****************************************************************************/
 
@@ -80,7 +79,7 @@ class_t *StackFrame() {
 
 stack_t *stack_trace = NULL;
 
-jmp_buf *__exception_push() {
+jmp_buf *exception_push() {
 	if (stack_trace == NULL)
 		stack_trace = new(Stack());
 	stack_frame_t *e = new(StackFrame());
@@ -88,7 +87,7 @@ jmp_buf *__exception_push() {
 	return &e->buf;
 }
 
-void __exception_throw(void *something) {
+void exception_throw(void *something) {
 	if (stack_trace == NULL || stack_is_empty(stack_trace)) {
 		fatalf("uncaught exception: %O", something);
 	}
@@ -100,13 +99,13 @@ void __exception_throw(void *something) {
 	}
 }
 
-void *__exception_pop() {
+void *exception_pop() {
 	stack_frame_t *frame = cast(StackFrame(), stack_pop(stack_trace));
 	bool_t handled = frame->handled;
 	void *thrown   = frame->thrown;
 	delete(frame);
 	if (!handled) {
-		__exception_throw(thrown);
+		exception_throw(thrown);
 		return NULL;
 	}
 	else {
@@ -114,12 +113,12 @@ void *__exception_pop() {
 	}
 }
 
-void *__exception_top() {
+void *exception_top() {
 	stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
 	return frame->thrown;
 }
 
-void *__exception_catch() {
+void *exception_catch() {
 	stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
 	frame->handled = TRUE;
 	return frame->thrown;

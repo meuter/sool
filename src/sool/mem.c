@@ -1,6 +1,10 @@
 #include <sool/mem.h>
+#include <sool/exception.h>
+
 #include <string.h>
 #include <assert.h>
+
+#include "exception_def.h"
 
 #define __USE_GC__
 
@@ -19,12 +23,27 @@
 
 #endif
 
-void *xmalloc(size_t size) {
-	void *result = MALLOC(size);
-	assert(result);
+class_t *MemoryError() {
+	static class_t *result = NULL;
+	if (result == NULL)
+		result = new(Class(), __FUNCTION__, Exception(), sizeof(exception_t), NULL);
 	return result;
 }
 
-void xfree(void *ptr) {
+void *mem_alloc(size_t size) {
+	void *result = MALLOC(size);
+	if (result == NULL)
+		throw(new(MemoryError()));
+	return result;
+}
+
+void mem_free(void *ptr) {
 	FREE(ptr);
+}
+
+void *mem_realloc(void *ptr, size_t size) {
+	void *result = REALLOC(ptr, size);
+	if (result == NULL)
+		throw(new(MemoryError()));
+	return result;
 }

@@ -28,5 +28,6 @@ char   *string_upper       (const char *self);
 char   *string_title       (const char *self);
 bool_t  string_starts_with (const char *self, const char *substr);
 bool_t  string_ends_with   (const char *self, const char *substr);
+char   *string_format      (const char *self, ...);
 
 #endif

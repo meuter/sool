@@ -1,31 +1,34 @@
 #include <sool/string.h>
 #include <sool/exception.h>
+#include <sool/args.h>
 #include <sool/mem.h>
+
+#include <stdio.h>
 
 /*****************************************************************************/
 
 static const char *string(const char *self) {
 	if (self == NULL)
-		throw(new(NullPointerError(), ""));
+		throw(new(NullPointerError()));
 	return self;
 }
 
 static int string_index(const char *self, int i) {
 	int n = string_length(self);
 	if ( i > n || i < -n )
-		throw(new(IndexError(), ""));
+		throw(new(IndexError()));
 	return i < 0 ? n + i : i;
 }
 
-static char *xstrndup(const char *s, int n) {
-	char *result = xmalloc(n);
+static char *string_dup(const char *s, int n) {
+	char *result = mem_alloc(n);
 	return strncpy(result, s, n);
 }
 
 /*****************************************************************************/
 
 char * string_clone(const char *self) {
-	return xstrndup(self, string_length(self));
+	return string_dup(self, string_length(self));
 }
 
 size_t string_length(const char *self) {
@@ -63,7 +66,7 @@ list_t *string_split(const char *self, const char *delimiter) {
 	int i, n = string_length(delimiter);
 
 	while ( (i = string_find(self, delimiter)) != -1 ) {
-		list_append(result, xstrndup(self, i));
+		list_append(result, string_dup(self, i));
 		self = self + i + n;
 	}
 	list_append(result, string_clone(self));
@@ -77,7 +80,7 @@ char *string_slice(const char *self, int from, int to) {
 	from = string_index(self, from);
 	to   = string_index(self, to);
 	if (from >= to) return string_clone("");
-	char *result = xmalloc(to - from);
+	char *result = mem_alloc(to - from);
 	return strncpy(result, self + from, to - from);
 }
 
@@ -99,6 +102,30 @@ bool_t string_equal(const char *self, const char *other) {
 //TODO char   *string_title       (const char *self);
 //TODO bool_t  string_starts_with (const char *self, const char *substr);
 //TODO bool_t  string_ends_with   (const char *self, const char *substr);
+
+char *string_format(const char *self, ...) {
+	int n;
+	va_list args, copy;
+	char *result;
+
+	self = string(self);
+	va_start(args, self);
+	va_copy(copy, args);
+
+	if ( (n = vsnprintf(NULL, 0, self, copy)) < 0 )
+		throw(new(MemoryError()));
+
+	result = mem_alloc(n);
+	if ( vsnprintf(result, n+1, self, args) != n ) {
+		mem_free(result);
+		throw(new(MemoryError()));
+	}
+
+	va_end(args);
+
+	return result;
+}
+
 
 
 

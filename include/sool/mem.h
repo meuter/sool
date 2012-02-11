@@ -2,9 +2,12 @@
 #define __MEM_H__
 
 #include <stddef.h>
+#include <sool/object.h>
 
-void *xmalloc  (size_t size);
-void  xfree    (void *ptr);
-void *xrealloc (void *ptr, size_t size);
+class_t *MemoryError();
+
+void *mem_alloc  (size_t size);
+void  mem_free    (void *ptr);
+void *mem_realloc (void *ptr, size_t size);
 
 #endif
