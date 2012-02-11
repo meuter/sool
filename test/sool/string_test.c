@@ -265,6 +265,77 @@ static void test_string_format() {
 }
 
 
+static void test_string_is_space() {
+	assert_raises(NullPointerError(), string_is_space(NULL));
+	assert_false(string_is_space(""));
+	assert_true(string_is_space(" "));
+	assert_true(string_is_space("\n"));
+	assert_true(string_is_space("\t"));
+	assert_true(string_is_space(" \n \t"));
+	assert_false(string_is_space("   x"));
+}
+
+
+static void test_string_is_lower() {
+	assert_raises(NullPointerError(), string_is_lower(NULL));
+	assert_false(string_is_lower(""));
+	assert_false(string_is_lower(" "));
+	assert_false(string_is_lower("aA"));
+	assert_true(string_is_lower("a"));
+	assert_true(string_is_lower(" a "));
+}
+
+static void test_string_is_upper() {
+	assert_raises(NullPointerError(), string_is_upper(NULL));
+	assert_false(string_is_upper(""));
+	assert_false(string_is_upper(" "));
+	assert_false(string_is_upper("aA"));
+	assert_true(string_is_upper("A"));
+	assert_true(string_is_upper(" A "));
+}
+
+static void test_string_is_alpha() {
+	assert_raises(NullPointerError(), string_is_alpha(NULL));
+	assert_false(string_is_alpha(""));
+	assert_false(string_is_alpha(" "));
+	assert_true(string_is_alpha("aA"));
+	assert_false(string_is_alpha("a A"));
+	assert_true(string_is_alpha("A"));
+	assert_false(string_is_alpha(" A "));
+	assert_true(string_is_alpha("a"));
+	assert_false(string_is_alpha(" a "));
+}
+
+static void test_string_is_num() {
+	assert_raises(NullPointerError(), string_is_num(NULL));
+	assert_false(string_is_num(""));
+	assert_false(string_is_num(" "));
+	assert_true(string_is_num("12"));
+	assert_false(string_is_num("1 2"));
+	assert_true(string_is_num("1"));
+	assert_false(string_is_num(" 2 "));
+	assert_true(string_is_num("1"));
+	assert_false(string_is_num(" 3 "));
+}
+
+
+static void test_string_is_alphanum() {
+	assert_raises(NullPointerError(), string_is_alphanum(NULL));
+	assert_false(string_is_alphanum(""));
+	assert_false(string_is_alphanum(" "));
+	assert_true(string_is_alphanum("aA"));
+	assert_false(string_is_alphanum("a A"));
+	assert_true(string_is_alphanum("A"));
+	assert_false(string_is_alphanum(" A "));
+	assert_true(string_is_alphanum("a"));
+	assert_false(string_is_alphanum(" a "));
+	assert_false(string_is_alphanum(" "));
+	assert_true(string_is_alphanum("aA1"));
+	assert_false(string_is_alphanum("a 1A"));
+	assert_true(string_is_alphanum("a1"));
+	assert_true(string_is_alphanum("21"));
+}
+
 int main() {
 	unit_test_t all_tests[] = {
 		unit_test(test_string_clone),
@@ -280,10 +351,16 @@ int main() {
 		unit_test(test_string_rjust),
 		unit_test(test_string_center),
 		unit_test(test_string_lower),
-		unit_test(test_string_lower),
+		unit_test(test_string_upper),
 		unit_test(test_string_starts_with),
 		unit_test(test_string_ends_with),
 		unit_test(test_string_format),
+		unit_test(test_string_is_space),
+		unit_test(test_string_is_lower),
+		unit_test(test_string_is_upper),
+		unit_test(test_string_is_alpha),
+		unit_test(test_string_is_num),
+		unit_test(test_string_is_alphanum),
 	};
 
 	return run_tests(all_tests);

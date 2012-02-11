@@ -5,6 +5,31 @@
 
 #include <stdio.h>
 
+static bool_t is_space(const char c) {
+	return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
+}
+
+static bool_t is_lower(const char c) {
+	return (c >= 'a' && c <= 'z');
+}
+
+static bool_t is_upper(const char c) {
+	return (c >= 'A' && c <= 'Z');
+}
+
+static bool_t is_alpha(const char c) {
+	return (is_lower(c) || is_upper(c));
+}
+
+static bool_t is_num(const char c) {
+	return (c >= '0' && c <= '9');
+}
+
+static bool_t is_alphanum(const char c) {
+	return (is_alpha(c) || is_num(c));
+}
+
+
 /*****************************************************************************/
 
 static const char *string(const char *self) {
@@ -60,13 +85,10 @@ bool_t string_contains(const char *self, const char *substr) {
 	return (string_find(self, substr) != -1);
 }
 
-
 char *string_strip(const char *self) {
-#define WS(c) (c == ' ' || c == '\t' || c == '\n' || c == '\r')
 	int from = 0, to = string_length(self);
-	while (WS(self[from])) from++;
-	while (WS(self[to-1])) to--;
-#undef WS
+	while (is_space(self[from])) from++;
+	while (is_space(self[to-1])) to--;
 	return string_slice(self, from, to);
 }
 
@@ -164,7 +186,7 @@ char *string_lower(const char *self) {
 	char *result = string_dup(self, length);
 
 	for (i = 0; i < length; ++i) {
-		if (result[i] >= 'A' && result[i] <= 'Z')
+		if (is_upper(result[i]))
 			result[i] += 'a'-'A';
 	}
 	return result;
@@ -176,12 +198,11 @@ char *string_upper(const char *self) {
 	char *result = string_dup(self, length);
 
 	for (i = 0; i < length; ++i) {
-		if (result[i] >= 'a' && result[i] <= 'z')
+		if (is_lower(result[i]))
 			result[i] += 'A'-'a';
 	}
 	return result;
 }
-
 
 //TODO char   *string_title       (const char *self);
 
@@ -220,6 +241,42 @@ char *string_format(const char *self, ...) {
 	return result;
 }
 
+static bool_t string_forall(const char *self, bool_t (*check)(const char)) {
+	int length = string_length(self), i;
+	for (i = 0; i < length; ++i)
+		if (!check(self[i]))
+			return FALSE;
+	return TRUE;
+}
 
+static bool_t string_exist(const char *self, bool_t (*check)(const char)) {
+	int length = string_length(self), i;
+	for (i = 0; i < length; ++i)
+		if (check(self[i]))
+			return TRUE;
+	return FALSE;
+}
 
+bool_t string_is_space(const char *self) {
+	return string_forall(self, is_space) && (*self != 0);
+}
 
+bool_t string_is_lower(const char *self) {
+	return !string_exist(self, is_upper) && string_exist(self, is_lower);
+}
+
+bool_t string_is_upper(const char *self) {
+	return !string_exist(self, is_lower) && string_exist(self, is_upper);
+}
+
+bool_t string_is_alpha(const char *self) {
+	return string_forall(self, is_alpha) && (*self != 0);
+}
+
+bool_t string_is_num(const char *self) {
+	return string_forall(self, is_num) && (*self != 0);
+}
+
+bool_t string_is_alphanum(const char *self) {
+	return string_forall(self, is_alphanum) && (*self != 0);
+}

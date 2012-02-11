@@ -29,5 +29,13 @@ char   *string_title       (const char *self);
 bool_t  string_starts_with (const char *self, const char *substr);
 bool_t  string_ends_with   (const char *self, const char *substr);
 char   *string_format      (const char *self, ...);
+bool_t  string_is_space    (const char *self);
+bool_t  string_is_lower    (const char *self);
+bool_t  string_is_upper    (const char *self);
+bool_t  string_is_alpha    (const char *self);
+bool_t  string_is_num      (const char *self);
+bool_t  string_is_alphanum (const char *self);
+
+
 
 #endif
