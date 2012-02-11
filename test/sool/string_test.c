@@ -74,6 +74,16 @@ static void test_string_strip() {
 	delete(s, t, u, v, x);
 }
 
+// TODO rfind
+
+// TODO contains
+
+// TODO strip
+
+// TODO split
+
+// TODO join
+
 static void test_string_slice() {
 	const char *s = "0123456789", *t, *u, *v, *w, *x, *y, *z;
 
@@ -94,22 +104,20 @@ static void test_string_slice() {
 	delete(t, u, v, w, x, y, z);
 }
 
-
-// TODO rfind
-
-// TODO contains
-
-// TODO strip
-
-// TODO split
-
-// TODO join
-
-// TODO slice
+// TODO replace
 
 // TODO cmp
 
 // TODO equal
+
+//TODO char   *string_ljust       (const char *self, int width, char filler);
+//TODO char   *string_rjust       (const char *self, int width, char filler);
+//TODO char   *string_center      (const char *self, int width, char filler);
+//TODO char   *string_lower       (const char *self);
+//TODO char   *string_upper       (const char *self);
+//TODO char   *string_title       (const char *self);
+//TODO bool_t  string_starts_with (const char *self, const char *substr);
+//TODO bool_t  string_ends_with   (const char *self, const char *substr);
 
 
 int main() {
