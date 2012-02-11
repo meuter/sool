@@ -5,7 +5,7 @@
 #include <sool/list.h>
 #include <string.h>
 
-#define string_join(self, args...)  _string_join(self, __VA_N_ARGS__(args, ##args))
+#define string_join(self, args...)  _string_join(self, __VA_N_ARGS__(args), ##args)
 
 char   *string_clone       (const char *self);
 size_t  string_length      (const char *self);

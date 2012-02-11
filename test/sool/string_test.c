@@ -71,27 +71,40 @@ static void test_string_contains() {
 }
 
 static void test_string_strip() {
-	char *s, *t, *u, *v, *w, *x;
+	char *s;
 
 	assert_raises(NullPointerError(), string_strip(NULL));
 
-	s = string_strip(""); assert_string_equal(s,"");
-	t = string_strip("abcd"); assert_string_equal(t,"abcd");
-	u = string_strip("   abcd"); assert_string_equal(u,"abcd");
-	v = string_strip("abcd   "); assert_string_equal(v,"abcd");
-	w = string_strip("\t \tabcd\n \n" ); assert_string_equal(w,"abcd");
-	x = string_strip("\t \tab \ncd\n \n" ); assert_string_equal(x,"ab \ncd");
+	s = string_strip(""); assert_string_equal(s,""); delete(s);
+	s = string_strip("abcd"); assert_string_equal(s,"abcd"); delete(s);
+	s = string_strip("   abcd"); assert_string_equal(s,"abcd"); delete(s);
+	s = string_strip("abcd   "); assert_string_equal(s,"abcd"); delete(s);
+	s = string_strip("\t \tabcd\n \n" ); assert_string_equal(s,"abcd"); delete(s);
+	s = string_strip("\t \tab \ncd\n \n" ); assert_string_equal(s,"ab \ncd"); delete(s);
 
-	delete(s, t, u, v, x);
+	delete(s);
 }
 
 // TODO rfind
 
-
-
 // TODO split
 
-// TODO join
+static void test_string_join() {
+	char *s;
+
+	assert_raises(NullPointerError(), string_join(NULL));
+	assert_raises(NullPointerError(), string_join(", ", NULL));
+	assert_raises(NullPointerError(), string_join(", ", "first", NULL));
+
+	s = string_join(""); assert_string_equal(s, ""); delete(s);
+	s = string_join(", "); assert_string_equal(s, ""); delete(s);
+	s = string_join(", "); assert_string_equal(s, ""); delete(s);
+	s = string_join(", ", "first"); assert_string_equal(s, "first"); delete(s);
+	s = string_join(", ", "first", "second"); assert_string_equal(s, "first, second"); delete(s);
+	s = string_join("", "first", "second"); assert_string_equal(s, "firstsecond"); delete(s);
+	s = string_join("/", "first", "second", "third"); assert_string_equal(s, "first/second/third"); delete(s);
+	s = string_join("/", "", "second", ""); assert_string_equal(s, "/second/"); delete(s);
+}
 
 static void test_string_slice() {
 	const char *s;
@@ -217,6 +230,7 @@ int main() {
 		unit_test(test_string_find),
 		unit_test(test_string_contains),
 		unit_test(test_string_strip),
+		unit_test(test_string_join),
 		unit_test(test_string_slice),
 		unit_test(test_string_ljust),
 		unit_test(test_string_rjust),

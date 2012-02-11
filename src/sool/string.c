@@ -25,6 +25,14 @@ static char *string_dup(const char *s, int n) {
 	return strncpy(result, s, n);
 }
 
+static char *string_paste(char *s, const char *t) {
+	t = string(t);
+	while ( (*s++ = *t++) )
+		;
+	*--s = 0;
+	return s;
+}
+
 /*****************************************************************************/
 
 char * string_clone(const char *self) {
@@ -74,7 +82,38 @@ list_t *string_split(const char *self, const char *delimiter) {
 	return result;
 }
 
-// TODO join
+char *_string_join(const char *self, int n, ...) {
+	int length, i;
+	char *result, *ptr;
+	va_list args;
+
+	self = string(self);
+
+	if (n == 0)	return string_clone("");
+
+	// compute the length of the resulting string
+	length = string_length(self) * (n - 1);
+	va_start(args, n);
+	for (i = 0; i < n; ++i)
+		length += string_length(va_arg(args, const char *));
+	va_end(args);
+
+	// build the concatenated string
+	ptr = result = mem_alloc(length + 1);
+
+	// this does not throw any exception, since the list of args
+	// is checked by the first loop
+	va_start(args, n);
+	for (i = 0; i < n-1; ++i) {
+		const char *tmp = va_arg(args, const char *);
+		ptr = string_paste(ptr, tmp);
+		ptr = string_paste(ptr, self);
+	}
+	ptr = string_paste(ptr, va_arg(args, const char *));
+	va_end(args);
+
+	return result;
+}
 
 char *string_slice(const char *self, int from, int to) {
 	from = string_index(self, from);
