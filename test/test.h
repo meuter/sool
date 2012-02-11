@@ -7,12 +7,13 @@
 
 typedef UnitTest unit_test_t;
 
-#define assert_raises(exception, block) 			\
-	do {											\
-		bool_t thrown = TRUE, caught = FALSE;		\
-		exception_t *e;								\
-		try { block; thrown = FALSE; } 				\
-		catch(exception,e) { caught = TRUE;	} 		\
-		_assert_true(caught && thrown, "exception not raised", __FILE__, __LINE__); \
+#define assert_raises(exception, block) 												\
+	do {																				\
+		bool_t thrown = TRUE, caught = FALSE;											\
+		exception_t *e;																	\
+		try { block; thrown = FALSE; } 													\
+		catch(exception,e) { caught = TRUE;	} 											\
+		except { }																		\
+		_assert_true(caught && thrown, "exception '" #exception "' not raised", __FILE__, __LINE__); 	\
 	} while(0);
 
