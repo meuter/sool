@@ -94,9 +94,6 @@ bool_t string_equal(const char *self, const char *other) {
 	return string_cmp(self, other) == 0;
 }
 
-//TODO char   *string_ljust       (const char *self, int width, char filler);
-//TODO char   *string_rjust       (const char *self, int width, char filler);
-
 static char *string_typeset(const char *self, int length, int left, int right, char filler) {
 	int i, n = length+left+right;
 	if (n < length) return string_clone(self);
@@ -129,8 +126,18 @@ char *string_center(const char *self, int width, char filler) {
 //TODO char   *string_lower       (const char *self);
 //TODO char   *string_upper       (const char *self);
 //TODO char   *string_title       (const char *self);
-//TODO bool_t  string_starts_with (const char *self, const char *substr);
-//TODO bool_t  string_ends_with   (const char *self, const char *substr);
+
+bool_t  string_starts_with (const char *self, const char *substr) {
+	int n = string_length(self), m = string_length(substr);
+	if (n < m) return FALSE;
+	return (memcmp(self, substr, m) == 0);
+}
+
+bool_t  string_ends_with   (const char *self, const char *substr) {
+	int n = string_length(self), m = string_length(substr);
+	if (n < m) return FALSE;
+	return (memcmp(self + n - m, substr, m) == 0);
+}
 
 char *string_format(const char *self, ...) {
 	int n;

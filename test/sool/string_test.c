@@ -44,20 +44,31 @@ static void test_string_get() {
 }
 
 static void test_string_find() {
-	const char *s = "hello world", *t = "lo";
-	const char *u = "foo", *v = "he", *w = "rld";
-	const char *y = "yoyo", *z = "yo";
+	assert_int_equal(string_find("hello world", "foo"), -1);
+	assert_int_equal(string_find("hello world", "lo"), 3);
+	assert_int_equal(string_find("hello world", "he"), 0);
+	assert_int_equal(string_find("hello world", "rld"), 8);
+	assert_int_equal(string_find("yoyo", "yo"), 0);
+	assert_int_equal(string_find("toyoyo", "yo"), 2);
 
-	assert_int_equal(string_find(s, u), -1);
-	assert_int_equal(string_find(s, t), 3);
-	assert_int_equal(string_find(s, v), 0);
-	assert_int_equal(string_find(s, w), 8);
-	assert_int_equal(string_find(y, z), 0);
-
-	assert_raises(NullPointerError(), string_find(s, NULL));
-	assert_raises(NullPointerError(), string_find(NULL, s));
+	assert_raises(NullPointerError(), string_find(NULL, NULL));
+	assert_raises(NullPointerError(), string_find("", NULL));
+	assert_raises(NullPointerError(), string_find(NULL, ""));
 }
 
+static void test_string_contains() {
+	assert_false(string_contains("hello world", "foo"));
+	assert_true(string_contains("hello", "hello"));
+	assert_true(string_contains("hello world", "lo"));
+	assert_true(string_contains("hello world", "he"));
+	assert_true(string_contains("hello world", "rld"));
+	assert_true(string_contains("yoyo", "yo"));
+	assert_true(string_contains("toyoyo", "yo"));
+
+	assert_raises(NullPointerError(), string_contains(NULL, NULL));
+	assert_raises(NullPointerError(), string_contains("", NULL));
+	assert_raises(NullPointerError(), string_contains(NULL, ""));
+}
 
 static void test_string_strip() {
 	char *s, *t, *u, *v, *w, *x;
@@ -76,32 +87,28 @@ static void test_string_strip() {
 
 // TODO rfind
 
-// TODO contains
 
-// TODO strip
 
 // TODO split
 
 // TODO join
 
 static void test_string_slice() {
-	const char *s = "0123456789", *t, *u, *v, *w, *x, *y, *z;
+	const char *s;
 
 	assert_raises(NullPointerError(), string_slice(NULL, 0,0));
-	assert_raises(IndexError(), string_slice(s, 0, 11));
-	assert_raises(IndexError(), string_slice(s, 11, 2));
-	assert_raises(IndexError(), string_slice(s, 0, -11));
-	assert_raises(IndexError(), string_slice(s, -11, 2));
+	assert_raises(IndexError(), string_slice("0123456789", 0, 11));
+	assert_raises(IndexError(), string_slice("0123456789", 11, 2));
+	assert_raises(IndexError(), string_slice("0123456789", 0, -11));
+	assert_raises(IndexError(), string_slice("0123456789", -11, 2));
 
-	t = string_slice(s, 0, 0);  assert_string_equal(t, "");
-	u = string_slice(s, 0, 2);  assert_string_equal(u, "01");
-	v = string_slice(s, 0, -1); assert_string_equal(v, "012345678");
-	w = string_slice(s, -5, -2); assert_string_equal(w, "567");
-	x = string_slice(s, 0, string_length(s)); assert_string_equal(x, s);
-	y = string_slice(s, 5, 2);  assert_string_equal(y, "");
-	z = string_slice(s, -2, -5);  assert_string_equal(z, "");
-
-	delete(t, u, v, w, x, y, z);
+	s = string_slice("0123456789", 0, 0);  assert_string_equal(s, "");
+	s = string_slice("0123456789", 0, 2);  assert_string_equal(s, "01");
+	s = string_slice("0123456789", 0, -1); assert_string_equal(s, "012345678");
+	s = string_slice("0123456789", -5, -2); assert_string_equal(s, "567");
+	s = string_slice("0123456789", 0, 10); assert_string_equal(s, "0123456789");
+	s = string_slice("0123456789", 5, 2);  assert_string_equal(s, "");
+	s = string_slice("0123456789", -2, -5);  assert_string_equal(s, "");
 }
 
 // TODO replace
@@ -155,33 +162,68 @@ static void test_string_center() {
 //TODO char   *string_lower       (const char *self);
 //TODO char   *string_upper       (const char *self);
 //TODO char   *string_title       (const char *self);
-//TODO bool_t  string_starts_with (const char *self, const char *substr);
-//TODO bool_t  string_ends_with   (const char *self, const char *substr);
 
+static void test_string_starts_with() {
+	assert_raises(NullPointerError(), string_ends_with(NULL, NULL));
+	assert_raises(NullPointerError(), string_ends_with("", NULL));
+	assert_raises(NullPointerError(), string_ends_with(NULL, ""));
+
+	assert_true(string_ends_with("", ""));
+	assert_true(string_ends_with("abcd", "abcd"));
+	assert_true(string_ends_with("abcd", "bcd"));
+	assert_true(string_ends_with("abcd", "cd"));
+	assert_true(string_ends_with("abcd", "d"));
+	assert_true(string_ends_with("abcd", ""));
+
+	assert_false(string_ends_with("abcd", "cabcd"));
+	assert_false(string_ends_with("abcd", "cabc"));
+	assert_false(string_ends_with("abcd", "cab"));
+	assert_false(string_ends_with("abcd", "ca"));
+	assert_false(string_ends_with("abcd", "c"));
+}
+
+static void test_string_ends_with() {
+	assert_raises(NullPointerError(), string_starts_with(NULL, NULL));
+	assert_raises(NullPointerError(), string_starts_with("", NULL));
+	assert_raises(NullPointerError(), string_starts_with(NULL, ""));
+
+	assert_true(string_starts_with("", ""));
+	assert_true(string_starts_with("abcd", "abcd"));
+	assert_true(string_starts_with("abcd", "abc"));
+	assert_true(string_starts_with("abcd", "ab"));
+	assert_true(string_starts_with("abcd", "a"));
+	assert_true(string_starts_with("abcd", ""));
+
+	assert_false(string_starts_with("abcd", "cabcd"));
+	assert_false(string_starts_with("abcd", "cabc"));
+	assert_false(string_starts_with("abcd", "cab"));
+	assert_false(string_starts_with("abcd", "ca"));
+	assert_false(string_starts_with("abcd", "c"));
+}
 
 static void test_string_format() {
 	char *s = string_format("%08X", 10);
-
 	assert_string_equal(s, "0000000A");
 	assert_raises(NullPointerError(), string_format(NULL));
-
 	delete(s);
 }
 
 
 int main() {
 	unit_test_t all_tests[] = {
-		unit_test(test_string_length),
 		unit_test(test_string_clone),
+		unit_test(test_string_length),
 		unit_test(test_string_get),
 		unit_test(test_string_find),
+		unit_test(test_string_contains),
 		unit_test(test_string_strip),
 		unit_test(test_string_slice),
 		unit_test(test_string_ljust),
 		unit_test(test_string_rjust),
 		unit_test(test_string_center),
+		unit_test(test_string_starts_with),
+		unit_test(test_string_ends_with),
 		unit_test(test_string_format),
-
 	};
 
 	return run_tests(all_tests);
