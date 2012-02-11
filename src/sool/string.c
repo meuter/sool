@@ -20,10 +20,6 @@ static int string_index(const char *self, int i) {
 	return i < 0 ? n + i : i;
 }
 
-static char *string_dup(const char *s, int n) {
-	char *result = mem_alloc(n+1);
-	return strncpy(result, s, n);
-}
 
 static char *string_paste(char *s, const char *t) {
 	t = string(t);
@@ -33,6 +29,12 @@ static char *string_paste(char *s, const char *t) {
 	return s;
 }
 
+static char *string_dup(const char *s, int n) {
+	char *result = mem_alloc(n+1);
+	strncpy(result, s, n);
+	result[n] = 0;
+	return result;
+}
 /*****************************************************************************/
 
 char * string_clone(const char *self) {
@@ -105,8 +107,7 @@ char *_string_join(const char *self, int n, ...) {
 	// is checked by the first loop
 	va_start(args, n);
 	for (i = 0; i < n-1; ++i) {
-		const char *tmp = va_arg(args, const char *);
-		ptr = string_paste(ptr, tmp);
+		ptr = string_paste(ptr, va_arg(args, const char *));
 		ptr = string_paste(ptr, self);
 	}
 	ptr = string_paste(ptr, va_arg(args, const char *));
@@ -119,8 +120,7 @@ char *string_slice(const char *self, int from, int to) {
 	from = string_index(self, from);
 	to   = string_index(self, to);
 	if (from >= to) return string_clone("");
-	char *result = mem_alloc(to - from);
-	return strncpy(result, self + from, to - from);
+	return string_dup(self + from, to - from);
 }
 
 // TODO replace

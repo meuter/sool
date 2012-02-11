@@ -17,6 +17,7 @@
 
 #else
 
+#include <malloc.h>
 #define MALLOC  malloc
 #define FREE    free
 #define REALLOC realloc

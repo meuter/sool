@@ -11,6 +11,9 @@ static void test_string_clone() {
 	assert_string_equal(x, "heclo");
 	assert_string_equal(s, "hello");
 	assert_raises(NullPointerError(), string_clone(NULL));
+
+	s = string_clone(""); assert_string_equal(s,""); delete(s);
+
 	delete(x);
 }
 
@@ -81,13 +84,37 @@ static void test_string_strip() {
 	s = string_strip("abcd   "); assert_string_equal(s,"abcd"); delete(s);
 	s = string_strip("\t \tabcd\n \n" ); assert_string_equal(s,"abcd"); delete(s);
 	s = string_strip("\t \tab \ncd\n \n" ); assert_string_equal(s,"ab \ncd"); delete(s);
-
-	delete(s);
 }
 
 // TODO rfind
 
-// TODO split
+static void test_string_split() {
+	list_t *l;
+	iterator_t *i;
+
+	assert_raises(NullPointerError(), string_split(NULL, ""));
+	assert_raises(NullPointerError(), string_split("", NULL));
+	assert_raises(NullPointerError(), string_split(NULL, NULL));
+
+	l = string_split("first second and third", ", ");
+	assert_int_equal(list_length(l), 1);
+	i = begin(l); assert_string_equal(get(i), "first second and third"); delete(get(i));
+	delete(l);
+
+	l = string_split("first second and third", " and ");
+	assert_int_equal(list_length(l), 2);
+	i = begin(l); assert_string_equal(get(i), "first second"); delete(get(i));
+	i = next(i);  assert_string_equal(get(i), "third");        delete(get(i));
+	delete(l);
+
+	l = string_split("first second and third", " ");
+	assert_int_equal(list_length(l), 4);
+	i = begin(l); assert_string_equal(get(i), "first");  delete(get(i));
+	i = next(i);  assert_string_equal(get(i), "second"); delete(get(i));
+	i = next(i);  assert_string_equal(get(i), "and");    delete(get(i));
+	i = next(i);  assert_string_equal(get(i), "third");  delete(get(i));
+	delete(l);
+}
 
 static void test_string_join() {
 	char *s;
@@ -230,6 +257,7 @@ int main() {
 		unit_test(test_string_find),
 		unit_test(test_string_contains),
 		unit_test(test_string_strip),
+		unit_test(test_string_split),
 		unit_test(test_string_join),
 		unit_test(test_string_slice),
 		unit_test(test_string_ljust),
