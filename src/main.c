@@ -19,17 +19,6 @@ int some_function(int error) {
 
 
 int main() {
-	void *e = NULL;
-
-	string_length(NULL);
-	try {
-	}
-	catch(NullPointerError(), e) {
-		printf("caught that one");
-	}
-
-
-
 	void *o;
 
 

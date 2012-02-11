@@ -28,20 +28,3 @@ void *xmalloc(size_t size) {
 void xfree(void *ptr) {
 	FREE(ptr);
 }
-
-void *xrealloc(void *ptr, size_t size) {
-	void *result = REALLOC(ptr, size);
-	assert(result);
-	return result;
-}
-
-char *xstrndup(const char *s, size_t n) {
-	char *result = xmalloc(n);
-	return strncpy(result, s, n);
-}
-
-char *xstrdup(const char *s) {
-	int n = strlen(s);
-	char *result = xmalloc(n);
-	return strncpy(result, s, n);
-}
