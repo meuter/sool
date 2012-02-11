@@ -159,11 +159,30 @@ char *string_center(const char *self, int width, char filler) {
 	return string_typeset(self, length, (width - length)/2, width - length - (width - length)/2, filler);
 }
 
+char *string_lower(const char *self) {
+	int length = string_length(self), i;
+	char *result = string_dup(self, length);
+
+	for (i = 0; i < length; ++i) {
+		if (result[i] >= 'A' && result[i] <= 'Z')
+			result[i] += 'a'-'A';
+	}
+	return result;
+}
 
 
+char *string_upper(const char *self) {
+	int length = string_length(self), i;
+	char *result = string_dup(self, length);
 
-//TODO char   *string_lower       (const char *self);
-//TODO char   *string_upper       (const char *self);
+	for (i = 0; i < length; ++i) {
+		if (result[i] >= 'a' && result[i] <= 'z')
+			result[i] += 'A'-'a';
+	}
+	return result;
+}
+
+
 //TODO char   *string_title       (const char *self);
 
 bool_t  string_starts_with (const char *self, const char *substr) {

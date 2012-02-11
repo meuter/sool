@@ -199,8 +199,24 @@ static void test_string_center() {
 	assert_raises(NullPointerError(), string_center(NULL, 3, '-'));
 }
 
-//TODO char   *string_lower       (const char *self);
-//TODO char   *string_upper       (const char *self);
+static void test_string_upper() {
+	char *s;
+
+	assert_raises(NullPointerError(), string_upper(NULL));
+	s = string_upper("1234"); assert_string_equal(s, "1234"); delete(s);
+	s = string_upper("abcz"); assert_string_equal(s, "ABCZ"); delete(s);
+	s = string_upper("abCddZ"); assert_string_equal(s, "ABCDDZ"); delete(s);
+}
+
+static void test_string_lower() {
+	char *s;
+
+	assert_raises(NullPointerError(), string_lower(NULL));
+	s = string_lower("1234"); assert_string_equal(s, "1234"); delete(s);
+	s = string_lower("ABCDZ"); assert_string_equal(s, "abcdz"); delete(s);
+	s = string_lower("abCddZ"); assert_string_equal(s, "abcddz"); delete(s);
+}
+
 //TODO char   *string_title       (const char *self);
 
 static void test_string_starts_with() {
@@ -263,6 +279,8 @@ int main() {
 		unit_test(test_string_ljust),
 		unit_test(test_string_rjust),
 		unit_test(test_string_center),
+		unit_test(test_string_lower),
+		unit_test(test_string_lower),
 		unit_test(test_string_starts_with),
 		unit_test(test_string_ends_with),
 		unit_test(test_string_format),
