@@ -15,13 +15,13 @@ void *exception_ctor(void *_self, va_list *args) {
 int exception_put(void *_self, FILE *stream, char *subformat) {
 	(void)subformat;
 	exception_t *self = cast(Exception(), _self);
-	return ofprintf(stream, "%O(%s)", class_of(self), self->msg);
+	return ofprintf(stream, "%s", class_get_name(class_of(self)), self->msg);
 }
 
 class_t *Exception() {
 	static class_t *result = NULL;
 	if (result == NULL) {
-		result = new(Class(), "Exception", Object(), sizeof(exception_t),
+		result = new(Class(), __FUNCTION__, Object(), sizeof(exception_t),
 			ctor, exception_ctor,
 			put,  exception_put,
 			NULL
@@ -29,6 +29,21 @@ class_t *Exception() {
 	}
 	return result;
 }
+
+class_t *NullPointerError() {
+	static class_t *result = NULL;
+	if (result == NULL)
+		result = new(Class(), __FUNCTION__, Exception(), sizeof(exception_t), NULL);
+	return result;
+}
+
+class_t *IndexError() {
+	static class_t *result = NULL;
+	if (result == NULL)
+		result = new(Class(), __FUNCTION__, Exception(), sizeof(exception_t), NULL);
+	return result;
+}
+
 
 /*****************************************************************************/
 

@@ -1,32 +1,26 @@
 #ifndef __STRING_H__
 #define __STRING_H__
 
-#include <sool/object.h>
 #include <sool/args.h>
 #include <sool/list.h>
 #include <string.h>
 
-// TODO: move to a char * implementation, the goal is to extend C not replace it
+#define string_join(self, args...)  _string_join(self, __VA_N_ARGS__(args, ##args))
 
-struct _string_t;
-typedef struct _string_t string_t;
+size_t  string_length    (const char *self);
+char   *string_clone     (const char *self);
+char    string_get       (const char *self, int i);
 
-#define string(char_ptr)      new(String(), strlen(char_ptr), char_ptr)
-#define string_join(args...)  _string_join(__VA_N_ARGS__(args, ##args))
-
-class_t *String();   /* new(String(), 11, "hello world") */
-
-string_t  *string_clone    (string_t *self);
-string_t  *string_slice    (string_t *self, int from, int to);
-string_t *_string_join     (int n, ...);
-string_t  *string_join_list(list_t *list);
-int        string_length   (string_t *self);
-char      *string_cstr     (string_t *self);
-list_t    *string_split    (string_t *self, const char *delimiter);
-int        string_find     (string_t *self, string_t *substr);
-char       string_get      (string_t *self, int i);
-char       string_set      (string_t *self, int i, char c);
-string_t  *string_strip    (string_t *self);
-bool_t     string_contains (string_t *self, const char *substr);
+char    string_set       (char *self, int i, char c);
+int     string_find      (const char *self, const char *substr);
+int     string_rfind     (const char *self, const char *substr);
+bool_t  string_contains  (const char *self, const char *substr);
+char   *string_strip     (const char *self);
+list_t *string_split     (const char *self, const char *delimiter);
+char  *_string_join      (const char *self, int n, ...);
+char   *string_join_list (const char *self, list_t *list);
+char   *string_slice     (const char *self, int from, int to);
+int     string_cmp       (const char *self, const char *other);
+bool_t  string_equal     (const char *self, const char *other);
 
 #endif

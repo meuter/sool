@@ -8,6 +8,8 @@ struct _exception_t;
 typedef struct _exception_t exception_t;
 
 class_t *Exception(); /* new(Exception(), "some message") */
+class_t *NullPointerError();
+class_t *IndexError();
 
 int __exc_c;
 

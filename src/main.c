@@ -3,6 +3,7 @@
 #include <sool/exception.h>
 #include <sool/stack.h>
 #include <sool/io.h>
+#include <sool/string.h>
 
 int some_function(int error) {
 	printf("entering...\n");
@@ -18,6 +19,16 @@ int some_function(int error) {
 
 
 int main() {
+	void *e = NULL;
+
+	string_length(NULL);
+	try {
+	}
+	catch(NullPointerError(), e) {
+		printf("caught that one");
+	}
+
+
 
 	void *o;
 

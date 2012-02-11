@@ -132,8 +132,13 @@ void _delete  (int n, ...) {
 	va_list args;
 
 	va_start(args, n);
-	while (n--)
-		xfree(dtor(va_arg(args, object_t *)));
+	while (n--) {
+		void *ptr = va_arg(args, void *);
+		if (is_object(ptr))
+			xfree(dtor(ptr));
+		else
+			xfree(ptr);
+	}
 	va_end(args);
 }
 
@@ -197,6 +202,11 @@ class_t *class_of(void *_self) {
 	object_t *self = cast(Object(), _self);
 	assertf(self->class, "object '%O' has a NULL class", _self);
 	return self->class;
+}
+
+const char *class_get_name(void *_self) {
+	class_t *self = cast(Class(), _self);
+	return self->name;
 }
 
 size_t size_of(void *_self) {

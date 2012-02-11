@@ -32,4 +32,6 @@ class_t *super    (void *self);
 size_t   size_of  (void *self);
 bool_t   is_object(void *_self);
 
+const char *class_get_name(void *_self);
+
 #endif

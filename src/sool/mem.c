@@ -39,3 +39,9 @@ char *xstrndup(const char *s, size_t n) {
 	char *result = xmalloc(n);
 	return strncpy(result, s, n);
 }
+
+char *xstrdup(const char *s) {
+	int n = strlen(s);
+	char *result = xmalloc(n);
+	return strncpy(result, s, n);
+}
