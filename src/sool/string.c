@@ -79,7 +79,18 @@ int string_find(const char *self, const char *substr) {
 	return (tmp == NULL ? -1 : tmp - self);
 }
 
-// TODO rfind
+int string_rfind(const char* self, const char* substr) {
+	int substr_length = string_length(substr);
+	const char *end = self + string_length(self) - substr_length;
+	const char *tmp;
+
+	for(tmp = end; tmp >= self; --tmp) {
+		if (memcmp(tmp, substr, substr_length) == 0)
+			return tmp - self;
+	}
+	return -1;
+}
+
 
 bool_t string_contains(const char *self, const char *substr) {
 	return (string_find(self, substr) != -1);

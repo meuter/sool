@@ -59,6 +59,19 @@ static void test_string_find() {
 	assert_raises(NullPointerError(), string_find(NULL, ""));
 }
 
+static void test_string_rfind() {
+	assert_int_equal(string_rfind("hello world", "foo"), -1);
+	assert_int_equal(string_rfind("hello world", "lo"), 3);
+	assert_int_equal(string_rfind("hello world", "he"), 0);
+	assert_int_equal(string_rfind("hello world", "rld"), 8);
+	assert_int_equal(string_rfind("yoyo", "yo"), 2);
+	assert_int_equal(string_rfind("toyoyo", "yo"), 4);
+
+	assert_raises(NullPointerError(), string_rfind(NULL, NULL));
+	assert_raises(NullPointerError(), string_rfind("", NULL));
+	assert_raises(NullPointerError(), string_rfind(NULL, ""));
+}
+
 static void test_string_contains() {
 	assert_false(string_contains("hello world", "foo"));
 	assert_true(string_contains("hello", "hello"));
@@ -86,7 +99,6 @@ static void test_string_strip() {
 	s = string_strip("\t \tab \ncd\n \n" ); assert_string_equal(s,"ab \ncd"); delete(s);
 }
 
-// TODO rfind
 
 static void test_string_split() {
 	list_t *l;
@@ -342,6 +354,7 @@ int main() {
 		unit_test(test_string_length),
 		unit_test(test_string_get),
 		unit_test(test_string_find),
+		unit_test(test_string_rfind),
 		unit_test(test_string_contains),
 		unit_test(test_string_strip),
 		unit_test(test_string_split),
