@@ -6,7 +6,6 @@
 
 /*****************************************************************************/
 
-
 void *exception_ctor(void *_self, va_list *args) {
 	exception_t *self = super_ctor(Exception(), _self, args);
 	self->msg = va_arg(*args, const char *);

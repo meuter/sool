@@ -9,6 +9,9 @@
 #include <string.h>
 
 
+
+// TODO: create an AssertionError class
+
 void print_backtrace(FILE *stream) {
 	void *trace[100];
 	size_t size = backtrace(trace, sizeof(trace)/sizeof(void *)), i;

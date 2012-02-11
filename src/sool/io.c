@@ -48,6 +48,8 @@ static int parse_curly_braces(const char *string) {
 }
 
 
+// FIXME: does not work
+
 int ovfprintf(FILE *stream, const char *format, va_list args) {
 	int result = 0;
 	int i = 0;

@@ -21,6 +21,9 @@ int main() {
 
 	void *o;
 
+
+	oprintf("%08X", 10);
+
 	try {
 		printf("step 1\n");
 		some_function(0);

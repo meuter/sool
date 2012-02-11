@@ -6,6 +6,8 @@
 #include <sool/list.h>
 #include <string.h>
 
+// TODO: move to a char * implementation, the goal is to extend C not replace it
+
 struct _string_t;
 typedef struct _string_t string_t;
 
