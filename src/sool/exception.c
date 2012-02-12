@@ -44,6 +44,14 @@ class_t *IndexError() {
 	return result;
 }
 
+class_t *ClassCastError() {
+	static class_t *result = NULL;
+	if (result == NULL)
+		result = new(Class(), __FUNCTION__, Exception(), sizeof(exception_t), NULL);
+	return result;
+}
+
+
 /*****************************************************************************/
 
 class_t *StackFrame();

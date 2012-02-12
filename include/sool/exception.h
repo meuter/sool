@@ -10,6 +10,7 @@ typedef struct _exception_t exception_t;
 class_t *Exception(); /* new(Exception()) */
 class_t *NullPointerError();
 class_t *IndexError();
+class_t *ClassCastError();
 
 int __exc_c;
 

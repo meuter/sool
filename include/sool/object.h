@@ -25,6 +25,8 @@ void *dtor(void *self);
 int   put (void *self, FILE *stream, const char *format);
 int   cmp (void *self, void *other);
 
+// TODO: implement a str() function instead of put??
+
 bool_t   equal    (void *self, void *other);
 void    *cast     (class_t *class, void *self);
 class_t *class_of (void *self);

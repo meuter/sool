@@ -33,6 +33,4 @@ bool_t  string_is_alpha    (const char *self);
 bool_t  string_is_num      (const char *self);
 bool_t  string_is_alphanum (const char *self);
 
-
-
 #endif
