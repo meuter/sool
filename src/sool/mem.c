@@ -24,17 +24,11 @@
 
 #endif
 
-class_t *MemoryError() {
-	static class_t *result = NULL;
-	if (result == NULL)
-		result = new(Class(), __FUNCTION__, Exception(), sizeof(exception_t), NULL);
-	return result;
-}
+DEFINE_EXCEPTION(MemoryError);
 
 void *mem_alloc(size_t size) {
 	void *result = MALLOC(size);
-	if (result == NULL)
-		throw(new(MemoryError()));
+	if (result == NULL)	throw(new(MemoryError()));
 	return result;
 }
 
@@ -44,7 +38,6 @@ void mem_free(void *ptr) {
 
 void *mem_realloc(void *ptr, size_t size) {
 	void *result = REALLOC(ptr, size);
-	if (result == NULL)
-		throw(new(MemoryError()));
+	if (result == NULL)	throw(new(MemoryError()));
 	return result;
 }

@@ -14,6 +14,7 @@ typedef struct _class_t class_t;
 
 class_t *Object(); /* new(Object()) */
 class_t *Class();  /* new(Class(), "name", Super(), size, selector, method, ..., NULL); */
+class_t *ClassCastError();
 
 #define delete(args...) _delete(__VA_N_ARGS__(args), ##args)
 

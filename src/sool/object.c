@@ -5,9 +5,12 @@
 #include <string.h>
 
 #include "object_def.h"
+#include "exception_def.h"
 
 extern class_t _Object;
 extern class_t _Class;
+
+DEFINE_EXCEPTION(ClassCastError);
 
 /*****************************************************************************/
 

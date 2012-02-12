@@ -4,6 +4,9 @@
 
 #include "exception_def.h"
 
+DEFINE_EXCEPTION(NullPointerError);
+DEFINE_EXCEPTION(IndexError);
+
 /*****************************************************************************/
 
 void *exception_ctor(void *_self, va_list *args) {
@@ -29,28 +32,6 @@ class_t *Exception() {
 	}
 	return result;
 }
-
-class_t *NullPointerError() {
-	static class_t *result = NULL;
-	if (result == NULL)
-		result = new(Class(), __FUNCTION__, Exception(), sizeof(exception_t), NULL);
-	return result;
-}
-
-class_t *IndexError() {
-	static class_t *result = NULL;
-	if (result == NULL)
-		result = new(Class(), __FUNCTION__, Exception(), sizeof(exception_t), NULL);
-	return result;
-}
-
-class_t *ClassCastError() {
-	static class_t *result = NULL;
-	if (result == NULL)
-		result = new(Class(), __FUNCTION__, Exception(), sizeof(exception_t), NULL);
-	return result;
-}
-
 
 /*****************************************************************************/
 
