@@ -4,9 +4,6 @@
 
 #include "exception_def.h"
 
-DEFINE_EXCEPTION(NullPointerError);
-DEFINE_EXCEPTION(IndexError);
-
 /*****************************************************************************/
 
 void *exception_ctor(void *_self, va_list *args) {

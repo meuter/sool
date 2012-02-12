@@ -5,6 +5,12 @@
 
 #include <stdio.h>
 
+#include "exception_def.h"
+
+DEFINE_EXCEPTION(IndexError);
+
+/*****************************************************************************/
+
 static bool_t is_space(const char c) {
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
 }

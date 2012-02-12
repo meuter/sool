@@ -1,5 +1,6 @@
+#include <sool/exception.h>
+
 #include "sequence_def.h"
-#include <sool/error.h>
 
 /*****************************************************************************/
 
@@ -73,45 +74,45 @@ class_t *SequenceClass() {
 
 iterator_t *begin(sequence_t *self) {
 	sequence_class_t *class = cast(SequenceClass(), class_of(self));
-	assertf(class->begin, "class '%O' has no 'begin' method", class);
+	if (class->begin == NULL) throw(new(NullPointerError()));
 	return class->begin(self);
 }
 
 iterator_t *end(sequence_t *self) {
 	sequence_class_t *class = cast(SequenceClass(), class_of(self));
-	assertf(class->end, "class '%O' has no 'end' method", class);
+	if (class->end == NULL) throw(new(NullPointerError()));
 	return class->end(self);
 }
 
 
 iterator_t *rbegin(sequence_t *self) {
 	sequence_class_t *class = cast(SequenceClass(), class_of(self));
-	assertf(class->begin, "class '%O' has no 'rbegin' method", class);
+	if (class->rbegin == NULL) throw(new(NullPointerError()));
 	return class->rbegin(self);
 }
 
 iterator_t *rend(sequence_t *self) {
 	sequence_class_t *class = cast(SequenceClass(), class_of(self));
-	assertf(class->rend, "class '%O' has no 'rend' method", class);
-	return class->end(self);
+	if (class->rend == NULL) throw(new(NullPointerError()));
+	return class->rend(self);
 }
 
 
 iterator_t *next(iterator_t *self) {
 	iterator_class_t *class = cast(IteratorClass(), class_of(self));
-	assertf(class->next, "class '%O' has no 'next' method", class);
+	if (class->next == NULL) throw(new(NullPointerError()));
 	return class->next(self);
 }
 
 iterator_t *previous(iterator_t *self) {
 	iterator_class_t *class = cast(IteratorClass(), class_of(self));
-	assertf(class->next, "class '%O' has no 'previous' method", class);
+	if (class->previous == NULL) throw(new(NullPointerError()));
 	return class->previous(self);
 }
 
 void *get(iterator_t *self) {
 	iterator_class_t *class = cast(IteratorClass(), class_of(self));
-	assertf(class->get, "class '%O' has no 'get' method", class);
+	if (class->get == NULL) throw(new(NullPointerError()));
 	return class->get(self);
 }
 

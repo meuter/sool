@@ -5,6 +5,8 @@
 #include <sool/list.h>
 #include <string.h>
 
+class_t *IndexError();
+
 char   *string_clone       (const char *self);
 size_t  string_length      (const char *self);
 char    string_get         (const char *self, int i);

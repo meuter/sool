@@ -11,6 +11,7 @@ extern class_t _Object;
 extern class_t _Class;
 
 DEFINE_EXCEPTION(ClassCastError);
+DEFINE_EXCEPTION(NullPointerError);
 
 /*****************************************************************************/
 
