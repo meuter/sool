@@ -2,6 +2,7 @@
 #include <sool/exception.h>
 #include <sool/args.h>
 #include <sool/mem.h>
+#include <sool/string_buffer.h>
 
 #include <stdio.h>
 
@@ -54,8 +55,7 @@ static bool_t string_exist(const char *self, bool_t (*check)(const char)) {
 /*****************************************************************************/
 
 static const char *string(const char *self) {
-	if (self == NULL)
-		throw(new(NullPointerError()));
+	if (self == NULL) throw(new(NullPointerError()));
 	return self;
 }
 
@@ -64,14 +64,6 @@ static int string_index(const char *self, int i) {
 	if ( i > n || i < -n )
 		throw(new(IndexError()));
 	return i < 0 ? n + i : i;
-}
-
-static char *string_paste(char *s, const char *t) {
-	t = string(t);
-	while ( (*s++ = *t++) )
-		;
-	*--s = 0;
-	return s;
 }
 
 static char *string_dup(const char *s, int n) {
@@ -148,32 +140,31 @@ list_t *string_split(const char *self, const char *delimiter) {
 }
 
 char *string_join(const char *self, list_t *words) {
-	int length, n = list_length(words);
-	char *result, *ptr;
-	iterator_t *i;
-
 	self = string(self);
 
-	if (n == 0) return string_clone("");
+	// if list is empty
+	if (list_length(words) == 0) return string_clone("");
 
-	// compute the length of the resulting string
-	length = string_length(self) * (n - 1);
-	forall(i, words)
-		length += string_length(get(i));
+	// create new buffer
+	string_buffer_t *buffer = new(StringBuffer());
+	iterator_t *i;
 
-	// build the concatenated string
-	ptr = result = mem_alloc(length + 1);
+	// check for non-NULL string
+	forall(i,words)	string(get(i));
 
-	// this does not throw any exception, since the list of args
-	// is checked by the first loop
-
+	// build the string in the buffer
 	for (i = begin(words); i != previous(end(words)); i = next(i)) {
-		ptr = string_paste(ptr, get(i));
-		ptr = string_paste(ptr, self);
+		string_buffer_append(buffer, "%s", get(i));
+		string_buffer_append(buffer, "%s", self);
 	}
+	string_buffer_append(buffer, "%s", get(rbegin(words)));
 
-	ptr = string_paste(ptr, get(rbegin(words)));
+	// detach buffer and delete buffer
+	char *result = string_buffer_value(buffer);
+	string_buffer_detach(buffer);
+	delete(buffer);
 
+	// return result
 	return result;
 }
 
@@ -238,38 +229,28 @@ char *string_upper(const char *self) {
 	return result;
 }
 
-bool_t  string_starts_with (const char *self, const char *substr) {
+bool_t string_starts_with(const char *self, const char *substr) {
 	int n = string_length(self), m = string_length(substr);
 	if (n < m) return FALSE;
 	return (memcmp(self, substr, m) == 0);
 }
 
-bool_t  string_ends_with   (const char *self, const char *substr) {
+bool_t string_ends_with(const char *self, const char *substr) {
 	int n = string_length(self), m = string_length(substr);
 	if (n < m) return FALSE;
 	return (memcmp(self + n - m, substr, m) == 0);
 }
 
 char *string_format(const char *self, ...) {
-	int n;
-	va_list args, copy;
-	char *result;
-
 	self = string(self);
+	string_buffer_t *buffer = new(StringBuffer());
+	va_list args;
 	va_start(args, self);
-	va_copy(copy, args);
-
-	if ( (n = vsnprintf(NULL, 0, self, copy)) < 0 )
-		throw(new(MemoryError()));
-
-	result = mem_alloc(n+1);
-	if ( vsnprintf(result, n+1, self, args) != n ) {
-		mem_free(result);
-		throw(new(MemoryError()));
-	}
-
+	string_buffer_vappend(buffer, self, args);
 	va_end(args);
-
+	char *result = string_buffer_value(buffer);
+	string_buffer_detach(buffer);
+	delete(buffer);
 	return result;
 }
 
