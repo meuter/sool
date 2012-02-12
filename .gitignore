@@ -5,4 +5,4 @@ main
 *.o
 *.res
 test/libcmockery.a
-test/*_test
+test/sool/*_test
