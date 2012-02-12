@@ -3,6 +3,9 @@
 #include <sool/error.h>
 
 #include "object_def.h"
+#include "exception_def.h"
+
+DEFINE_EXCEPTION(StackUnderflowError);
 
 struct _stack_t {
 	EXTENDS(object_t);
@@ -39,12 +42,12 @@ void stack_push(stack_t *self, void *info) {
 }
 
 void *stack_pop(stack_t *self) {
-	assertf(!stack_is_empty(self), "stack underflow");
+	if (stack_is_empty(self)) throw(new(StackUnderflowError()));
 	return list_remove_first(self->list);
 }
 
 void *stack_top(stack_t *self) {
-	assertf(!stack_is_empty(self), "stack underflow");
+	if (stack_is_empty(self)) throw(new(StackUnderflowError()));
 	return get(begin(self->list));
 }
 

@@ -6,7 +6,8 @@
 struct _stack_t;
 typedef struct _stack_t stack_t;
 
-class_t *Stack(); /* new(Stack()) */
+class_t *Stack(); 					/* new(Stack()) */
+class_t *StackUnderflowError();		/* new(StackUnderflowError()) */
 
 void   stack_push    (stack_t *self, void *info);
 void  *stack_pop     (stack_t *self);
