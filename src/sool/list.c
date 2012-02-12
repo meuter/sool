@@ -31,7 +31,7 @@ static void *list_iterator_get(void *_self) {
 }
 
 static void *list_iterator_ctor(void *_self, va_list *args) {
-	list_iterator_t *self = cast(ListIterator(), _self);
+	list_iterator_t *self = super_ctor(ListIterator(), _self, args);
 
 	void *previous = va_arg(*args, void *);
 	void *value    = va_arg(*args, void *);
@@ -67,7 +67,7 @@ struct _list_t {
 };
 
 static void *list_ctor(void *_self, va_list *args) {
-    list_t *self = cast(List(), _self);
+    list_t *self = super_ctor(List(), _self, args);
     int i, n;
 
     self->dummy = new(ListIterator(), NULL, 0, NULL);
@@ -82,7 +82,7 @@ static void *list_ctor(void *_self, va_list *args) {
 }
 
 static void *list_dtor(void *_self) {
-	list_t *self = cast(List(), _self);
+	list_t *self = super_dtor(List(), _self);
 	while (!list_is_empty(self))
 		list_remove_first(self);
 	mem_free(self->dummy);

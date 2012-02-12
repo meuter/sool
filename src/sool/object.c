@@ -57,7 +57,7 @@ class_t *Object() {
 typedef void (*method_t)();
 
 void *class_ctor(void *_self, va_list *args) {
-	class_t *self = cast(Class(), _self);
+	class_t *self = super_ctor(Class(), _self, args);
 	const size_t offset = offsetof(class_t, ctor);
 	method_t selector;
 	va_list args_copy;

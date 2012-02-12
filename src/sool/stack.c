@@ -7,20 +7,22 @@
 
 DEFINE_EXCEPTION(StackUnderflowError);
 
+/*****************************************************************************/
+
 struct _stack_t {
 	EXTENDS(object_t);
 	list_t *list;
 };
 
-void *stack_ctor(void *_self, va_list *args) {
+static void *stack_ctor(void *_self, va_list *args) {
 	(void)args;
-	stack_t *self = cast(Stack(), _self);
+	stack_t *self = super_ctor(Stack(), _self, args);
 	self->list = list();
 	return self;
 }
 
-void *stack_dtor(void *_self) {
-	stack_t *self = cast(Stack(), _self);
+static void *stack_dtor(void *_self) {
+	stack_t *self = super_dtor(Stack(), _self);
 	delete(self->list);
 	return self;
 }
@@ -28,7 +30,7 @@ void *stack_dtor(void *_self) {
 class_t *Stack() {
 	static class_t *result = NULL;
 	if (result == NULL) {
-		result = new(Class(), "Stack", Class(), sizeof(stack_t),
+		result = new(Class(), "Stack", Object(), sizeof(stack_t),
 			ctor, stack_ctor,
 			dtor, stack_dtor,
 			NULL
@@ -36,6 +38,8 @@ class_t *Stack() {
 	}
 	return result;
 }
+
+/*****************************************************************************/
 
 void stack_push(stack_t *self, void *info) {
 	(void)list_prepend(self->list, info);
