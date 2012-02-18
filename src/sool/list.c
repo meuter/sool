@@ -99,7 +99,7 @@ static int list_put(void *_self, FILE *stream, const char *format) {
 
 	result += fprintf(stream, "[");
 	forall(i, self) {
-		result += ofprintf(stream, format, get(i));
+		result += file_print(stream, format, get(i));
 		result += fprintf(stream, next(i) != end(self) ? ", " : "");
 	}
 	result += fprintf(stream, "]");

@@ -3,8 +3,11 @@
 #include <sool/bool.h>
 #include <sool/string.h>
 #include <sool/exception.h>
+#include <sool/mem.h>
+
 #include <string.h>
-#include <assert.h>
+#include <printf.h>
+#include <errno.h>
 
 #include "exception_def.h"
 
@@ -68,39 +71,73 @@ static int parse_curly_braces(const char *string) {
 
 /*****************************************************************************/
 
+FILE *file_open(const char *path, const char *mode) {
+	FILE *result = fopen(path, mode);
+	if (result == NULL)	throw(new(IOError(), strerror(errno)));
+	return result;
+}
 
-#define TRACE(x) x
+void *file_read(FILE *self, size_t size) {
+	void *result = mem_alloc(size);
+	if (fread(result, size, 1, self) != size)
+		throw(new(IOError(), strerror(errno)));
+	return result;
+}
 
-int ovfprintf(FILE *stream, const char *format, va_list args) {
+void file_write(FILE *self, void *data, size_t size) {
+	if (fwrite(data, size, 1, self))
+		throw(new(IOError(), strerror(errno)));
+}
+
+int file_print(FILE *self, const char *format, ...) {
+	int result;
+	va_list args;
+	va_start(args, format);
+	result = file_vprint(self, format, args);
+	va_end(args);
+	return result;
+}
+
+void file_close(FILE *self) {
+	if (fclose(self) != 0)
+		throw(new(IOError(), strerror(errno)));
+}
+
+int file_vprint(FILE *self, const char *format, va_list args) {
 	int result = 0;
 	int i = 0;
 
 	while ( format[i] ) {
 		if (format[i] == '%') {
-			if (format[i+1] == '@') {
+			if (format[i+1] == 'O') {
 				int j = parse_curly_braces(&format[i+2]);
 				if (j > 0) {
 					char *subformat = string_slice(format, i+3, i+j+2);
-					result += put(va_arg(args, void *), stream, subformat);
+					result += put(va_arg(args, void *), self, subformat);
 					delete(subformat);
 					i += 2+j+1;
 				}
 				else {
-					result += put(va_arg(args, void *), stream, NULL);
+					result += put(va_arg(args, void *), self, NULL);
 					i += 2;
 				}
 			}
 			else {
 				int j = parse_format(&format[i+1]);
 				char *subformat = string_slice(format, i, i+j+2);
-				result += vfprintf(stream, subformat, args);
+				result += vfprintf(self, subformat, args);
+
+				// skip the necessary number of argument
+				int a, n = parse_printf_format(subformat, 0, NULL);
+				for (a = 0; a < n; ++a)
+					(void)va_arg(args, void *);
+
 				delete(subformat);
-				(void)va_arg(args, void *);
 				i += j+2;
 			}
 		}
 		else {
-			putc(format[i], stream);
+			putc(format[i], self);
 			result += 1;
 			i += 1;
 		}
@@ -108,50 +145,3 @@ int ovfprintf(FILE *stream, const char *format, va_list args) {
 	return result;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-int oprintf(const char *format, ...) {
-	int result;
-	va_list args;
-	va_start(args, format);
-	result = ovfprintf(stdout, format, args);
-	va_end(args);
-	return result;
-}
-
-int ovprintf(const char *format, va_list ap) {
-	return ovfprintf(stdout, format, ap);
-}
-
-int ofprintf(FILE *stream, const char *format, ...) {
-	int result;
-	va_list args;
-	va_start(args, format);
-	result = ovfprintf(stream, format, args);
-	va_end(args);
-	return result;
-}

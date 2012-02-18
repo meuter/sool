@@ -258,8 +258,6 @@ char *string_format(const char *self, ...) {
 
 bool_t string_is_space(const char *self) {
 	return string_forall(self, is_space) && (*self != 0);
-
-
 }
 
 bool_t string_is_lower(const char *self) {

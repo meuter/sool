@@ -34,7 +34,7 @@ void _assertf(int expression, char *error_message, ...) {
 		va_list args;
 		va_start(args, error_message);
 		fprintf(stderr, "ERROR : ");
-		ovfprintf(stderr, error_message, args);
+		file_print(stderr, error_message, args);
 		fprintf(stderr, "\n");
 		error_print_backtrace(stderr);
 		va_end(args);
@@ -45,7 +45,7 @@ void _assertf(int expression, char *error_message, ...) {
 void fatalf(char *error_message, ...) {
 	va_list args;
 	va_start(args, error_message);
-	ovfprintf(stderr, error_message, args);
+	file_vprint(stderr, error_message, args);
 	fprintf(stderr, "\n");
 	error_print_backtrace(stderr);
 	va_end(args);
