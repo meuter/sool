@@ -55,14 +55,14 @@ static bool_t string_exist(const char *self, bool_t (*check)(const char)) {
 /*****************************************************************************/
 
 static const char *string(const char *self) {
-	if (self == NULL) throw(new(NullPointerError()));
+	if (self == NULL) throw(new(NullPointerError(),""));
 	return self;
 }
 
 static int string_index(const char *self, int i) {
 	int n = string_length(self);
 	if ( i > n || i < -n )
-		throw(new(IndexError()));
+		throw(new(IndexError(),""));
 	return i < 0 ? n + i : i;
 }
 
@@ -151,6 +151,8 @@ char *string_join(const char *self, list_t *words, const char *format) {
 
 	// check for non-NULL string
 	forall(i,words)	string(get(i));
+
+	if (format == NULL) format = "%p";
 
 	// build the string in the buffer
 	for (i = begin(words); i != previous(end(words)); i = next(i)) {

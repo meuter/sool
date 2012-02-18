@@ -70,7 +70,7 @@ int string_buffer_vappend(string_buffer_t *self, const char *format, va_list arg
 	va_copy(copy, args);
 
 	if ( (result = vsnprintf(NULL, 0, format, copy)) < 0 )
-		throw(new(MemoryError()));
+		throw(new(MemoryError(),""));
 
 	size_t needed = self->length + result + 1;
 	if ( self->size < needed ) {
@@ -81,7 +81,7 @@ int string_buffer_vappend(string_buffer_t *self, const char *format, va_list arg
 
 	size_t remaining = self->size - self->length;
 	if ( vsnprintf(self->buffer + self->length, remaining, format, args) != result )
-		throw(new(MemoryError()));
+		throw(new(MemoryError(),""));
 
 	self->length += result;
 

@@ -46,12 +46,12 @@ void stack_push(stack_t *self, void *info) {
 }
 
 void *stack_pop(stack_t *self) {
-	if (stack_is_empty(self)) throw(new(StackUnderflowError()));
+	if (stack_is_empty(self)) throw(new(StackUnderflowError(),""));
 	return list_remove_first(self->list);
 }
 
 void *stack_top(stack_t *self) {
-	if (stack_is_empty(self)) throw(new(StackUnderflowError()));
+	if (stack_is_empty(self)) throw(new(StackUnderflowError(),""));
 	return get(begin(self->list));
 }
 

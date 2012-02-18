@@ -66,8 +66,8 @@ void *class_ctor(void *_self, va_list *args) {
 	self->super = va_arg(*args, class_t *);
 	self->size  = va_arg(*args, size_t);
 
-	if (self->super == NULL) throw(new(NullPointerError()));
-	if (self->name == NULL)  throw(new(NullPointerError()));
+	if (self->super == NULL) throw(new(NullPointerError(),""));
+	if (self->name == NULL)  throw(new(NullPointerError(),""));
 
 	// copy methods of super class
 	memcpy((char*)self + offset, (char *)self->super + offset, size_of(self->super) - offset);
@@ -149,25 +149,25 @@ void _delete  (int n, ...) {
 
 void *ctor(void *self, va_list *args) {
 	class_t *class = class_of(self);
-	if (class->ctor == NULL) throw(new(NullPointerError()));
+	if (class->ctor == NULL) throw(new(NullPointerError(),""));
 	return class->ctor(self, args);
 }
 
 void *dtor(void *self) {
 	class_t *class = class_of(self);
-	if (class->dtor == NULL) throw(new(NullPointerError()));
+	if (class->dtor == NULL) throw(new(NullPointerError(),""));
 	return class->dtor(self);
 }
 
 int put(void *self, FILE *stream, const char *format) {
 	class_t *class = class_of(self);
-	if (class->put == NULL) throw(new(NullPointerError()));
+	if (class->put == NULL) throw(new(NullPointerError(),""));
 	return class->put(self, stream, format);
 }
 
 int cmp(void *self, void *other) {
 	class_t *class = class_of(self);
-	if (class->cmp == NULL) throw(new(NullPointerError()));
+	if (class->cmp == NULL) throw(new(NullPointerError(),""));
 	return class->cmp(self, other);
 }
 
@@ -177,15 +177,15 @@ bool_t equal   (void *self, void *other) {
 
 void *cast(class_t *class, void *_self) {
 	object_t *self = _self;
-	if (self == NULL) 			throw(new(NullPointerError()));
-	if (!is_object(self))		throw(new(ClassCastError()));
+	if (self == NULL) 			throw(new(NullPointerError(),""));
+	if (!is_object(self))		throw(new(ClassCastError(), ""));
 
 	class_t *current = self->class, *parent;
-	if (self->class == NULL) 	throw(new(NullPointerError()));
+	if (self->class == NULL) 	throw(new(NullPointerError(),""));
 
 	while (current && current != class) {
 		 parent = super(current);
-		 if (current == parent)	throw(new(ClassCastError()));
+		 if (current == parent)	throw(new(ClassCastError(), ""));
 		 current = parent;
 	}
 	return self;
@@ -232,12 +232,12 @@ class_t *super(void *_self) {
 
 void *super_ctor(void *class, void *self, va_list *args) {
 	class_t *super_class = cast(Class(), super(class));
-	if (super_class->ctor == NULL) throw(new(NullPointerError()));
+	if (super_class->ctor == NULL) throw(new(NullPointerError(),""));
 	return super_class->ctor(self, args);
 }
 
 void *super_dtor(void *class, void *self) {
 	class_t *super_class = cast(Class(), super(class));
-	if (super_class->dtor == NULL) throw(new(NullPointerError()));
+	if (super_class->dtor == NULL) throw(new(NullPointerError(),""));
 	return super_class->dtor(self);
 }

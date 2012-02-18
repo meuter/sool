@@ -74,45 +74,45 @@ class_t *SequenceClass() {
 
 iterator_t *begin(sequence_t *self) {
 	sequence_class_t *class = cast(SequenceClass(), class_of(self));
-	if (class->begin == NULL) throw(new(NullPointerError()));
+	if (class->begin == NULL) throw(new(NullPointerError(),""));
 	return class->begin(self);
 }
 
 iterator_t *end(sequence_t *self) {
 	sequence_class_t *class = cast(SequenceClass(), class_of(self));
-	if (class->end == NULL) throw(new(NullPointerError()));
+	if (class->end == NULL) throw(new(NullPointerError(),""));
 	return class->end(self);
 }
 
 
 iterator_t *rbegin(sequence_t *self) {
 	sequence_class_t *class = cast(SequenceClass(), class_of(self));
-	if (class->rbegin == NULL) throw(new(NullPointerError()));
+	if (class->rbegin == NULL) throw(new(NullPointerError(),""));
 	return class->rbegin(self);
 }
 
 iterator_t *rend(sequence_t *self) {
 	sequence_class_t *class = cast(SequenceClass(), class_of(self));
-	if (class->rend == NULL) throw(new(NullPointerError()));
+	if (class->rend == NULL) throw(new(NullPointerError(),""));
 	return class->rend(self);
 }
 
 
 iterator_t *next(iterator_t *self) {
 	iterator_class_t *class = cast(IteratorClass(), class_of(self));
-	if (class->next == NULL) throw(new(NullPointerError()));
+	if (class->next == NULL) throw(new(NullPointerError(),""));
 	return class->next(self);
 }
 
 iterator_t *previous(iterator_t *self) {
 	iterator_class_t *class = cast(IteratorClass(), class_of(self));
-	if (class->previous == NULL) throw(new(NullPointerError()));
+	if (class->previous == NULL) throw(new(NullPointerError(),""));
 	return class->previous(self);
 }
 
 void *get(iterator_t *self) {
 	iterator_class_t *class = cast(IteratorClass(), class_of(self));
-	if (class->get == NULL) throw(new(NullPointerError()));
+	if (class->get == NULL) throw(new(NullPointerError(),""));
 	return class->get(self);
 }
 

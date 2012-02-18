@@ -7,7 +7,7 @@
 struct _exception_t;
 typedef struct _exception_t exception_t;
 
-class_t *Exception(); /* new(Exception()) */
+class_t *Exception(); /* new(Exception(), "error message") */
 
 int __exc_c;
 

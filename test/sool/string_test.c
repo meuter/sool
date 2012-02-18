@@ -132,20 +132,21 @@ static void test_string_join() {
 	char *s;
 	list_t *l;
 
-	assert_raises(NullPointerError(), string_join(", ", NULL));
-	l = list(); assert_raises(NullPointerError(), string_join(NULL, l)); delete(l);
-	l = list(NULL); assert_raises(NullPointerError(), string_join(", ", l)); delete(l);
-	l = list("first", NULL); assert_raises(NullPointerError(), string_join(", ", l)); delete(l);
+	assert_raises(NullPointerError(), string_join(", ", NULL, "%s"));
+	l = list(); assert_raises(NullPointerError(), string_join(NULL, l, "%s")); delete(l);
+	l = list(NULL); assert_raises(NullPointerError(), string_join(", ", l, "%s")); delete(l);
+	l = list("first", NULL); assert_raises(NullPointerError(), string_join(", ", l, "%s")); delete(l);
 
-	l = list(); s = string_join("", l); assert_string_equal(s, ""); delete(s, l);
-	l = list(); s = string_join(", ", l); assert_string_equal(s, ""); delete(s, l);
-	l = list(); s = string_join(", ", l); assert_string_equal(s, ""); delete(s, l);
-	l = list("first"); s = string_join(", ", l); assert_string_equal(s, "first"); delete(s, l);
-	l = list("first", "second"); s = string_join(", ", l); assert_string_equal(s, "first, second"); delete(s, l);
-	l = list("first", "second"); s = string_join("", l); assert_string_equal(s, "firstsecond"); delete(s, l);
-	l = list("first", "second", "third"); s = string_join("/", l); assert_string_equal(s, "first/second/third"); delete(s, l);
-	l = list("", "second", ""); s = string_join("/", l); assert_string_equal(s, "/second/"); delete(s, l);
+	l = list(); s = string_join("", l, "%s"); assert_string_equal(s, ""); delete(s, l);
+	l = list(); s = string_join(", ", l, "%s"); assert_string_equal(s, ""); delete(s, l);
+	l = list(); s = string_join(", ", l, "%s"); assert_string_equal(s, ""); delete(s, l);
+	l = list("first"); s = string_join(", ", l, "%s"); assert_string_equal(s, "first"); delete(s, l);
+	l = list("first", "second"); s = string_join(", ", l, "%s"); assert_string_equal(s, "first, second"); delete(s, l);
+	l = list("first", "second"); s = string_join("", l, "%s"); assert_string_equal(s, "firstsecond"); delete(s, l);
+	l = list("first", "second", "third"); s = string_join("/", l, "%s"); assert_string_equal(s, "first/second/third"); delete(s, l);
+	l = list("", "second", ""); s = string_join("/", l, "%s"); assert_string_equal(s, "/second/"); delete(s, l);
 
+	l = list(1,2,3); s = string_join("/", l, "%d"); assert_string_equal(s, "1/2/3"); delete(l, s);
 }
 
 static void test_string_slice() {
