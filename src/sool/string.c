@@ -139,7 +139,7 @@ list_t *string_split(const char *self, const char *delimiter) {
 	return result;
 }
 
-char *string_join(const char *self, list_t *words) {
+char *string_join(const char *self, list_t *words, const char *format) {
 	self = string(self);
 
 	// if list is empty
@@ -154,10 +154,10 @@ char *string_join(const char *self, list_t *words) {
 
 	// build the string in the buffer
 	for (i = begin(words); i != previous(end(words)); i = next(i)) {
-		string_buffer_append(buffer, "%s", get(i));
+		string_buffer_append(buffer, format, get(i));
 		string_buffer_append(buffer, "%s", self);
 	}
-	string_buffer_append(buffer, "%s", get(rbegin(words)));
+	string_buffer_append(buffer, format, get(rbegin(words)));
 
 	// detach buffer and delete buffer
 	char *result = string_buffer_value(buffer);
@@ -179,7 +179,7 @@ char *string_replace(const char *self, const char *substr, const char *other) {
 	other = string(other);
 	list_t *splitted = string_split(self, substr);
 	iterator_t *i;
-	char *result = string_join(other, splitted);
+	char *result = string_join(other, splitted, "%s");
 	forall(i, splitted) delete(get(i));
 	return result;
 }
@@ -256,6 +256,8 @@ char *string_format(const char *self, ...) {
 
 bool_t string_is_space(const char *self) {
 	return string_forall(self, is_space) && (*self != 0);
+
+
 }
 
 bool_t string_is_lower(const char *self) {

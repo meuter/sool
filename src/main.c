@@ -1,52 +1,21 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sool/exception.h>
-#include <sool/stack.h>
+#include <sool/list.h>
 #include <sool/io.h>
 #include <sool/string.h>
+#include <printf.h>
 
-int some_function(int error) {
-	printf("entering...\n");
-	if (error == 1)
-		throw(new(Exception()));
-	else if (error == 2)
-		throw(new(Object()));
-	else if (error == 3)
-		throw(new(Stack()));
-	printf("leaving...\n");
-	return 0;
+int main(void) {
+	list_t *l = list("toto", "fofo", "blabla");
+	list_t *n = list(1,2,3,4);
+	list_t *m = list(l,l,l,l);
+
+	oprintf("hello world\n");
+	oprintf("%d\n", 10);
+	oprintf("hello %@{%s}\n", l);
+	oprintf("hello %@{%s} %d\n", l, 15);
+	oprintf("%d hello %d\n", 60, 69);
+	oprintf("%d hello %@\n", 60, l);
+	oprintf("hello %@{%s} %d %@{%O{%s}}\n", l,15, m);
 }
 
 
-int main() {
-	void *o;
-
-
-	oprintf("%08X", 10);
-
-	try {
-		printf("step 1\n");
-		some_function(0);
-		printf("step 2\n");
-		some_function(3);
-		printf("step 3\n");
-	}
-	catch(Exception(), o) {
-		oprintf("caught exception [%O]\n", o);
-	}
-	catch(Object(), o) {
-		oprintf("caught an object [%O]\n", o);
-	}
-	except {
-		oprintf("caught something else\n");
-	}
-
-	printf("out of the danger zone...\n");
-
-	throw(new(Exception()));
-
-	printf("this will never be printed!\n");
-
-	return 0;
-}
 

@@ -15,7 +15,7 @@ int     string_rfind       (const char *self, const char *substr);
 bool_t  string_contains    (const char *self, const char *substr);
 char   *string_strip       (const char *self);
 list_t *string_split       (const char *self, const char *delimiter);
-char   *string_join        (const char *self, list_t *words);
+char   *string_join        (const char *self, list_t *words, const char *format);
 char   *string_slice       (const char *self, int from, int to);
 char   *string_replace     (const char *self, const char *substr, const char *other);
 int     string_cmp         (const char *self, const char *other);

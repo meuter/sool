@@ -1,8 +1,16 @@
 #include <sool/object.h>
 #include <sool/io.h>
 #include <sool/bool.h>
+#include <sool/string.h>
+#include <sool/exception.h>
 #include <string.h>
 #include <assert.h>
+
+#include "exception_def.h"
+
+DEFINE_EXCEPTION(IOError);
+
+/*****************************************************************************/
 
 static bool_t is_format_character(char c) {
 	switch(c) {
@@ -25,12 +33,24 @@ static bool_t is_format_character(char c) {
 	}
 }
 
+static int parse_format(const char *string) {
+	int i = 0;
+
+	while (string[i]) {
+		if (is_format_character(string[i]))
+			return i;
+		i++;
+	}
+
+	return -1;
+}
+
 static int parse_curly_braces(const char *string) {
 	int i = 0;
 	int n_open = 0;
 
-	if (string[0] == '}') return -1;
-	if (string[0] != '{') return 0;
+	if (string[0] != '{')
+		return 0;
 
 	while (string[i]) {
 		if (string[i] == '{') {
@@ -43,46 +63,40 @@ static int parse_curly_braces(const char *string) {
 		}
 		++i;
 	}
-
 	return -1;
 }
 
+/*****************************************************************************/
 
-// FIXME: does not work
+
+#define TRACE(x) x
 
 int ovfprintf(FILE *stream, const char *format, va_list args) {
 	int result = 0;
 	int i = 0;
-	char subformat[16];
 
 	while ( format[i] ) {
 		if (format[i] == '%') {
-			if (format[i+1] == 'O') {
+			if (format[i+1] == '@') {
 				int j = parse_curly_braces(&format[i+2]);
 				if (j > 0) {
-					memcpy(subformat, &format[i+3], j-1);
-					subformat[j-1] = '\0';
+					char *subformat = string_slice(format, i+3, i+j+2);
 					result += put(va_arg(args, void *), stream, subformat);
+					delete(subformat);
 					i += 2+j+1;
 				}
 				else {
-					result += put(va_arg(args, void *), stream, "");
+					result += put(va_arg(args, void *), stream, NULL);
 					i += 2;
 				}
-
 			}
 			else {
-				int j = i+1;
-
-				while (!is_format_character(format[j]))
-					j++;
-				j++;
-
-				assert(j-i < 16);
-				memcpy(subformat, &format[i], j-i);
-				subformat[j-i] = '\0';
+				int j = parse_format(&format[i+1]);
+				char *subformat = string_slice(format, i, i+j+2);
 				result += vfprintf(stream, subformat, args);
-				i = j;
+				delete(subformat);
+				(void)va_arg(args, void *);
+				i += j+2;
 			}
 		}
 		else {
@@ -93,6 +107,32 @@ int ovfprintf(FILE *stream, const char *format, va_list args) {
 	}
 	return result;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 int oprintf(const char *format, ...) {
 	int result;
