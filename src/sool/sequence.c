@@ -6,12 +6,13 @@
 
 void *iterator_class_ctor(void *_self, va_list *args) {
 	iterator_class_t *self = super_ctor(IteratorClass(), _self, args);
+	va_list args_copy;
 	typedef void (*method_t)();
 	method_t selector;
 
 	self->next = self->get = self->previous = NULL;
 
-	va_list args_copy = *args;
+	va_copy(args_copy, *args);
 	while ( (selector = va_arg(args_copy, method_t)) ) {
 		if (selector == (method_t)next)
 			*(method_t *) &self->next = va_arg(args_copy, method_t);
@@ -20,6 +21,7 @@ void *iterator_class_ctor(void *_self, va_list *args) {
 		if (selector == (method_t)get)
 			*(method_t *) &self->get = va_arg(args_copy, method_t);
 	}
+	va_end(args_copy);
 
 	return self;
 }
@@ -39,12 +41,13 @@ class_t *IteratorClass() {
 
 void *sequence_class_ctor(void *_self, va_list *args) {
 	sequence_class_t *self = super_ctor(SequenceClass(), _self, args);
+	va_list args_copy;
 	typedef void (*method_t)();
 	method_t selector;
 
 	self->begin = self->end = self->rbegin = self->rend = NULL;
 
-	va_list args_copy = *args;
+	va_copy(args_copy, *args);
 	while ( (selector = va_arg(args_copy, method_t)) ) {
 		if (selector == (method_t)begin)
 			*(method_t *) &self->begin = va_arg(args_copy, method_t);
@@ -55,6 +58,7 @@ void *sequence_class_ctor(void *_self, va_list *args) {
 		if (selector == (method_t)rend)
 			*(method_t *) &self->rend = va_arg(args_copy, method_t);
 	}
+	va_end(args_copy);
 
 	return self;
 }
