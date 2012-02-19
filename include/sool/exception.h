@@ -14,7 +14,7 @@ int __exc_c;
 
 #define try              for (__exc_c = 0; __exc_c == 0; exception_throw_uncaught(), __exc_c = 1) if (setjmp(*exception_push()) == 0)
 #define throw(e)         exception_throw(e)
-#define catch(class, e)  else if ( (class_of(exception_top()) == class) && (e = exception_catch()))
+#define catch(class, e)  else if ( is_a(class, exception_top()) && (e = exception_catch()))
 #define except           else if ( (exception_catch()) )
 
 

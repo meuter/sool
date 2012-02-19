@@ -38,6 +38,7 @@ class_t *StackFrame();
 typedef struct  {
 	EXTENDS(object_t);
 	jmp_buf buf;
+	bool caught;
 	void *thrown;
 } stack_frame_t;
 
@@ -45,7 +46,8 @@ typedef struct  {
 void *stack_frame_ctor(void *_self, va_list *args) {
 	(void)args;
 	stack_frame_t *self = super_ctor(StackFrame(), _self, args);
-	self->thrown  = NULL;
+	self->thrown = NULL;
+	self->caught = false;
 	return self;
 }
 
@@ -77,9 +79,15 @@ void exception_throw(void *something) {
 		fatalf("uncaught exception: %O", something);
 	}
 	else {
-		stack_frame_t *e = stack_top(stack_trace);
-		e->thrown  = something;
-		longjmp(e->buf, 0);
+		stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
+		if (frame->caught) {
+			stack_pop(stack_trace);
+			frame = cast(StackFrame(), stack_top(stack_trace));
+		}
+
+		frame->thrown = something;
+		frame->caught = false;
+		longjmp(frame->buf, 0);
 	}
 }
 
@@ -87,8 +95,9 @@ void exception_throw_uncaught() {
 	if (!stack_is_empty(stack_trace)) {
 		stack_frame_t *frame = cast(StackFrame(), stack_pop(stack_trace));
 		void *thrown = frame->thrown;
+		bool caught  = frame->caught;
 		delete(frame);
-		if (thrown)
+		if (thrown && !caught)
 			exception_throw(thrown);
 	}
 }
@@ -99,8 +108,7 @@ void *exception_top() {
 }
 
 void *exception_catch() {
-	stack_frame_t *frame = cast(StackFrame(), stack_pop(stack_trace));
-	void *thrown   = frame->thrown;
-	delete(frame);
-	return thrown;
+	stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
+	frame->caught = true;
+	return frame->thrown;
 }

@@ -206,9 +206,11 @@ static void test_nested_empty_try() {
 	try {
 		try {
 			try {
-
+				assert_false(stack_is_empty(stack_trace));
 			}
+			assert_false(stack_is_empty(stack_trace));
 		}
+		assert_false(stack_is_empty(stack_trace));
 	}
 	assert_true(stack_is_empty(stack_trace));
 }
@@ -248,6 +250,43 @@ static void test_nested_try_thrown_let_through_and_caught() {
 	assert_int_equal(step, 2);
 }
 
+static void test_throw_uncaught_exception() {
+	exception_t *e;
+	bool passed = false;
+	try {
+		try {
+			throw(new(Exception(),""));
+			assert_true(false);
+		}
+		catch(Exception(), e) {
+			passed = true;
+		}
+		assert_false(stack_is_empty(stack_trace));
+	}
+	assert_true(passed);
+}
+
+void sub_function() {
+	try {
+		return;
+		assert_false(true);
+	}
+}
+
+static void test_return_in_try_block() {
+	exception_t *e;
+	bool passed;
+	try {
+		sub_function();
+		throw(new(Exception(), ""));
+		assert_false(true);
+	}
+	catch(Exception(), e) {
+		passed = true;
+	}
+	assert_true(passed);
+}
+
 int main() {
 	unit_test_t all_tests[] = {
 		unit_test_setup_teardown(test_throw_no_try, setup, teardown),
@@ -265,6 +304,8 @@ int main() {
 		unit_test_setup_teardown(test_nested_empty_try, setup, teardown),
 		unit_test_setup_teardown(test_nested_empty_try_one_catch, setup, teardown),
 		unit_test_setup_teardown(test_nested_try_thrown_let_through_and_caught, setup, teardown),
+		unit_test_setup_teardown(test_throw_uncaught_exception, setup, teardown),
+		unit_test_setup_teardown(test_return_in_try_block, setup, teardown),
 	};
 
 	return run_tests(all_tests);
