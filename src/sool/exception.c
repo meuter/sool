@@ -16,7 +16,7 @@ void *exception_ctor(void *_self, va_list *args) {
 int exception_put(void *_self, FILE *stream, char *subformat) {
 	(void)subformat;
 	exception_t *self = cast(Exception(), _self);
-	return file_print(stream, "%s", class_get_name(class_of(self)), self->msg);
+	return file_print(stream, "%s: %s", class_get_name(class_of(self)), self->msg);
 }
 
 class_t *Exception() {
