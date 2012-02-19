@@ -6,4 +6,6 @@ typedef enum {
 	FALSE = 0
 } bool_t;
 
+// TODO add a %b in file_print to print boolean
+
 #endif

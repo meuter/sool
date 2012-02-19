@@ -118,6 +118,8 @@ int file_vprint(FILE *self, const char *format, va_list args) {
 	int result = 0;
 	int i = 0;
 
+	// TODO: allow to j lustify (e.g. print("%*O", 15, list(1,2,3,4))
+
 	while ( format[i] ) {
 		if (format[i] == '%') {
 			if (format[i+1] == 'O') {
