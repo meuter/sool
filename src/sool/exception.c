@@ -38,7 +38,6 @@ class_t *StackFrame();
 typedef struct  {
 	EXTENDS(object_t);
 	jmp_buf buf;
-	bool_t handled;
 	void *thrown;
 } stack_frame_t;
 
@@ -46,7 +45,6 @@ typedef struct  {
 void *stack_frame_ctor(void *_self, va_list *args) {
 	(void)args;
 	stack_frame_t *self = super_ctor(StackFrame(), _self, args);
-	self->handled = TRUE;
 	self->thrown  = NULL;
 	return self;
 }
@@ -80,23 +78,18 @@ void exception_throw(void *something) {
 	}
 	else {
 		stack_frame_t *e = stack_top(stack_trace);
-		e->handled = FALSE;
 		e->thrown  = something;
 		longjmp(e->buf, 0);
 	}
 }
 
-void *exception_pop() {
-	stack_frame_t *frame = cast(StackFrame(), stack_pop(stack_trace));
-	bool_t handled = frame->handled;
-	void *thrown   = frame->thrown;
-	delete(frame);
-	if (!handled) {
-		exception_throw(thrown);
-		return NULL;
-	}
-	else {
-		return thrown;
+void exception_throw_uncaught() {
+	if (!stack_is_empty(stack_trace)) {
+		stack_frame_t *frame = cast(StackFrame(), stack_pop(stack_trace));
+		void *thrown = frame->thrown;
+		delete(frame);
+		if (thrown)
+			exception_throw(thrown);
 	}
 }
 
@@ -106,7 +99,8 @@ void *exception_top() {
 }
 
 void *exception_catch() {
-	stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
-	frame->handled = TRUE;
-	return frame->thrown;
+	stack_frame_t *frame = cast(StackFrame(), stack_pop(stack_trace));
+	void *thrown   = frame->thrown;
+	delete(frame);
+	return thrown;
 }
