@@ -118,8 +118,6 @@ int file_vprint(FILE *self, const char *format, va_list args) {
 	int result = 0;
 	int i = 0;
 
-	// TODO: allow to j lustify (e.g. print("%*O", 15, list(1,2,3,4))
-
 	while ( format[i] ) {
 		if (format[i] == '%') {
 			if (format[i+1] == 'O') {
@@ -134,6 +132,11 @@ int file_vprint(FILE *self, const char *format, va_list args) {
 					result += put(va_arg(args, void *), self, NULL);
 					i += 2;
 				}
+			}
+			if (format[i+1] == 'b') {
+				int b = va_arg(args, int);
+				result += fprintf(self, "%s", b ? "true" : "false");
+				i += 2;
 			}
 			else {
 				int j = parse_format(&format[i+1]);

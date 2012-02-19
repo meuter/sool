@@ -75,6 +75,9 @@ void test_string() {
 
 int main(void) {
 
+
+	println("hello %b", 1);
+
 #ifdef ALPHA
 	unit_test_t all_tests[] = {
 		unit_test(test_1),
