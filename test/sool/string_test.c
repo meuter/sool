@@ -379,6 +379,25 @@ static void test_string_is_alphanum() {
 	assert_true(string_is_alphanum("21"));
 }
 
+
+#if 0
+#define run_tests(v) _run_tests(v, sizeof(v))
+
+typedef void (*unit_test_t)();
+
+int _run_tests(unit_test_t all_tests[], int n) {
+	int i, result = 0;
+	for (i = 0; i < n; ++i) {
+		try {
+			all_tests[i]();
+			result += 1;
+		}
+		except {}
+	}
+	return result;
+}
+#endif
+
 int main() {
 	unit_test_t all_tests[] = {
 		unit_test(test_string_clone),
