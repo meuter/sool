@@ -98,6 +98,17 @@ int file_print(FILE *self, const char *format, ...) {
 	return result;
 }
 
+int file_println   (FILE *self, const char *format, ...) {
+	int result;
+	va_list args;
+	va_start(args, format);
+	result = file_vprint(self, format, args);
+	result += file_print(self, "\n");
+	va_end(args);
+	return result;
+}
+
+
 void file_close(FILE *self) {
 	if (fclose(self) != 0)
 		throw(new(IOError(), strerror(errno)));
