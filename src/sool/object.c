@@ -200,7 +200,7 @@ bool is_a(class_t *class, void *_self) {
 	exception_t *e;
 	try {
 		cast(class, _self);
-		return true;
+		result = true;
 	}
 	catch(ClassCastError(), e) {
 		delete(e);
