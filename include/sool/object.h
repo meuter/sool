@@ -30,6 +30,7 @@ int   cmp (void *self, void *other);
 
 bool_t   equal    (void *self, void *other);
 void    *cast     (class_t *class, void *self);
+bool_t   is_a(class_t *class, void *_self);
 class_t *class_of (void *self);
 class_t *super    (void *self);
 size_t   size_of  (void *self);
