@@ -31,7 +31,7 @@ int object_put(void *self, FILE *stream, const char *format) {
 }
 
 int object_cmp(void *self, void *other) {
-	return (int)self-(int)other;
+	return self-other;
 }
 
 class_t _Object = {
@@ -73,7 +73,7 @@ void *class_ctor(void *_self, va_list *args) {
 	memcpy((char*)self + offset, (char *)self->super + offset, size_of(self->super) - offset);
 
 	// override method from argument list
-	args_copy = *args;
+	va_copy(args_copy, *args);
 	while ( (selector = va_arg(args_copy, method_t)) ) {
 		if (selector == (method_t)ctor)
 			*(method_t*) &self->ctor = va_arg(args_copy, method_t);
@@ -84,6 +84,7 @@ void *class_ctor(void *_self, va_list *args) {
 		if (selector == (method_t)cmp)
 			*(method_t*) &self->cmp = va_arg(args_copy, method_t);
 	}
+	va_end(args_copy);
 
 	return self;
 }
@@ -166,6 +167,9 @@ int put(void *self, FILE *stream, const char *format) {
 }
 
 int cmp(void *self, void *other) {
+	if (!is_object(self))
+		return (self - other);
+
 	class_t *class = class_of(self);
 	if (class->cmp == NULL) throw(new(NullPointerError(),""));
 	return class->cmp(self, other);
