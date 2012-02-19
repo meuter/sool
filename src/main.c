@@ -20,7 +20,7 @@ int main(void) {
 
 	dict_put(dict, "hello", (void*)4);
 	dict_put(dict, "bar", (void *)15);
-	print("%O{%s: %d}\n", (void *)dict);
+	print("%O{%s: %d}\n", dict);
 
 	return EXIT_SUCCESS;
 }
