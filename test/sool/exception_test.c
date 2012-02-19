@@ -125,6 +125,9 @@ static void test_try_throw_except() {
 
 
 int main() {
+
+	// TODO write some nested exception tests
+
 	unit_test_t all_tests[] = {
 		unit_test_setup_teardown(test_throw_no_try, setup, teardown),
 		unit_test_setup_teardown(test_try_no_catch, setup, teardown),

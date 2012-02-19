@@ -3,6 +3,20 @@
 #include <sool/mem.h>
 #include <sool/io.h>
 
+
+// good hash function for strings
+unsigned long hash(unsigned char *str)
+{
+	unsigned long hash = 5381;
+	int c;
+
+	while ( (c = *str++) )
+		hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+	return hash;
+}
+
+
 #include "object_def.h"
 
 typedef struct {
