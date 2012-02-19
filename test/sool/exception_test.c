@@ -39,11 +39,11 @@ static void test_throw_no_try() {
 }
 
 static void test_try_no_catch() {
-	bool_t passed = FALSE;
+	bool passed = false;
 	assert_true(stack_trace == NULL);
 	try {
 		assert_false(stack_is_empty(stack_trace));
-		passed = TRUE;
+		passed = true;
 	}
 	assert_true(stack_is_empty(stack_trace));
 	assert_true(passed);
@@ -75,7 +75,7 @@ static void test_try_no_throw_catch() {
 		assert_false(stack_is_empty(stack_trace));
 	}
 	catch(Class(), e) {
-		assert_true(FALSE);
+		assert_true(false);
 	}
 	assert_true(stack_is_empty(stack_trace));
 }
@@ -86,7 +86,7 @@ static void test_try_no_throw_except() {
 		assert_false(stack_is_empty(stack_trace));
 	}
 	except {
-		assert_true(FALSE);
+		assert_true(false);
 	}
 	assert_true(stack_is_empty(stack_trace));
 }
@@ -94,30 +94,30 @@ static void test_try_no_throw_except() {
 
 static void test_try_throw_catch() {
 	class_t *c;
-	bool_t passed = FALSE;
+	bool passed = false;
 	assert_true(stack_trace == NULL);
 	try {
 		assert_false(stack_is_empty(stack_trace));
 		throw(Exception());
-		assert_true(FALSE);
+		assert_true(false);
 	}
 	catch(Class(), c) {
-		passed = TRUE;
+		passed = true;
 	}
 	assert_true(stack_is_empty(stack_trace));
 	assert_true(passed);
 }
 
 static void test_try_throw_except() {
-	bool_t passed = FALSE;
+	bool passed = false;
 	assert_true(stack_trace == NULL);
 	try {
 		assert_false(stack_is_empty(stack_trace));
 		throw(Exception());
-		assert_true(FALSE);
+		assert_true(false);
 	}
 	except {
-		passed = TRUE;
+		passed = true;
 	}
 	assert_true(stack_is_empty(stack_trace));
 	assert_true(passed);
@@ -125,77 +125,77 @@ static void test_try_throw_except() {
 
 
 static void test_nested_uncaught() {
-	bool_t passed = FALSE;
+	bool passed = false;
 	assert_true(stack_trace == NULL);
 	try {
 		assert_false(stack_is_empty(stack_trace));
 		try {
 			assert_false(stack_is_empty(stack_trace));
 			throw(new(Exception(), ""));
-			assert_true(FALSE);
+			assert_true(false);
 		}
-		assert_true(FALSE);
+		assert_true(false);
 	}
 	except {
-		passed = TRUE;
+		passed = true;
 	}
 	assert_true(stack_is_empty(stack_trace));
 	assert_true(passed);
 }
 
 static void test_nested_caught() {
-	bool_t passed = FALSE;
+	bool passed = false;
 	assert_true(stack_trace == NULL);
 	try {
 		assert_false(stack_is_empty(stack_trace));
 		try {
 			assert_false(stack_is_empty(stack_trace));
 			throw(new(Exception(), ""));
-			assert_true(FALSE);
+			assert_true(false);
 		}
 		except {
-			passed = TRUE;
+			passed = true;
 		}
 	}
 	except {
-		assert_true(FALSE);
+		assert_true(false);
 	}
 	assert_true(stack_is_empty(stack_trace));
 	assert_true(passed);
 }
 
 static void test_filtered() {
-	bool_t passed = FALSE;
+	bool passed = false;
 	exception_t *e;
 	try {
 		throw(new(Exception(),""));
-		assert_true(FALSE);
+		assert_true(false);
 	}
 	catch(NullPointerError(), e) {
-		assert_true(FALSE);
+		assert_true(false);
 	}
 	catch(Exception(), e) {
-		passed = TRUE;
+		passed = true;
 	}
 	assert_true(stack_is_empty(stack_trace));
 	assert_true(passed);
 }
 
 static void test_throw_in_a_catch() {
-	bool_t passed = FALSE;
+	bool passed = false;
 	exception_t *e;
 	try {
 		try {
 			throw(new(Exception(),""));
-			assert_true(FALSE);
+			assert_true(false);
 		}
 		catch(Exception(), e) {
 			throw(e);
-			assert_true(FALSE);
+			assert_true(false);
 		}
 	}
 	except {
-		passed = TRUE;
+		passed = true;
 	}
 	assert_true(stack_is_empty(stack_trace));
 	assert_true(passed);
@@ -222,7 +222,7 @@ static void test_nested_empty_try_one_catch() {
 			}
 		}
 		catch (Exception(), e) {
-			assert_true(FALSE);
+			assert_true(false);
 		}
 	}
 	assert_true(stack_is_empty(stack_trace));
@@ -235,9 +235,9 @@ static void test_nested_try_thrown_let_through_and_caught() {
 		try {
 			try {
 				throw(new(Exception(), ""));
-				assert_true(FALSE);
+				assert_true(false);
 			}
-			assert_true(FALSE);
+			assert_true(false);
 		}
 		catch (Exception(), e) {
 			step += 1;

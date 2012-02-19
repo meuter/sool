@@ -1,6 +1,5 @@
 #include <sool/object.h>
 #include <sool/io.h>
-#include <sool/bool.h>
 #include <sool/string.h>
 #include <sool/exception.h>
 #include <sool/mem.h>
@@ -8,6 +7,7 @@
 #include <string.h>
 #include <printf.h>
 #include <errno.h>
+#include <stdbool.h>
 
 #include "exception_def.h"
 
@@ -15,7 +15,7 @@ DEFINE_EXCEPTION(IOError);
 
 /*****************************************************************************/
 
-static bool_t is_format_character(char c) {
+static bool is_format_character(char c) {
 	switch(c) {
 	case '\0':
 	case 'd': case 'i':
@@ -30,9 +30,9 @@ static bool_t is_format_character(char c) {
 	case 'n':
 	case 'm':
 	case '%':
-		return TRUE;
+		return true;
 	default:
-		return FALSE;
+		return false;
 	}
 }
 

@@ -228,7 +228,7 @@ list_t *list_reverse(list_t *self) {
 	return result;
 }
 
-bool_t list_is_empty(list_t *self) {
+bool list_is_empty(list_t *self) {
 	return (self->length == 0);
 }
 

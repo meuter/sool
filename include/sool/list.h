@@ -3,8 +3,8 @@
 
 #include <sool/object.h>
 #include <sool/args.h>
-#include <sool/bool.h>
 #include <sool/sequence.h>
+#include <stdbool.h>
 
 // TODO lists are supposed to be mutable (as in python)
 // --> need set,
@@ -28,7 +28,7 @@ list_t     *list_slice        (list_t *self, int from, int to);
 list_t    *_list_join         (int n, ...);
 list_t     *list_sort         (list_t *self);
 list_t     *list_reverse      (list_t *self);
-bool_t      list_is_empty     (list_t *self);
+bool        list_is_empty     (list_t *self);
 int         list_count        (list_t *self, void *value);
 int         list_length       (list_t *self);
 void        list_clear        (list_t *self);

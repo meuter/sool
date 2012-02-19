@@ -2,17 +2,17 @@
 #include <stdarg.h>
 #include <setjmp.h>
 #include <cmockery.h>
-#include <sool/bool.h>
+#include <stdbool.h>
 #include <sool/exception.h>
 
 typedef UnitTest unit_test_t;
 
 #define assert_raises(exception, block) 												\
 	do {																				\
-		bool_t thrown = TRUE, caught = FALSE;											\
+		bool thrown = true, caught = false;											\
 		exception_t *e;																	\
-		try { block; thrown = FALSE; } 													\
-		catch(exception,e) { caught = TRUE;	} 											\
+		try { block; thrown = false; } 													\
+		catch(exception,e) { caught = true;	} 											\
 		except { }																		\
 		_assert_true(caught && thrown, "exception '" #exception "' not raised", __FILE__, __LINE__); 	\
 	} while(0);

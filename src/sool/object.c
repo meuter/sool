@@ -175,7 +175,7 @@ int cmp(void *self, void *other) {
 	return class->cmp(self, other);
 }
 
-bool_t equal   (void *self, void *other) {
+bool equal   (void *self, void *other) {
 	return cmp(self, other) == 0;
 }
 
@@ -195,12 +195,12 @@ void *cast(class_t *class, void *_self) {
 	return self;
 }
 
-bool_t is_a(class_t *class, void *_self) {
-	bool_t result = FALSE;
+bool is_a(class_t *class, void *_self) {
+	bool result = false;
 	exception_t *e;
 	try {
 		cast(class, _self);
-		return TRUE;
+		return true;
 	}
 	catch(ClassCastError(), e) {
 		delete(e);
@@ -224,7 +224,7 @@ size_t size_of(void *_self) {
 	return class->size;
 }
 
-bool_t is_object(void *_self) {
+bool is_object(void *_self) {
 	object_t *self = _self;
 	return (self && self->magic == MAGIC);
 }

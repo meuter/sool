@@ -55,7 +55,7 @@ void *stack_top(stack_t *self) {
 	return get(begin(self->list));
 }
 
-bool_t stack_is_empty(stack_t *self) {
+bool stack_is_empty(stack_t *self) {
 	return list_is_empty(self->list);
 }
 

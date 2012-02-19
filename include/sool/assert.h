@@ -1,7 +1,7 @@
 #ifndef __ASSERT_H__
 #define __ASSERT_H__
 
-#include <sool/bool.h>
+#include <stdbool.h>
 #include <sool/exception.h>
 #include <sool/string.h>
 

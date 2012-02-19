@@ -12,44 +12,44 @@ DEFINE_EXCEPTION(IndexError);
 
 /*****************************************************************************/
 
-static bool_t is_space(const char c) {
+static bool is_space(const char c) {
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
 }
 
-static bool_t is_lower(const char c) {
+static bool is_lower(const char c) {
 	return (c >= 'a' && c <= 'z');
 }
 
-static bool_t is_upper(const char c) {
+static bool is_upper(const char c) {
 	return (c >= 'A' && c <= 'Z');
 }
 
-static bool_t is_alpha(const char c) {
+static bool is_alpha(const char c) {
 	return (is_lower(c) || is_upper(c));
 }
 
-static bool_t is_num(const char c) {
+static bool is_num(const char c) {
 	return (c >= '0' && c <= '9');
 }
 
-static bool_t is_alphanum(const char c) {
+static bool is_alphanum(const char c) {
 	return (is_alpha(c) || is_num(c));
 }
 
-static bool_t string_forall(const char *self, bool_t (*check)(const char)) {
+static bool string_forall(const char *self, bool (*check)(const char)) {
 	int length = string_length(self), i;
 	for (i = 0; i < length; ++i)
 		if (!check(self[i]))
-			return FALSE;
-	return TRUE;
+			return false;
+	return true;
 }
 
-static bool_t string_exist(const char *self, bool_t (*check)(const char)) {
+static bool string_exist(const char *self, bool (*check)(const char)) {
 	int length = string_length(self), i;
 	for (i = 0; i < length; ++i)
 		if (check(self[i]))
-			return TRUE;
-	return FALSE;
+			return true;
+	return false;
 }
 
 /*****************************************************************************/
@@ -115,7 +115,7 @@ int string_rfind(const char* self, const char* substr) {
 	return -1;
 }
 
-bool_t string_contains(const char *self, const char *substr) {
+bool string_contains(const char *self, const char *substr) {
 	return (string_find(self, substr) != -1);
 }
 
@@ -190,7 +190,7 @@ int string_cmp(const char *self, const char *other) {
 	return strcmp(string(self), string(other));
 }
 
-bool_t string_equal(const char *self, const char *other) {
+bool string_equal(const char *self, const char *other) {
 	return string_cmp(self, other) == 0;
 }
 
@@ -231,15 +231,15 @@ char *string_upper(const char *self) {
 	return result;
 }
 
-bool_t string_starts_with(const char *self, const char *substr) {
+bool string_starts_with(const char *self, const char *substr) {
 	int n = string_length(self), m = string_length(substr);
-	if (n < m) return FALSE;
+	if (n < m) return false;
 	return (memcmp(self, substr, m) == 0);
 }
 
-bool_t string_ends_with(const char *self, const char *substr) {
+bool string_ends_with(const char *self, const char *substr) {
 	int n = string_length(self), m = string_length(substr);
-	if (n < m) return FALSE;
+	if (n < m) return false;
 	return (memcmp(self + n - m, substr, m) == 0);
 }
 
@@ -256,26 +256,26 @@ char *string_format(const char *self, ...) {
 	return result;
 }
 
-bool_t string_is_space(const char *self) {
+bool string_is_space(const char *self) {
 	return string_forall(self, is_space) && (*self != 0);
 }
 
-bool_t string_is_lower(const char *self) {
+bool string_is_lower(const char *self) {
 	return !string_exist(self, is_upper) && string_exist(self, is_lower);
 }
 
-bool_t string_is_upper(const char *self) {
+bool string_is_upper(const char *self) {
 	return !string_exist(self, is_lower) && string_exist(self, is_upper);
 }
 
-bool_t string_is_alpha(const char *self) {
+bool string_is_alpha(const char *self) {
 	return string_forall(self, is_alpha) && (*self != 0);
 }
 
-bool_t string_is_num(const char *self) {
+bool string_is_num(const char *self) {
 	return string_forall(self, is_num) && (*self != 0);
 }
 
-bool_t string_is_alphanum(const char *self) {
+bool string_is_alphanum(const char *self) {
 	return string_forall(self, is_alphanum) && (*self != 0);
 }
