@@ -8,8 +8,6 @@
 #include <unistd.h>
 #include <string.h>
 
-// TODO: create an AssertionError class
-
 void error_print_backtrace(FILE *stream) {
 	void *trace[100];
 	size_t size = backtrace(trace, sizeof(trace)/sizeof(void *)), i;
@@ -26,19 +24,6 @@ void error_print_backtrace(FILE *stream) {
 		fprintf(stream, "%s:%s\n", file, function);
 		if (strcmp(function, "main") == 0)
 			break;
-	}
-}
-
-void _assertf(int expression, char *error_message, ...) {
-	if (!expression) {
-		va_list args;
-		va_start(args, error_message);
-		fprintf(stderr, "ERROR : ");
-		file_print(stderr, error_message, args);
-		fprintf(stderr, "\n");
-		error_print_backtrace(stderr);
-		va_end(args);
-		abort();
 	}
 }
 
