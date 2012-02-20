@@ -15,5 +15,6 @@ void  *stack_pop     (stack_t *self);
 void  *stack_top     (stack_t *self);
 bool   stack_is_empty(stack_t *self);
 void   stack_clear   (stack_t *self);
+int    stack_size    (stack_t *self);
 
 #endif

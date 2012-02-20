@@ -63,3 +63,6 @@ void stack_clear(stack_t *self) {
 	list_clear(self->list);
 }
 
+int stack_size(stack_t *self) {
+	return list_length(self->list);
+}
