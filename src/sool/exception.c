@@ -38,7 +38,6 @@ class_t *StackFrame();
 typedef struct  {
 	EXTENDS(object_t);
 	jmp_buf buf;
-	bool caught;
 	void *thrown;
 } stack_frame_t;
 
@@ -47,7 +46,6 @@ void *stack_frame_ctor(void *_self, va_list *args) {
 	(void)args;
 	stack_frame_t *self = super_ctor(StackFrame(), _self, args);
 	self->thrown = NULL;
-	self->caught = false;
 	return self;
 }
 
@@ -69,36 +67,33 @@ stack_t *stack_trace = NULL;
 jmp_buf *exception_push() {
 	if (stack_trace == NULL)
 		stack_trace = new(Stack());
-	stack_frame_t *e = new(StackFrame());
-	stack_push(stack_trace, e);
-	return &e->buf;
+	stack_frame_t *frame = new(StackFrame());
+	stack_push(stack_trace, frame);
+	return &frame->buf;
 }
 
 void exception_throw(void *something) {
+
 	if (stack_trace == NULL || stack_is_empty(stack_trace)) {
 		fatalf("uncaught exception: %O", something);
 	}
 	else {
 		stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
-		if (frame->caught) {
-			stack_pop(stack_trace);
-			frame = cast(StackFrame(), stack_top(stack_trace));
-		}
-
 		frame->thrown = something;
-		frame->caught = false;
 		longjmp(frame->buf, 0);
 	}
 }
 
 void exception_throw_uncaught() {
-	if (!stack_is_empty(stack_trace)) {
-		stack_frame_t *frame = cast(StackFrame(), stack_pop(stack_trace));
-		void *thrown = frame->thrown;
-		bool caught  = frame->caught;
-		delete(frame);
-		if (thrown && !caught)
-			exception_throw(thrown);
+	// if top of the stack has something thrown, re-throw it
+	if (stack_trace && !stack_is_empty(stack_trace)) {
+		stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
+		if (frame->thrown) {
+			void *thrown = frame->thrown;
+			(void)stack_pop(stack_trace);
+			delete(frame);
+			if (thrown) exception_throw(thrown);
+		}
 	}
 }
 
@@ -107,8 +102,9 @@ void *exception_top() {
 	return frame->thrown;
 }
 
-void *exception_catch() {
-	stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
-	frame->caught = true;
-	return frame->thrown;
+void *exception_pop() {
+	stack_frame_t *frame = cast(StackFrame(), stack_pop(stack_trace));
+	void *thrown = frame->thrown;
+	delete(frame);
+	return thrown;
 }
