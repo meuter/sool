@@ -60,13 +60,16 @@ static void test_try_throw_no_catch() {
 }
 
 static void test_nested_try_throw_no_catch() {
+	bool passed = false;
 	assert_true(stack_trace == NULL);
 	try {
 		try { throw(Exception()); }
 	}
 	except {
+		passed = true;
 	}
 	assert_true(stack_is_empty(stack_trace));
+	assert_true(passed);
 }
 
 static void test_try_no_throw_catch() {
@@ -287,44 +290,6 @@ static void test_throw_in_a_subfunction() {
 }
 
 
-void sub_function() {
-	println("entering sub function(stack_size=%d)", stack_size(stack_trace));
-	try {
-		println("in the try block before return(stack_size=%d)", stack_size(stack_trace));
-		return;
-		assert_false(true);
-	}
-	except {
-		println("in the except of the try that returned");
-		return;
-	}
-	println("KO");
-}
-
-static void test_return_in_try_block() {
-	exception_t *e;
-	bool passed;
-	println("before entering main try block (stack_size=%p)", stack_trace);
-	try {
-		println("before calling subfunction (stack_size=%d)", stack_size(stack_trace));
-		sub_function();
-		println("after calling subfunction(stack_size=%d)", stack_size(stack_trace));
-
-		throw(new(Exception(), ""));
-		println("right after the throw");
-		assert_false(true);
-	}
-	catch(Exception(), e) {
-		println("in the catch block(stack_size=%d)", stack_size(stack_trace));
-		passed = true;
-	}
-
-	println("after the main try block(stack_size=%d)", stack_size(stack_trace));
-
-	assert_true(stack_is_empty(stack_trace));
-	assert_true(passed);
-}
-
 int main() {
 	unit_test_t all_tests[] = {
 		unit_test_setup_teardown(test_throw_no_try, setup, teardown),
@@ -344,7 +309,6 @@ int main() {
 		unit_test_setup_teardown(test_nested_try_thrown_let_through_and_caught, setup, teardown),
 		unit_test_setup_teardown(test_throw_uncaught_exception, setup, teardown),
 		unit_test_setup_teardown(test_throw_in_a_subfunction, setup, teardown),
-//		unit_test_setup_teardown(test_return_in_try_block, setup, teardown),
 	};
 
 	return run_tests(all_tests);

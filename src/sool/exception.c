@@ -4,6 +4,8 @@
 
 #include "exception_def.h"
 
+stack_t *stack_trace = NULL;
+
 /*****************************************************************************/
 
 void *exception_ctor(void *_self, va_list *args) {
@@ -35,17 +37,19 @@ class_t *Exception() {
 
 class_t *StackFrame();
 
-typedef struct  {
+struct _stack_frame_t  {
 	EXTENDS(object_t);
 	jmp_buf buf;
 	void *thrown;
-} stack_frame_t;
+	frame_stage_t stage;
+};
 
 
 void *stack_frame_ctor(void *_self, va_list *args) {
 	(void)args;
 	stack_frame_t *self = super_ctor(StackFrame(), _self, args);
 	self->thrown = NULL;
+	self->stage = __TRY;
 	return self;
 }
 
@@ -60,9 +64,68 @@ class_t *StackFrame() {
 	return result;
 }
 
+
+jmp_buf *frame_push() {
+	if (stack_trace == NULL)
+		stack_trace = new(Stack());
+	stack_frame_t *frame = new(StackFrame());
+	stack_push(stack_trace, frame);
+	return &frame->buf;
+}
+
+stack_frame_t *frame_top() {
+	return cast(StackFrame(), stack_top(stack_trace));
+}
+
+void frame_pop() {
+	stack_frame_t *frame = cast(StackFrame(), stack_pop(stack_trace));
+	frame_stage_t stage = frame->stage;
+	void *thrown = frame->thrown;
+	delete(frame);
+	if (thrown) throw(thrown);
+}
+
+void frame_jmp(stack_frame_t *frame) {
+	frame = cast(StackFrame(), frame);
+	longjmp(frame->buf, 0);
+}
+
+void *frame_get_thrown(stack_frame_t *frame) {
+	frame = cast(StackFrame(), frame);
+	return frame->thrown;
+}
+
+void frame_set_stage(stack_frame_t *frame, frame_stage_t stage) {
+	frame = cast(StackFrame(), frame);
+	frame->stage = stage;
+	if (stage == __FINALLY) frame->thrown = NULL;
+}
+
+frame_stage_t frame_get_stage(stack_frame_t *frame) {
+	frame = cast(StackFrame(), frame);
+	return frame->stage;
+}
+
+void frame_throw(void *something) {
+
+	if (stack_trace == NULL || stack_is_empty(stack_trace)) {
+		fatalf("uncaught exception: %O", something);
+	}
+	else {
+		stack_frame_t *frame = frame_top();
+		frame->thrown = something;
+		frame_jmp(frame);
+	}
+}
+
+
+
+
+
+
+
 /*****************************************************************************/
 
-stack_t *stack_trace = NULL;
 
 jmp_buf *exception_push() {
 	if (stack_trace == NULL)
