@@ -196,16 +196,19 @@ void *cast(class_t *class, void *_self) {
 }
 
 bool is_a(class_t *class, void *_self) {
-	bool result = false;
-	exception_t *e;
-	try {
-		cast(class, _self);
-		result = true;
+	object_t *self = _self;
+	if (self == NULL) 			throw(new(NullPointerError(),""));
+	if (!is_object(self))		throw(new(ClassCastError(), ""));
+
+	class_t *current = self->class, *parent;
+	if (self->class == NULL) 	throw(new(NullPointerError(),""));
+
+	while (current && current != class) {
+		 parent = super(current);
+		 if (current == parent)	return false;
+		 current = parent;
 	}
-	catch(ClassCastError(), e) {
-		delete(e);
-	}
-	return result;
+	return true;
 }
 
 
