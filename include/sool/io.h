@@ -7,8 +7,9 @@
 #include <sool/exception.h>
 #include <sool/list.h>
 
-#define print  (format, args...) file_print(stdout, format, ## args)
+#define print(format, args...)   file_print(stdout, format, ## args)
 #define println(format, args...) file_println(stdout, format, ## args)
+
 
 class_t *IOError();
 
