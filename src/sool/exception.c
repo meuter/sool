@@ -49,7 +49,7 @@ void *stack_frame_ctor(void *_self, va_list *args) {
 	(void)args;
 	stack_frame_t *self = super_ctor(StackFrame(), _self, args);
 	self->thrown = NULL;
-	self->stage = __TRY;
+	self->stage = __ARMED;
 	return self;
 }
 
@@ -82,7 +82,7 @@ void frame_pop() {
 	frame_stage_t stage = frame->stage;
 	void *thrown = frame->thrown;
 	delete(frame);
-	if (thrown) throw(thrown);
+	if (thrown && stage == __FINISHED) throw(thrown);
 }
 
 void frame_jmp(stack_frame_t *frame) {
@@ -98,7 +98,7 @@ void *frame_get_thrown(stack_frame_t *frame) {
 void frame_set_stage(stack_frame_t *frame, frame_stage_t stage) {
 	frame = cast(StackFrame(), frame);
 	frame->stage = stage;
-	if (stage == __FINALLY) frame->thrown = NULL;
+	if (stage == __FINISHED) frame->thrown = NULL;
 }
 
 frame_stage_t frame_get_stage(stack_frame_t *frame) {

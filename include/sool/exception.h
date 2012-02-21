@@ -12,7 +12,7 @@ typedef struct _exception_t exception_t;
 struct _stack_frame_t;
 typedef struct _stack_frame_t stack_frame_t;
 
-typedef enum { __TRY, __CATCH, __FINALLY } frame_stage_t;
+typedef enum { __ARMED, __THROWN, __CAUGHT, __FINISHED } frame_stage_t;
 
 class_t *Exception(); /* new(Exception(), "error message") */
 
@@ -30,11 +30,11 @@ int __exc_c;
 
 #define try					for (__exc_c = 0; __exc_c == 0; frame_pop(), __exc_c = 1)	 		 				\
 								if (setjmp(*frame_push()) == 0)													\
-									for (;;frame_set_stage(frame_top(), __FINALLY), frame_jmp(frame_top()))
+									for (;;frame_set_stage(frame_top(), __FINISHED), frame_jmp(frame_top()))
 #define throw(e)			frame_throw(e)
-#define catch(class, e)		else if (frame_get_stage(frame_top()) == __CATCH && is_a(class, frame_get_thrown(frame_top())) && (e = frame_get_thrown(frame_top()))) for (;;frame_set_stage(frame_top(), __FINALLY), frame_jmp(frame_top()))
-#define except				else if (frame_get_stage(frame_top()) == __CATCH) for (;;frame_set_stage(frame_top(), __FINALLY), frame_jmp(frame_top()))
-#define finally				else if (frame_get_stage(frame_top()) == __FINALLY)
+#define catch(class, e)		else if (frame_get_stage(frame_top()) == __THROWN && is_a(class, frame_get_thrown(frame_top())) && (e = frame_get_thrown(frame_top()))) for (;;frame_set_stage(frame_top(), __CAUGHT), frame_jmp(frame_top()))
+#define except				else if (frame_get_stage(frame_top()) == __THROWN) for (;;frame_set_stage(frame_top(), __CAUGHT), frame_jmp(frame_top()))
+#define finally				else if (frame_get_stage(frame_top()) == __FINISHED || frame_get_stage(frame_top()) == __CAUGHT)
 
 #endif
 

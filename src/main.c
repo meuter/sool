@@ -75,8 +75,13 @@ void test_string() {
 
 int main(void) {
 
+	exception_t *e = new(NullPointerError());
 
-	println("hello %b", 1);
+	println("NullPointerError is a Exception ? %b", is_a(Exception(), e));
+	println("NullPointerError is a Class ? %b", is_a(Class(), e));
+	println("NullPointerError is a Object ? %b", is_a(Object(), e));
+	println("NullPointerError is a NullPointerError ? %b", is_a(NullPointerError(), e));
+	println("NullPointerError is a IndexError ? %b", is_a(IndexError(), e));
 
 #ifdef ALPHA
 	unit_test_t all_tests[] = {
