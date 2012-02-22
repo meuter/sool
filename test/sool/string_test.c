@@ -165,6 +165,7 @@ static void test_string_slice() {
 	s = string_slice("0123456789", 0, 10); assert_string_equal(s, "0123456789"); delete(s);
 	s = string_slice("0123456789", 5, 2);  assert_string_equal(s, ""); delete(s);
 	s = string_slice("0123456789", -2, -5);  assert_string_equal(s, ""); delete(s);
+	s = string_slice("0123456789", 5,10); assert_string_equal(s, "56789"); delete(s);
 }
 
 static void test_string_replace() {

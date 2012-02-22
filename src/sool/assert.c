@@ -4,7 +4,10 @@
 
 DEFINE_EXCEPTION(AssertionError);
 
-//void _assert_true(bool_t expression, const char *string_expression) {
-//	if (!expression)
-//		throw(new(AssertionError(), string_expression));
-//}
+#if 0
+void _assert_true(bool expression, const char *string_expression) {
+	if (!expression)
+		throw(new(AssertionError(), string_expression));
+}
+
+#endif

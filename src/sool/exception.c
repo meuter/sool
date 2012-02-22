@@ -1,11 +1,50 @@
-#include <sool/stack.h>
 #include <sool/error.h>
 #include <sool/io.h>
+#include <signal.h>
+
+#define stack_t sool_stack_t
+#include <sool/stack.h>
 
 #include "exception_def.h"
 
-stack_t *stack_trace = NULL;
+DEFINE_EXCEPTION(SegmentationFaultError);
 
+//#define EXCEPTION_THROWN   2
+#define EXCEPTION_FINISHED 3
+
+
+/*****************************************************************************/
+
+class_t *StackFrame();
+
+typedef struct {
+	EXTENDS(object_t);
+	jmp_buf buf;
+	void *thrown;
+	int stage;
+} stack_frame_t;
+
+
+void *stack_frame_ctor(void *_self, va_list *args) {
+	(void)args;
+	stack_frame_t *self = super_ctor(StackFrame(), _self, args);
+	self->thrown = NULL;
+	self->stage = 0;
+	return self;
+}
+
+class_t *StackFrame() {
+	static class_t *result = NULL;
+	if (result == NULL) {
+		result = new(Class(), "StackFrame", Object(), sizeof(stack_frame_t),
+			ctor, stack_frame_ctor,
+			NULL
+		);
+	}
+	return result;
+}
+
+__thread stack_t *stack_trace = NULL;
 
 /*****************************************************************************/
 
@@ -36,75 +75,51 @@ class_t *Exception() {
 
 /*****************************************************************************/
 
-class_t *StackFrame();
-
-struct _stack_frame_t  {
-	EXTENDS(object_t);
-	jmp_buf buf;
-	void *thrown;
-	frame_stage_t stage;
-};
-
-
-void *stack_frame_ctor(void *_self, va_list *args) {
-	(void)args;
-	stack_frame_t *self = super_ctor(StackFrame(), _self, args);
-	self->thrown = NULL;
-	self->stage = __ARMED;
-	return self;
-}
-
-class_t *StackFrame() {
-	static class_t *result = NULL;
-	if (result == NULL) {
-		result = new(Class(), "StackFrame", Object(), sizeof(stack_frame_t),
-			ctor, stack_frame_ctor,
-			NULL
-		);
+static void exception_handle_signal(int signum) {
+	switch(signum) {
+	case SIGSEGV:
+		throw(new(SegmentationFaultError(), "SIGSEGV recieved"));
+		break;
 	}
-	return result;
 }
 
-
-jmp_buf *frame_push() {
-	if (stack_trace == NULL)
+jmp_buf *exception_push() {
+	if (stack_trace == NULL) {
 		stack_trace = new(Stack());
+		signal(SIGSEGV, exception_handle_signal);
+	}
 	stack_frame_t *frame = new(StackFrame());
 	stack_push(stack_trace, frame);
 	return &frame->buf;
 }
 
-stack_frame_t *frame_top() {
-	return cast(StackFrame(), stack_top(stack_trace));
-}
-
-void frame_pop() {
+void exception_pop() {
 	stack_frame_t *frame = cast(StackFrame(), stack_pop(stack_trace));
-	frame_stage_t stage = frame->stage;
+	int stage = frame->stage;
 	void *thrown = frame->thrown;
 	delete(frame);
-	if (thrown && stage == __THROWN) throw(thrown);
+	if (thrown && stage == 2) throw(thrown);
 }
 
-void frame_jmp(frame_stage_t stage) {
-	stack_frame_t *frame = frame_top();
+void exception_jmp(int stage) {
+	stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
 	frame->stage = stage;
 	longjmp(frame->buf, 0);
 }
 
-void *frame_thrown() {
-	stack_frame_t *frame = frame_top();
+void *exception_get() {
+	stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
 	return frame->thrown;
 }
 
-frame_stage_t frame_stage() {
-	stack_frame_t *frame = frame_top();
+int exception_step() {
+	stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
 	return frame->stage;
 }
 
 
-void frame_throw(void *something) {
-	while (stack_trace != NULL && !stack_is_empty(stack_trace) && frame_stage() == __THROWN) {
+void exception_throw(void *something) {
+	while (stack_trace != NULL && !stack_is_empty(stack_trace) && exception_step() == 2) {
 			delete(stack_pop(stack_trace));
 	}
 
@@ -112,8 +127,8 @@ void frame_throw(void *something) {
 		fatalf("uncaught exception: %O", something);
 	}
 	else {
-		stack_frame_t *frame = frame_top();
+		stack_frame_t *frame = cast(StackFrame(), stack_top(stack_trace));
 		frame->thrown = something;
-		frame_jmp(__THROWN);
+		exception_jmp(2);
 	}
 }

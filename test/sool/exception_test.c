@@ -3,7 +3,7 @@
 #include <sool/exception.h>
 #include <sool/io.h>
 
-extern stack_t *stack_trace;
+extern __thread stack_t *stack_trace;
 
 /*****************************************************************************/
 
@@ -73,12 +73,11 @@ static void test_nested_try_throw_no_catch() {
 }
 
 static void test_try_no_throw_catch() {
-	class_t *e;
 	assert_true(stack_trace == NULL);
 	try {
 		assert_false(stack_is_empty(stack_trace));
 	}
-	catch(Class(), e) {
+	catch(Exception()) {
 		assert_true(false);
 	}
 	assert_true(stack_is_empty(stack_trace));
@@ -97,15 +96,14 @@ static void test_try_no_throw_except() {
 
 
 static void test_try_throw_catch() {
-	class_t *c;
 	bool passed = false;
 	assert_true(stack_trace == NULL);
 	try {
 		assert_false(stack_is_empty(stack_trace));
-		throw(Exception());
+		throw(new(Exception(), ""));
 		assert_true(false);
 	}
-	catch(Class(), c) {
+	catch(Exception()) {
 		passed = true;
 	}
 	assert_true(stack_is_empty(stack_trace));
@@ -170,15 +168,14 @@ static void test_nested_caught() {
 
 static void test_filtered() {
 	bool passed = false;
-	exception_t *e;
 	try {
 		throw(new(Exception(),""));
 		assert_true(false);
 	}
-	catch(NullPointerError(), e) {
+	catch(NullPointerError()) {
 		assert_true(false);
 	}
-	catch(Exception(), e) {
+	catch(Exception()) {
 		passed = true;
 	}
 	assert_true(stack_is_empty(stack_trace));
@@ -187,13 +184,13 @@ static void test_filtered() {
 
 static void test_throw_in_a_catch() {
 	bool passed = false;
-	exception_t *e;
 	try {
 		try {
 			throw(new(Exception(),""));
 			assert_true(false);
 		}
-		catch(Exception(), e) {
+		catch(Exception()) {
+			exception_t *e = exception_get();
 			throw(e);
 			assert_true(false);
 		}
@@ -221,14 +218,13 @@ static void test_nested_empty_try() {
 }
 
 static void test_nested_empty_try_one_catch() {
-	exception_t *e;
 	try {
 		try {
 			try {
 
 			}
 		}
-		catch (Exception(), e) {
+		catch (Exception()) {
 			assert_true(false);
 		}
 	}
@@ -236,7 +232,6 @@ static void test_nested_empty_try_one_catch() {
 }
 
 static void test_nested_try_thrown_let_through_and_caught() {
-	exception_t *e;
 	int step = 0;
 	try {
 		try {
@@ -246,7 +241,7 @@ static void test_nested_try_thrown_let_through_and_caught() {
 			}
 			assert_true(false);
 		}
-		catch (Exception(), e) {
+		catch(Exception()) {
 			step += 1;
 		}
 		step += 1;
@@ -256,14 +251,13 @@ static void test_nested_try_thrown_let_through_and_caught() {
 }
 
 static void test_throw_uncaught_exception() {
-	exception_t *e;
 	bool passed = false;
 	try {
 		try {
 			throw(new(Exception(),""));
 			assert_true(false);
 		}
-		catch(Exception(), e) {
+		catch(Exception()) {
 			passed = true;
 		}
 		assert_false(stack_is_empty(stack_trace));
@@ -279,12 +273,11 @@ static void sub_function_that_throws_an_exception() {
 
 static void test_throw_in_a_subfunction() {
 	bool passed = false;
-	exception_t *e;
 	try {
 		sub_function_that_throws_an_exception();
 		assert_true(false);
 	}
-	catch(Exception(), e) {
+	catch(Exception()) {
 		passed = true;
 	}
 	assert_true(passed);
@@ -293,13 +286,12 @@ static void test_throw_in_a_subfunction() {
 
 static void test_try_catch_finally() {
 	bool caught = false, finalized = false;
-	exception_t *e;
 
 	try {
 		throw(new(Exception(), ""));
 		assert_true(false);
 	}
-	catch(Exception(), e) {
+	catch(Exception()) {
 		caught = true;
 	}
 	finally {
@@ -312,12 +304,11 @@ static void test_try_catch_finally() {
 
 static void test_try_catch_finally_no_throw() {
 	bool caught = false, finalized = false, passed = false;
-	exception_t *e;
 
 	try {
 		passed = true;
 	}
-	catch(Exception(), e) {
+	catch(Exception()) {
 		caught = true;
 	}
 	finally {
