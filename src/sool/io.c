@@ -36,9 +36,7 @@ static bool is_format_character(char c) {
 	}
 }
 
-static int parse_format(const char *string) {
-	int i = 0;
-
+static int parse_format(const char *string, int i) {
 	while (string[i]) {
 		if (is_format_character(string[i]))
 			return i;
@@ -48,11 +46,10 @@ static int parse_format(const char *string) {
 	return -1;
 }
 
-static int parse_curly_braces(const char *string) {
-	int i = 0;
+static int parse_curly_braces(const char *string, int i) {
 	int n_open = 0;
 
-	if (string[0] != '{')
+	if (string[i] != '{')
 		return 0;
 
 	while (string[i]) {
@@ -121,26 +118,26 @@ int file_vprint(FILE *self, const char *format, va_list args) {
 	while ( format[i] ) {
 		if (format[i] == '%') {
 			if (format[i+1] == 'O') {
-				int j = parse_curly_braces(&format[i+2]);
+				int j = parse_curly_braces(format, i+2);
 				if (j > 0) {
-					char *subformat = string_slice(format, i+3, i+j+2);
+					char *subformat = string_slice(format, i+3, j);
 					result += put(va_arg(args, void *), self, subformat);
 					delete(subformat);
-					i += 2+j+1;
+					i = j+1;
 				}
 				else {
 					result += put(va_arg(args, void *), self, NULL);
 					i += 2;
 				}
 			}
-			if (format[i+1] == 'b') {
+			else if (format[i+1] == 'b') {
 				int b = va_arg(args, int);
 				result += fprintf(self, "%s", b ? "true" : "false");
 				i += 2;
 			}
 			else {
-				int j = parse_format(&format[i+1]);
-				char *subformat = string_slice(format, i, i+j+2);
+				int j = parse_format(format, i+1);
+				char *subformat = string_slice(format, i, j+1);
 				result += vfprintf(self, subformat, args);
 
 				// skip the necessary number of argument
@@ -149,7 +146,7 @@ int file_vprint(FILE *self, const char *format, va_list args) {
 					(void)va_arg(args, void *);
 
 				delete(subformat);
-				i += j+2;
+				i = j+1;
 			}
 		}
 		else {
