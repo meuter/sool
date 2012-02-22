@@ -54,7 +54,7 @@ static void test_try_throw_no_catch() {
 	expect_any(fatalf, error_message);
 	assert_true(stack_trace == NULL);
 	try {
-		throw(Exception());
+		throw(new(Exception(), ""));
 	}
 	assert_true(stack_is_empty(stack_trace));
 }
@@ -197,6 +197,7 @@ static void test_throw_in_a_catch() {
 			throw(e);
 			assert_true(false);
 		}
+		assert_true(false);
 	}
 	except {
 		passed = true;
@@ -290,6 +291,81 @@ static void test_throw_in_a_subfunction() {
 }
 
 
+static void test_try_catch_finally() {
+	bool caught = false, finalized = false;
+	exception_t *e;
+
+	try {
+		throw(new(Exception(), ""));
+		assert_true(false);
+	}
+	catch(Exception(), e) {
+		caught = true;
+	}
+	finally {
+		finalized = true;
+	}
+
+	assert_true(caught && finalized);
+}
+
+
+static void test_try_catch_finally_no_throw() {
+	bool caught = false, finalized = false, passed = false;
+	exception_t *e;
+
+	try {
+		passed = true;
+	}
+	catch(Exception(), e) {
+		caught = true;
+	}
+	finally {
+		finalized = true;
+	}
+
+	assert_true(passed && !caught && finalized);
+}
+
+static void test_throw_except_rethrow_finalized() {
+	bool caught = false, finalized = false;
+	try {
+		try {
+			throw(new(Exception(),""));
+			assert_true(false);
+		}
+		except {
+			rethrow();
+			assert_true(false);
+		}
+		assert_true(false);
+	}
+	except {
+		caught = true;
+	}
+	finally {
+		finalized = true;
+	}
+	assert_true(stack_is_empty(stack_trace));
+	assert_true(caught && finalized);
+}
+
+#define trace() println("%s:%d:%s (stack_size = %d)", __FILE__, __LINE__, __FUNCTION__, stack_trace == NULL? -1 : stack_size(stack_trace));
+
+static void test_throw_except_rethrow_uncaught() {
+	expect_any(fatalf, error_message);
+	try {
+		throw(new(Exception(),""));
+		assert_true(false);
+	}
+	except {
+		rethrow();
+		return; // the real fatal stops
+	}
+}
+
+
+
 int main() {
 	unit_test_t all_tests[] = {
 		unit_test_setup_teardown(test_throw_no_try, setup, teardown),
@@ -309,6 +385,10 @@ int main() {
 		unit_test_setup_teardown(test_nested_try_thrown_let_through_and_caught, setup, teardown),
 		unit_test_setup_teardown(test_throw_uncaught_exception, setup, teardown),
 		unit_test_setup_teardown(test_throw_in_a_subfunction, setup, teardown),
+		unit_test_setup_teardown(test_try_catch_finally, setup, teardown),
+		unit_test_setup_teardown(test_try_catch_finally_no_throw, setup, teardown),
+		unit_test_setup_teardown(test_throw_except_rethrow_finalized, setup, teardown),
+		unit_test_setup_teardown(test_throw_except_rethrow_uncaught, setup, teardown),
 	};
 
 	return run_tests(all_tests);
